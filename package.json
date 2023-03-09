@@ -1,6 +1,6 @@
 {
-  "name": "vue-d3-charts",
-  "version": "0.2.8",
+  "name": "vue-d3-charts-hire3x",
+  "version": "0.0.1",
   "description": "",
   "main": "dist/vue-d3-charts.ssr.js",
   "browser": "dist/vue-d3-charts.esm.js",
@@ -12,7 +12,7 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/Saigesp/vue-d3-charts.git"
+    "url": "https://github.com/sandeepss2020/vue-d3-charts"
   },
   "scripts": {
     "build": "cross-env NODE_ENV=production rollup --config build/rollup.config.js",
