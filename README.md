@@ -4,12 +4,10 @@
 
 Simply yet configurable charts build with D3.
 
-See [documentation and demo](https://saigesp.github.io/vue-d3-charts/) page.
-
 ### Install
 
 ```bash
-npm i vue-d3-charts --save
+npm install --save vue-d3-charts-hire3x
 ```
 
 ### Usage
@@ -17,7 +15,7 @@ npm i vue-d3-charts --save
 Import:
 
 ```javascript
-import { D3BarChart } from 'vue-d3-charts';
+import { D3BarChart } from "vue-d3-charts";
 ```
 
 Template:
@@ -30,29 +28,29 @@ Configuration and data:
 
 ```javascript
 // data
-data = [{
-  name: "Lorem",
-  total: 30
-},{
-  name: "Ipsum",
-  total: 21
-},{
-  name: "Dolor",
-  total: 20
-}]
+data = [
+  {
+    name: "Lorem",
+    total: 30,
+  },
+  {
+    name: "Ipsum",
+    total: 21,
+  },
+  {
+    name: "Dolor",
+    total: 20,
+  },
+];
 
 // Configuration
 config = {
   key: "name",
   value: "total",
   color: "steelblue",
-}
+};
 ```
 
 ### Contributing
 
-See [contribution guide](CONTRIB.md).
-
 ### License
-
-This repository is available under **GNU LESSER GENERAL PUBLIC LICENSE v2.1** (LGPL). See [details](LICENSE.md).

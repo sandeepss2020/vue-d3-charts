@@ -1,6 +1,6 @@
 {
   "name": "vue-d3-charts-hire3x",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "",
   "main": "dist/vue-d3-charts.ssr.js",
   "browser": "dist/vue-d3-charts.esm.js",
