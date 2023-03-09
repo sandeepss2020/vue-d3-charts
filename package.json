@@ -21,6 +21,7 @@
     "build:unpkg": "cross-env NODE_ENV=production rollup --config build/rollup.config.js --format iife"
   },
   "dependencies": {
+     "d3": "^7.8.2",
     "d3-axis": "^1.0.12",
     "d3-cloud": "^1.2.5",
     "d3-ease": "^1.0.6",
