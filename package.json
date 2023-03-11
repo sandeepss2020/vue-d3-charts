@@ -1,7 +1,7 @@
 {
   "name": "vue-d3-charts-hire3x",
-  "version": "0.0.2",
-  "description": "",
+  "version": "0.0.3",
+  "description": "All graphs1st phase",
   "main": "dist/vue-d3-charts.ssr.js",
   "browser": "dist/vue-d3-charts.esm.js",
   "module": "dist/vue-d3-charts.esm.js",
