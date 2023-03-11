@@ -22,7 +22,7 @@ window.onload = function () {
   document.getElementByTagName("svg").empty();
 };
 window.onbeforeunload = function () {
-  console.log("CALL CALL CALL");
+  // console.log("CALL CALL CALL");
 };
 let script = {
   name: "BarCharts",
@@ -41,6 +41,7 @@ let script = {
 //GRAPH 1
 class scatterplot {
   async scatterGraph(data) {
+    //  console.log(getdata.topicData)
     //   const scatterPlot = (selection, props) => {
     //     const {
     //       xValue,
@@ -154,120 +155,20 @@ class scatterplot {
     //   return 5*(Math.exp(circleRadius.horsepower /100));
     //         })
     //   };
+
+    /*
     const svg_1 = select("#graph1")
       .append("svg")
-      .attr("viewBox", `0 0 ${script.svgWidth + 50} 550`);
-
-    function render() {
-      const xValue = function (circleRadius) {
-          return circleRadius.horsepower;
-        },
-        yValue = function (circleRadius) {
-          return circleRadius.name;
-        },
-        margin = { top: 20, right: 10, bottom: 20, left: 10 };
-
-      // console.log(data)
-      const innerWidth = script.svgWidth - margin.left - margin.right;
-      const innerHeight = 550 - margin.top - margin.bottom;
-
-      // const xScale = scaleBand().domain(data.map((d) => d.name)).range([0, innerWidth])
-      const xScale = scaleLinear()
-        .domain(extent(data, xValue))
-        .range([0, innerWidth])
-        .nice();
-
-      const yScale = scaleBand()
-          .domain(data.map((d) => d.name))
-          .range([innerHeight, 0]),
-        yScale1 = scaleLinear().domain([0, 8]).range([0, innerHeight]).nice(),
-        y_axis = axisLeft().scale(yScale1);
-
-      const x_axis = axisBottom(xScale),
-        xAxisTranslate = 500;
-
-      const xGridLine = axisBottom(xScale)
-        .scale(xScale)
-        .tickSize(500, 0, 0)
-        .tickFormat("");
-
-      var yGridLine = axisLeft(yScale1)
-        .scale(yScale1)
-
-        // .tickPadding(5)
-        .tickSize(-innerWidth)
-
-        .tickFormat("");
-
-      let g0 = svg_1
+      .attr("viewBox", `0 0 ${script.svgWidth + 50} 550`)
+      .style("background-color", "red");
+    let g0 = svg_1
         .append("g")
-        .attr("transform", "translate(" + 30 + "," + 20 + ")");
+        .attr("transform", "translate(" + 0 + "," + 0 + ")");
 
-      svg_1
-        .append("g")
-        .attr("class", "y axis")
-        .attr("transform", "translate(25,0)");
-
-      svg_1
-        .append("g")
-        .attr("class", "x axis")
-        .attr("transform", "translate(20," + xAxisTranslate + ")");
-      // .call(x_axis)
-
-      svg_1
-        .append("g")
-        .classed("gridLine", true)
-        .attr("transform", "translate(25,0)")
-        .style("color", "grey")
-        .attr("opacity", "0.5");
-      // .call(yGridLine);
-
-      svg_1
-        .append("g")
-        .classed("gridLine", true)
-        .attr("transform", "translate(25,0)")
-        .style("color", "grey")
-        .attr("opacity", "0.5");
-      // .call(xGridLine);
-
-      const circles = g0.selectAll("circle").data(data);
-      circles
-        .enter()
-        .append("circle")
-        .attr("cx", innerWidth / 2)
-        .attr("cy", innerHeight / 2)
-        .attr("r", function (d) {
-          // console.log("i values", circleRadius.cylinders)
-          return Math.exp(d.horsepower / 100);
-        })
-        .attr("fill", function (circleRadius) {
-          return circleRadius.horsepower <= 100 ? "#BCCBB1" : "#8676FF";
-        })
-        .attr("opacity", 0.7)
-        .on("mouseover", mouseover)
-        .on("mousemove", function () {
-          Tooltip.style("top", event.pageY - 10 + "px").style(
-            "left",
-            event.pageX + 10 + "px"
-          );
-        })
-        .on("mouseleave", mouseleave);
-
-      svg_1
-        .selectAll("circle")
-        .transition()
-        .duration(2000)
-        .delay((d, i) => i * 10)
-        .attr("cy", (d) => yScale(yValue(d)))
-        .attr("cx", (d) => xScale(xValue(d)))
-        .attr("r", function (circleRadius) {
-          // console.log("i values", circleRadius.cylinders)
-          return 5 * Math.exp(circleRadius.horsepower / 100);
-        });
-      console.log("render", data);
-    }
+ 
     // create a tooltip
-    var Tooltip = select("body")
+    
+      var Tooltip = select("body")
       .append("div")
       .style("opacity", 0)
       .attr("class", "tooltip")
@@ -317,7 +218,7 @@ class scatterplot {
     data = await response2.json();
     data = data.slice(0, 25);
 
-    const xValue1 = function (circleRadius) {
+        const xValue1 = function (circleRadius) {
         return circleRadius.horsepower;
       },
       yValue1 = function (circleRadius) {
@@ -332,27 +233,320 @@ class scatterplot {
     const yScale2 = scaleBand()
       .domain(data.map((d) => d.name))
       .range([innerHeight, 0]);
+    
+
+
 
     let sim = d3.forceSimulation(data);
-    sim.force("collision", d3.forceCollide()); // Repulsion force
+    sim.force("collision", d3.forceCollide(function (d) {
+          // console.log("i values", circleRadius.cylinders)
+          return Math.exp(d.horsepower / 100);
+        })); // Repulsion force
     // .attr('cy', d => yScale(yValue(d)))
     // .attr('cx', d => xScale(xValue(d)))
     sim.force(
       "x_force",
-      d3.forceX((d) => xScale1(xValue1(d)))
+      d3.forceX((d) => d.horsepower)
     ); // Each point attacted to its center x and y
     sim.force(
       "y_force",
-      d3.forceY((d) => yScale2(yValue1(d)))
+      d3.forceY((d) => d.mpg)
     );
-    sim.on("tick", render()); // Redraws scatterplot at every simulation "tick"
+    sim.on("tick", render); // Redraws scatterplot at every simulation "tick"
+    // sim.stop(); 
+     // render();
+     
+     
+    
+    function render() {
+    
+      const circles = svg_1.selectAll("circle").data(data);
+      circles
+        .enter()
+        .append("circle")
+        .attr("cy", (d) => d.mpg)
+        .attr("cx", (d) => d.horsepower)
+        .attr("r", function (d) {
+          // console.log("i values", circleRadius.cylinders)
+          return 5 * Math.exp(d.horsepower / 100);
+        })
+        .attr("fill", function (circleRadius) {
+          return circleRadius.horsepower <= 100 ? "#BCCBB1" : "#8676FF";
+        })
+        .attr("opacity", 0.7)
+        .on("mouseover", mouseover)
+        .on("mousemove", function () {
+          Tooltip.style("top", event.pageY - 10 + "px").style(
+            "left",
+            event.pageX + 10 + "px"
+          );
+        })
+        .on("mouseleave", mouseleave);
 
-    sim.alpha(1);
-    sim.restart();
+      
+      circles.attr("cy", (d) => d.mpg).attr("cx", (d) => d.horsepower)
+      
+      
+    }
+      sim.force("collision", d3.forceCollide(d => d.horsepower)); 
+  sim.alpha(1); // Alpha value of 1 resets simulation back to beginning
+  sim.restart();
+      
+      
+    //   const xValue = function (d) {
+    //       return d.horsepower;
+    //     },
+    //     yValue = function (d) {
+    //       return d.name;
+    //     },
+    //     yValue1 = function (d) {
+    //       return d.mpg;
+    //     },
+    //     margin = { top: 20, right: 10, bottom: 20, left: 10 };
+
+    //   console.log(yValue1)
+    //   const innerWidth = script.svgWidth - margin.left - margin.right;
+    //   const innerHeight = 550 - margin.top - margin.bottom;
+
+    //   // const xScale = scaleBand().domain(data.map((d) => d.name)).range([0, innerWidth])
+    //   const xScale = scaleLinear()
+    //     .domain(extent(data, xValue))
+    //     .range([0, innerWidth])
+    //     .nice();
+
+    //   const yScale = scaleBand()
+    //       .domain(data.map((d) => d.name))
+    //     .range([innerHeight, 0]),
+        
+    //     // yScale1 = scaleLinear().domain([0, 8]).range([0, innerHeight]).nice(),
+    //     yScale1 = scaleLinear().domain(extent(data, yValue1)).range([0, innerHeight-10]).nice(),
+
+    //     y_axis = axisLeft().scale(yScale1);
+
+    //   const x_axis = axisBottom(xScale),
+        
+    //     xAxisTranslate = 510;
+
+    //   const xGridLine = axisBottom(xScale)
+    //     .scale(xScale)
+    //     .tickSize(500, 0, 0)
+    //     .tickFormat("");
+
+    //   var yGridLine = axisLeft(yScale1).scale(yScale1)
+    //     // .tickPadding(5)
+    //     .tickSize(-innerWidth)
+    //     .tickFormat("");
+
+     
+    //   //Comment out starts
+    //   svg_1
+    //     .append("g")
+    //     .attr("class", "y axis")
+    //     .attr("transform", "translate(25,0)")
+    //     .call(y_axis);
+    //   svg_1
+    //     .append("g")
+    //     .attr("class", "x axis")
+    //     .attr("transform", "translate(20," + xAxisTranslate + ")").call(x_axis)
+    //   svg_1
+    //     .append("g")
+    //     .classed("gridLine", true)
+    //     .attr("transform", "translate(25,0)")
+    //     .style("color", "grey")
+    //     .attr("opacity", "0.5")
+    //   .call(yGridLine);
+    //   svg_1
+    //     .append("g")
+    //     .classed("gridLine", true)
+    //     .attr("transform", "translate(25,0)")
+    //     .style("color", "grey")
+    //     .attr("opacity", "0.5")
+    //   .call(xGridLine);
+
+    //   //Till here commeneted out
+
+      
+    //   svg_1
+    //     .selectAll("circle")
+    //     .transition()
+    //     .duration(2000)
+    //     .delay((d, i) => i * 10)
+
+    //    // .attr("cy", (d) => yScale1(yValue1(d)))
+    //    // .attr("cx", (d) => xScale(xValue(d)))
+    //           .attr("cy", (d) => d.mpg)
+    //    .attr("cx", (d) =>d.horsepower)
+        
+    //     .attr("r", function (circleRadius) {
+    //       // console.log("i values", circleRadius.cylinders)
+    //       return 5 * Math.exp(circleRadius.horsepower / 100);
+    //     });
+    //   // console.log("render", data);
+    // }
+    
+    // sim.alpha(1);
+    // sim.restart();
     // this.heySim = sim;
     // console.log("hey", this.heySim);
-    // sim.stop(); // Simulation is off initially
-    // render();
+    // Simulation is off initially
+   
+   */
+
+    // console.log("jss", data.topicData)
+    let datapoints = data.topicData;
+    var width = 750,
+      height = 300;
+
+    var svg = d3
+      .select("#graph1")
+      .append("svg")
+      .attr("height", height - 20)
+      .attr("width", width)
+      // .style("background-color", "red")
+      .append("g")
+      .attr("transform", "translate(0 , 0)");
+
+    var defs = svg.append("defs");
+    defs
+      .append("pattern")
+      .attr("id", "Beyonce")
+      .attr("height", "100%")
+      .attr("width", " 100%")
+      .append("image")
+      .attr("height", 1)
+      .attr("width", 1)
+      .attr("preserveAspectRatio", "none");
+
+    // var radiusScale = (d3.scaleSqrt().domain([1, 300]).range([0, 50]));
+    var radiusScale = d3
+      .scaleSqrt()
+      .domain(
+        extent(datapoints, function (d) {
+          return d.uniqueTotalCandidates;
+        })
+      )
+      .range([0, 35]);
+    const xScale = scaleLinear().domain([0, 500]).range([0, width]);
+
+    var forceXCombine = d3.forceX(width / 3).strength(0.05);
+    var forceCollide = d3.forceCollide(function (d) {
+      return radiusScale(d.uniqueTotalCandidates) + 2;
+      // add mpg
+    });
+    var simulation = d3
+      .forceSimulation()
+      .force("x", forceXCombine)
+      .force("y", d3.forceY(height / 2).strength(0.05))
+      .force("collide", forceCollide);
+
+    //api caling
+    // let response3 = await fetch(
+    //   // "https://run.mocky.io/v3/dbd4f859-0a26-461d-a9b7-f81983c14ea4"
+    //   "https://run.mocky.io/v3/35effb46-6d36-4026-9695-e573f6c90248"
+    // );
+
+    // let datapoints = await response3.json();
+    // datapoints = datapoints.slice(0, 25);
+    // console.log("datapoints", datapoints);
+    defs
+      .selectAll(".artist-pattern")
+      .data(datapoints)
+      .enter()
+      .append("pattern")
+      .attr("class", "artist-pattern")
+      .attr("height", "100%")
+      .attr("width", "100%")
+      .append("height", 1)
+      .append("width", 1)
+      .attr("preserveAspectRatio", "none");
+
+    var circles = svg
+      .selectAll(".artist")
+      .data(datapoints)
+      .enter()
+      .append("circle")
+      .attr("class", "artist")
+      .attr("r", function (d) {
+        // console.log("ddd", d.uniqueTotalCandidates, "and" , (radiusScale(d.uniqueTotalCandidates)%100) )
+        return radiusScale(d.uniqueTotalCandidates);
+        // add mpg
+      })
+      .attr("fill", function (d) {
+        return d.active ? "#8676FF" : "#BCCBB1";
+      });
+    //
+    simulation.nodes(datapoints).on("tick", ticked);
+
+    function ticked() {
+      circles
+        .attr("cx", function (d) {
+          // console.log(d)
+          return xScale(d.x);
+        })
+        .attr("cy", function (d) {
+          return d.y;
+        })
+        .on("mouseover", mouseover)
+        //   .on("mousemove", function () {
+        //     Tooltip.style("top", event.pageY - 10 + "px").style(
+        //       "left",
+        //       event.pageX + 10 + "px"
+        //     );
+        //   })
+        .on("mouseleave", mouseleave);
+    }
+
+    // create a tooltip
+
+    var Tooltip = select("body")
+      .append("div")
+      .style("opacity", 0)
+      .attr("class", "tooltip")
+      .style("background-color", "white")
+      .style("border", "solid")
+      .style("border-width", "2px")
+      .style("border-radius", "5px")
+      .style("padding", "5px");
+
+    // Three function that change the tooltip when user hover / move / leave a cell
+    let mouseover = function (d, datapoints) {
+      // console.log(datapoints.uniqueTotalCandidates)
+      Tooltip.style("opacity", 1)
+        .style("visibility", "visible")
+        .html(
+          "The Total Number of Candidates are<br>" +
+            datapoints.uniqueTotalCandidates
+        )
+        .style("left", event.pageX + 70 + "px")
+        .style("top", event.pageY + "px");
+      select(this)
+        .attr("r", function (d) {
+          return radiusScale(d.uniqueTotalCandidates + 5);
+          // add mpg
+        })
+        .style("stroke", function (d) {
+          return d.active ? "blue" : "#7BCCB5";
+        })
+        .style("stroke-width", 7)
+        .style("opacity", 0.3);
+    };
+    let mousemove = function (d) {
+      Tooltip.html(
+        "The exact value of<br>this cell is: " + d.uniqueTotalCandidates
+      )
+        .style("left", event.pageX + 70 + "px")
+        .style("top", event.pageY + "px");
+    };
+    let mouseleave = function (d) {
+      Tooltip.style("opacity", 0);
+      select(this)
+        .attr("r", function (d) {
+          return radiusScale(d.uniqueTotalCandidates);
+          // add mpg
+        })
+        .style("stroke", "none")
+        .style("opacity", 0.8);
+    };
   }
 }
 
@@ -510,7 +704,7 @@ class D3BarChart {
       .style("border-radius", "5px")
       .style("color", "#fff")
       .text("a simple tooltip");
-    console.log(script.count);
+    // console.log(script.count);
     // rect.exit().remove();
     // svg.selectAll("rect > *").remove();
   }
@@ -521,8 +715,8 @@ class piePlot {
   pieGraph() {
     const svgHeight = 300,
       radius = Math.min(script.svgWidth, svgHeight) / 2;
-    console.log("radius is", radius);
-    console.log("pie data", script.pie_data);
+    // console.log("radius is", radius);
+    // console.log("pie data", script.pie_data);
 
     const svg = select("#pieChart")
       .append("svg")
@@ -543,7 +737,7 @@ class piePlot {
       .range(["#FFC145", "#33A02C", "#3379B3"]);
 
     const pies = d3Line.pie().value(function (d) {
-      console.log(d.percentage);
+      // console.log(d.percentage);
 
       return d.percentage;
     });
@@ -599,11 +793,11 @@ class piePlot {
         return colorScale(d.data.percentage);
       })
       .on("mouseover", function (d, i) {
-        console.log("doneeee");
+        // console.log("doneeee");
         tooltip
           .html(`Percentage: ${d.data.percentage}`)
           .style("visibility", "visible");
-        console.log("percent is", d);
+        // console.log("percent is", d);
         select(this).attr("fill", "#fffff");
       })
 
@@ -624,7 +818,7 @@ class piePlot {
       sum += x.percentage;
     });
 
-    console.log("summis", sum);
+    // console.log("summis", sum);
     // console.log(total);
     svg
       .append("svg:text")
@@ -670,31 +864,31 @@ class piePlot {
 class scatterplot_rect {
   async scatterGraph(data) {
     const scatterPlots = (selection, props) => {
-      const { xValue, yValue, margin, width, height, data } = props;
-      // console.log("Radius is",circleRadius)
-      console.log("width is", script.svgWidth);
+      const { xValue, yValue, margin, width, height, data, widthvalue } = props;
       const innerWidth = script.svgWidth - margin.left - margin.right;
-      const innerHeight = 350 - margin.top - margin.bottom;
+      const innerHeight = 340 - margin.top - margin.bottom;
 
       // const xScale = scaleBand().domain(data.map((d) => d.name)).range([0, innerWidth])
       const xScale = scaleLinear()
-        .domain(extent(data, xValue))
+        .domain(extent(data.groupsData, xValue)) //????
         // .domain([0, 8])
-        .range([0, innerWidth])
+        .range([0, script.svgWidth])
         .nice();
-      // .domain(extent(data, xValue))
-      // .range([0, innerWidth])
-      // .nice();
+
+      // const xScale3 = scaleLinear()
+      //   // .domain(extent(data.groupsData, widthvalue)) //????
+      //   .domain([0, 100])
+      //   .range([0, innerWidth]);
 
       const xScale1 = scaleLinear()
         .domain([0, 8])
-        .range([0, innerWidth])
+        .range([0, script.svgWidth])
         .nice();
 
       const yScale = scaleBand()
-          .domain(data.map((d) => d.name))
+          .domain(data.groupsData.map((d) => d.groupName))
           .range([innerHeight, 0]),
-        yScale1 = scaleLinear().domain([0, 8]).range([0, innerHeight]).nice(),
+        yScale1 = scaleLinear().domain([0, 8]).range([0, 340]).nice(),
         y_axis = axisLeft().scale(yScale1);
       // const yScale = scaleLinear();Q
       // yScale.domain(extent(data, yValue));
@@ -702,29 +896,29 @@ class scatterplot_rect {
       // yScale.nice();
 
       const x_axis = axisBottom(xScale),
-        xAxisTranslate = 300;
+        xAxisTranslate = 350;
 
       const xGridLine = axisBottom(xScale1)
         .scale(xScale1)
-        .tickSize(innerHeight, 0, 0)
+        .tickSize(340, 0, 0)
         .tickFormat("");
 
       var yGridLine = axisLeft(yScale1)
         .scale(yScale1)
 
         // .tickPadding(5)
-        .tickSize(-innerWidth)
+        .tickSize(-script.svgWidth)
 
         .tickFormat("");
 
       let g4 = svg_4
         .append("g")
-        .attr("transform", "translate(" + 30 + "," + -10 + ")");
+        .attr("transform", "translate(" + 0 + "," + 0 + ")");
 
       svg_4
         .append("g")
         .attr("class", "y axis")
-        .attr("transform", "translate(25,0)");
+        .attr("transform", "translate(0,0)");
       // .call(y_axis)
 
       // svg_1.select(".x.axis").call(x_axis);
@@ -739,7 +933,7 @@ class scatterplot_rect {
       svg_4
         .append("g")
         .classed("gridLine", true)
-        .attr("transform", "translate(25,5)")
+        .attr("transform", "translate(0,0)")
         .style("color", "grey")
         .attr("opacity", "0.5")
         .call(yGridLine);
@@ -747,42 +941,34 @@ class scatterplot_rect {
       svg_4
         .append("g")
         .classed("gridLine", true)
-        .attr("transform", "translate(25,5)")
+        .attr("transform", "translate(0,0)")
         .style("color", "grey")
         .attr("opacity", "0.5")
         .call(xGridLine);
 
       // console.log("each radiussss ",circleRadius )
-      const rects = g4.selectAll("rect").data(data);
+      const rects = svg_4.append("g").selectAll("rect").data(data.groupsData);
       rects
         .enter()
         .append("rect")
-        //       .attr('x', 100)
-        // .attr('y', 0)
-        .attr("width", function (circleRadius) {
-          return 15 * Math.log(circleRadius.mpg);
+        .attr("x", innerWidth)
+        .attr("y", innerHeight)
+        .attr("width", function (d) {
+          return 15 * d.repeatingPercentage;
+          // return xScale3(x(d));
         })
-        .attr("height", function (circleRadius) {
-          return 10 * Math.log(circleRadius.mpg);
+        .attr("height", function (d) {
+          return 10 * d.repeatingPercentage;
         })
+        .attr("fill", function (d) {
+          return d.numberOfCandidates >= 50 ? "#308D85" : "#E74B1D";
+          // return d.active ? "#E74B1D" : "#308D85"; // false
+        })
+        .attr("opacity", 0.7)
 
-        // .style("padding", "50px")
         .on("mouseover", mouseover)
-        .on("mousemove", function () {
-          Tooltip.style("top", event.pageY - 10 + "px").style(
-            "left",
-            event.pageX + 5 + "px"
-          );
-        })
-        .on("mouseleave", mouseleave)
-        .attr("fill", function (circleRadius) {
-          return circleRadius.horsepower <= 100 ? "#308D85" : "#E74B1D";
-        })
-        .attr("opacity", 0.7);
-
-      // .on("mouseover", mouseover)
-      // .on("mousemove", mousemove)
-      // .on("mouseleave", mouseleave);
+        .on("mousemove", mousemove)
+        .on("mouseleave", mouseleave);
 
       svg_4
         .selectAll("rect")
@@ -791,32 +977,37 @@ class scatterplot_rect {
         .duration(2000)
         .delay((d, i) => i * 10)
         .attr("y", (d) => yScale(yValue(d)))
-        .attr("x", (d) => xScale(xValue(d)));
+        .attr("x", (d) => xScale1(xValue(d)));
     };
 
     const svg_4 = select("#rect_scatter")
       .append("svg")
-      .attr("viewBox", `0 0 ${script.svgWidth} 350`);
+      // .attr("viewBox", `0 0 ${script.svgWidth} 350`)
+      .attr("viewBox", `0 0 ${innerWidth} ${innerHeight}`);
+
     // .style("background-color", "red")
 
     //  const height =  +svg.attr('height');
 
     function render() {
       svg_4.call(scatterPlots, {
-        xValue: function (circleRadius) {
-          return circleRadius.horsepower;
+        xValue: function (d) {
+          return d.repeatingPercentage;
         },
-        yValue: function (circleRadius) {
-          return circleRadius.name;
+        yValue: function (d) {
+          return d.groupName;
+        },
+        widthvalue: function (d) {
+          return d.repeatingPercentage;
         },
 
-        margin: { top: 10, right: 20, bottom: 10, left: 50 },
+        margin: { top: 20, right: 20, bottom: 20, left: 20 },
         // width,
         // height,
         data,
       });
 
-      console.log("render", data);
+      // console.log("render", data);
     }
 
     var Tooltip = select("body")
@@ -833,34 +1024,34 @@ class scatterplot_rect {
     let mouseover = function (d) {
       Tooltip.style("opacity", 1)
         .style("visibility", "visible")
-        .html("The exact value of<br>this cell is: " + d.horsepower)
+        .html("Number Of candidates are :  " + d.numberOfCandidates)
         .style("left", event.pageX + 70 + "px")
         .style("top", event.pageY + "px");
       select(this)
-        .attr("width", function (circleRadius) {
-          return 15 * Math.log(circleRadius.horsepower);
+        .attr("width", function (d) {
+          return 15 * d.repeatingPercentage;
         })
-        .attr("height", function (circleRadius) {
-          return 10 * Math.log(circleRadius.mpg);
+        .attr("height", function (d) {
+          return 10 * d.repeatingPercentage;
         })
         .style("stroke", function (d) {
-          return d.horsepower <= 100 ? "red" : "blue";
+          return d.repeatingPercentage <= 0.5 ? "red" : "blue";
         })
         .style("opacity", 0.54);
     };
     let mousemove = function (d) {
-      Tooltip.html("The exact value of<br>this cell is: " + d.horsepower)
+      Tooltip.html("Number Of candidates are :  " + d.numberOfCandidates)
         .style("left", event.pageX + 70 + "px")
         .style("top", event.pageY + "px");
     };
     let mouseleave = function (d) {
       Tooltip.style("opacity", 0);
       select(this)
-        .attr("width", function (circleRadius) {
-          return 15 * Math.log(circleRadius.mpg);
+        .attr("width", function (d) {
+          return 15 * d.repeatingPercentage;
         })
-        .attr("height", function (circleRadius) {
-          return 10 * Math.log(circleRadius.mpg);
+        .attr("height", function (d) {
+          return 10 * d.repeatingPercentage;
         })
         .style("stroke", "none")
         .style("opacity", 0.8);
@@ -911,11 +1102,11 @@ class scatterplot_rect {
     
   */
 
-    const response3 = await fetch(
-      "https://run.mocky.io/v3/35effb46-6d36-4026-9695-e573f6c90248"
-    );
-    data = await response3.json();
-    data = data.slice(0, 100);
+    // const response3 = await fetch(
+    //   "https://run.mocky.io/v3/35effb46-6d36-4026-9695-e573f6c90248"
+    // );
+    // data = await response3.json();
+    // data = data.slice(0, 100);
     render();
   }
 }
@@ -933,8 +1124,9 @@ class treeGraph {
 
     const diameter = script.svgWidth,
       radius = diameter / 2,
-      innerRadius = radius - 450;
+      innerRadius = radius / 2.5;
 
+    // console.log("Radius", radius, "Inner radiusss" , innerRadius)
     let cluster = d3.cluster().size([360, innerRadius]);
 
     let line = d3
@@ -962,10 +1154,10 @@ class treeGraph {
       .enter()
       .append("circle")
       .style("stroke", "#FED074")
-      .style("stroke-width", "4px")
+      .style("stroke-width", "5px")
 
       .style("fill", "#FFE5B4")
-      .attr("fill-opacity", "50%")
+      .style("opacity", 0.1)
       .attr("r", innerRadius)
       .attr("cx", 0)
       .attr("cy", 0);
@@ -980,10 +1172,10 @@ class treeGraph {
       return d.size;
     });
 
-    console.log("root size", root);
+    // console.log("root size", root);
     cluster(root);
 
-    console.log("leaves", root.leaves());
+    // console.log("leaves", root.leaves());
     link = link
       .data(packageImports(root.leaves()))
       .enter()
@@ -996,7 +1188,7 @@ class treeGraph {
 
     node = node.data(root.leaves());
 
-    console.log("root", node);
+    // console.log("root", node);
     node
       .enter()
       .append("a")
@@ -1111,5 +1303,6 @@ class treeGraph {
     }
   }
 }
+
 // eslint-disable-next-line no-redeclare
 export { D3BarChart, scatterplot, scatterplot_rect, piePlot, treeGraph };
