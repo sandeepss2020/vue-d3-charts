@@ -41,279 +41,37 @@ let script = {
 //GRAPH 1
 class scatterplot {
   async scatterGraph(data) {
-
-    /*
-    const svg_1 = select("#graph1")
-      .append("svg")
-      .attr("viewBox", `0 0 ${script.svgWidth + 50} 550`)
-      .style("background-color", "red");
-    let g0 = svg_1
-        .append("g")
-        .attr("transform", "translate(" + 0 + "," + 0 + ")");
-
- 
-    // create a tooltip
-    
-      var Tooltip = select("body")
-      .append("div")
-      .style("opacity", 0)
-      .attr("class", "tooltip")
-      .style("background-color", "white")
-      .style("border", "solid")
-      .style("border-width", "2px")
-      .style("border-radius", "5px")
-      .style("padding", "5px");
-
-    // Three function that change the tooltip when user hover / move / leave a cell
-    let mouseover = function (d) {
-      Tooltip.style("opacity", 1)
-        .style("visibility", "visible")
-        .html("The exact value of<br>this cell is: " + d.horsepower)
-        .style("left", event.pageX + 70 + "px")
-        .style("top", event.pageY + "px");
-      select(this)
-        .attr("r", function (circleRadius) {
-          // console.log("i values", circleRadius.cylinders)
-          return 7 * Math.exp(circleRadius.horsepower / 100);
-        })
-        .style("stroke", function (circleRadius) {
-          return circleRadius.horsepower <= 100 ? "#7BCCB5" : "blue";
-        })
-        .style("stroke-width", 10)
-        .style("opacity", 0.3);
-    };
-    let mousemove = function (d) {
-      Tooltip.html("The exact value of<br>this cell is: " + d.horsepower)
-        .style("left", event.pageX + 70 + "px")
-        .style("top", event.pageY + "px");
-    };
-    let mouseleave = function (d) {
-      Tooltip.style("opacity", 0);
-      select(this)
-        .attr("r", function (circleRadius) {
-          // console.log("i values", circleRadius.cylinders)
-          return 5 * Math.exp(circleRadius.horsepower / 100);
-        })
-        .style("stroke", "none")
-        .style("opacity", 0.8);
-    };
-
-    let response2 = await fetch(
-      "https://run.mocky.io/v3/35effb46-6d36-4026-9695-e573f6c90248"
-    );
-    data = await response2.json();
-    data = data.slice(0, 25);
-
-        const xValue1 = function (circleRadius) {
-        return circleRadius.horsepower;
-      },
-      yValue1 = function (circleRadius) {
-        return circleRadius.name;
-      };
-
-    const xScale1 = scaleLinear()
-      .domain(extent(data, xValue1))
-      // .domain([0, Math.max(...data.map((o) => o.horsepower))])
-      .range([0, innerWidth]);
-
-    const yScale2 = scaleBand()
-      .domain(data.map((d) => d.name))
-      .range([innerHeight, 0]);
-    
-
-
-
-    let sim = d3.forceSimulation(data);
-    sim.force("collision", d3.forceCollide(function (d) {
-          // console.log("i values", circleRadius.cylinders)
-          return Math.exp(d.horsepower / 100);
-        })); // Repulsion force
-    // .attr('cy', d => yScale(yValue(d)))
-    // .attr('cx', d => xScale(xValue(d)))
-    sim.force(
-      "x_force",
-      d3.forceX((d) => d.horsepower)
-    ); // Each point attacted to its center x and y
-    sim.force(
-      "y_force",
-      d3.forceY((d) => d.mpg)
-    );
-    sim.on("tick", render); // Redraws scatterplot at every simulation "tick"
-    // sim.stop(); 
-     // render();
-     
-     
-    
-    function render() {
-    
-      const circles = svg_1.selectAll("circle").data(data);
-      circles
-        .enter()
-        .append("circle")
-        .attr("cy", (d) => d.mpg)
-        .attr("cx", (d) => d.horsepower)
-        .attr("r", function (d) {
-          // console.log("i values", circleRadius.cylinders)
-          return 5 * Math.exp(d.horsepower / 100);
-        })
-        .attr("fill", function (circleRadius) {
-          return circleRadius.horsepower <= 100 ? "#BCCBB1" : "#8676FF";
-        })
-        .attr("opacity", 0.7)
-        .on("mouseover", mouseover)
-        .on("mousemove", function () {
-          Tooltip.style("top", event.pageY - 10 + "px").style(
-            "left",
-            event.pageX + 10 + "px"
-          );
-        })
-        .on("mouseleave", mouseleave);
-
-      
-      circles.attr("cy", (d) => d.mpg).attr("cx", (d) => d.horsepower)
-      
-      
-    }
-      sim.force("collision", d3.forceCollide(d => d.horsepower)); 
-  sim.alpha(1); // Alpha value of 1 resets simulation back to beginning
-  sim.restart();
-      
-      
-    //   const xValue = function (d) {
-    //       return d.horsepower;
-    //     },
-    //     yValue = function (d) {
-    //       return d.name;
-    //     },
-    //     yValue1 = function (d) {
-    //       return d.mpg;
-    //     },
-    //     margin = { top: 20, right: 10, bottom: 20, left: 10 };
-
-    //   console.log(yValue1)
-    //   const innerWidth = script.svgWidth - margin.left - margin.right;
-    //   const innerHeight = 550 - margin.top - margin.bottom;
-
-    //   // const xScale = scaleBand().domain(data.map((d) => d.name)).range([0, innerWidth])
-    //   const xScale = scaleLinear()
-    //     .domain(extent(data, xValue))
-    //     .range([0, innerWidth])
-    //     .nice();
-
-    //   const yScale = scaleBand()
-    //       .domain(data.map((d) => d.name))
-    //     .range([innerHeight, 0]),
-        
-    //     // yScale1 = scaleLinear().domain([0, 8]).range([0, innerHeight]).nice(),
-    //     yScale1 = scaleLinear().domain(extent(data, yValue1)).range([0, innerHeight-10]).nice(),
-
-    //     y_axis = axisLeft().scale(yScale1);
-
-    //   const x_axis = axisBottom(xScale),
-        
-    //     xAxisTranslate = 510;
-
-    //   const xGridLine = axisBottom(xScale)
-    //     .scale(xScale)
-    //     .tickSize(500, 0, 0)
-    //     .tickFormat("");
-
-    //   var yGridLine = axisLeft(yScale1).scale(yScale1)
-    //     // .tickPadding(5)
-    //     .tickSize(-innerWidth)
-    //     .tickFormat("");
-
-     
-    //   //Comment out starts
-    //   svg_1
-    //     .append("g")
-    //     .attr("class", "y axis")
-    //     .attr("transform", "translate(25,0)")
-    //     .call(y_axis);
-    //   svg_1
-    //     .append("g")
-    //     .attr("class", "x axis")
-    //     .attr("transform", "translate(20," + xAxisTranslate + ")").call(x_axis)
-    //   svg_1
-    //     .append("g")
-    //     .classed("gridLine", true)
-    //     .attr("transform", "translate(25,0)")
-    //     .style("color", "grey")
-    //     .attr("opacity", "0.5")
-    //   .call(yGridLine);
-    //   svg_1
-    //     .append("g")
-    //     .classed("gridLine", true)
-    //     .attr("transform", "translate(25,0)")
-    //     .style("color", "grey")
-    //     .attr("opacity", "0.5")
-    //   .call(xGridLine);
-
-    //   //Till here commeneted out
-
-      
-    //   svg_1
-    //     .selectAll("circle")
-    //     .transition()
-    //     .duration(2000)
-    //     .delay((d, i) => i * 10)
-
-    //    // .attr("cy", (d) => yScale1(yValue1(d)))
-    //    // .attr("cx", (d) => xScale(xValue(d)))
-    //           .attr("cy", (d) => d.mpg)
-    //    .attr("cx", (d) =>d.horsepower)
-        
-    //     .attr("r", function (circleRadius) {
-    //       // console.log("i values", circleRadius.cylinders)
-    //       return 5 * Math.exp(circleRadius.horsepower / 100);
-    //     });
-    //   // console.log("render", data);
-    // }
-    
-    // sim.alpha(1);
-    // sim.restart();
-    // this.heySim = sim;
-    // console.log("hey", this.heySim);
-    // Simulation is off initially
-   
-   */
-  
     // console.log("jss", data.topicData.length)
     let datapoints = data.topicData;
     var width = 670;
     let count = 0,
-    countneg =0 
-    for (let i = 0; i < data.topicData.length; i++){
-      if (data.topicData[i].uniqueTotalCandidates > 0)
-      {
+      countneg = 0;
+    for (let i = 0; i < data.topicData.length; i++) {
+      if (data.topicData[i].uniqueTotalCandidates > 0) {
         count++;
-      }
-      else {
-        countneg++
+      } else {
+        countneg++;
       }
     }
     // console.log("count is", count, "and", countneg)
     if (count <= 65) {
-      let height = 300; 
-      makescattergraph(height)
+      let height = 300;
+      makescattergraph(height);
+    } else if (count <= 160) {
+      let height = 450;
+      makescattergraph(height);
+    } else if (count <= 250) {
+      let height = 650;
+      makescattergraph(height);
+    } else {
+      let height = 900;
+      makescattergraph(height);
     }
-    else if (count <= 160)  {
-      let height = 450; 
-      makescattergraph(height)
-    }
-    else if (count <= 250)  {
-      let height = 650; 
-      makescattergraph(height)
-    }
-    else {
-      let height = 900; 
-      makescattergraph(height)
-    }
-    
-  //  var width = 650,
-  //   height = 500;
 
-    function makescattergraph(height){
+    //  var width = 650,
+    //   height = 500;
+
+    function makescattergraph(height) {
       var svg = d3
         .select("#graph1")
         .append("svg")
@@ -337,11 +95,16 @@ class scatterplot {
         .attr("preserveAspectRatio", "none");
 
       // var radiusScale = (d3.scaleSqrt().domain([1, 300]).range([0, 50]));
-      var radiusScale = (d3.scaleSqrt().domain(extent(datapoints, function (d) { return d.uniqueTotalCandidates; })).range([0, 35]));
-      const xScale = scaleLinear()
-        .domain([0, 500])
-        .range([50, width])
-    
+      var radiusScale = d3
+        .scaleSqrt()
+        .domain(
+          extent(datapoints, function (d) {
+            return d.uniqueTotalCandidates;
+          })
+        )
+        .range([0, 35]);
+      const xScale = scaleLinear().domain([0, 500]).range([50, width]);
+
       var forceXCombine = d3.forceX(width / 3).strength(0.05);
       var forceCollide = d3.forceCollide(function (d) {
         return radiusScale(d.uniqueTotalCandidates) + 2;
@@ -387,7 +150,7 @@ class scatterplot {
         })
         .attr("fill", function (d) {
           return d.active ? "#8676FF" : "#BCCBB1";
-        })
+        });
       //
       simulation.nodes(datapoints).on("tick", ticked);
 
@@ -397,7 +160,6 @@ class scatterplot {
             // console.log(d)
             return xScale(d.x);
             // return(d.x);
-
           })
           .attr("cy", function (d) {
             return d.y;
@@ -412,9 +174,8 @@ class scatterplot {
           .on("mouseleave", mouseleave);
       }
 
-  
       // create a tooltip
-    
+
       var Tooltip = select("body")
         .append("div")
         .style("opacity", 0)
@@ -423,42 +184,40 @@ class scatterplot {
         // .style("border", "solid")
         // .style("border-width", "2px")
         .style("border-radius", "5px")
-        .style("padding", "5px")
-     ;
-
-    
+        .style("padding", "5px");
       // Three function that change the tooltip when user hover / move / leave a cell
       let mouseover = function (d, datapoints) {
         // console.log(datapoints.uniqueTotalCandidates)
         Tooltip.style("opacity", 1)
           .style("visibility", "visible")
-          .html("<p>Topic name<p> <div id='tipDiv'></div>"+ datapoints.uniqueTotalCandidates)
+          .html(
+            "<p>Topic name<p> <div id='tipDiv'></div>" +
+              datapoints.uniqueTotalCandidates
+          )
           .style("left", event.pageX + 20 + "px")
           .style("top", event.pageY + "px");
         select(this)
           .attr("r", function (d) {
-      
             return radiusScale(d.uniqueTotalCandidates + 5);
             // add mpg
           })
           .style("stroke", function (d) {
             return d.active ? "#bcb4fe" : "#D0DFC5";
           })
-          .style("stroke-width", 5)
-          // .style("opacity", 0.3);
+          .style("stroke-width", 5);
+        // .style("opacity", 0.3);
       };
 
       var tipSVG = select("#tipDiv")
-     .append("div")
-     .attr("width", 220)
+        .append("div")
+        .attr("width", 220)
         .attr("height", 55)
-        .style("background-color","red");
-      
+        .style("background-color", "red");
+
       let mouseleave = function (d) {
         Tooltip.style("opacity", 0);
         select(this)
           .attr("r", function (d) {
-      
             return radiusScale(d.uniqueTotalCandidates);
             // add mpg
           })
@@ -490,13 +249,11 @@ class scatterplot {
 //   makegraph() {
 //         // console.log("users",script.max)
 
-  
-    
 //     // console.log("lennn", len)
 //     const rectWidth = 50;
 //     const svgHeight = 250,
 //       barWidth = 20
-      
+
 //     let len = script.allData.length * (rectWidth) ;
 //     let margin = { top: 10, right: 10, bottom: 35, left: 15 },
 //       height = svgHeight - margin.bottom,
@@ -509,25 +266,24 @@ class scatterplot {
 //       // .style("background-color", "red");
 
 //     //SCALES START
-        
+
 //     const xScale = scaleBand()
 //       .domain(script.allData.map((d) => d.x_axis))        //variable1??
 //       .range([0, len]);
 //       // .padding(0),
-    
+
 //     // variable2??
 //     const yScale = scaleLinear().domain([0, script.max]).range([0, svgHeight - margin.bottom - margin.top]);
 //     const yScale1 = scaleLinear().domain([0, script.max]).range([svgHeight - margin.bottom, 0]);
-     
+
 //     const x_axis = axisBottom(xScale)
 //         .tickSize(-svgHeight),
 //       xAxisTranslate = svgHeight - margin.bottom + 5;
-    
-  
+
 //     const y_axis = axisLeft(yScale1)
 //       .tickSize(-width)
 //        .ticks((script.max+5)/5);
-    
+
 //     const g =  svg1
 //       .append("g")
 //       .attr("transform", "translate(" + 30 + "," +xAxisTranslate + ")")
@@ -542,7 +298,7 @@ class scatterplot {
 //         .attr("dy", ".15em")
 //       // .attr("transform", "rotate(-30)");
 //       .attr("transform", "rotate(-15)");
-    
+
 //     svg1.append("g").attr("class", "bar-x-axis").attr("transform", "translate(30,0)")
 //       .call(y_axis)
 //     .selectAll("text")
@@ -551,13 +307,12 @@ class scatterplot {
 //       .style("font","Roboto")
 //         .attr("dx", "-.8em")
 //         .attr("dy", ".15em")
-    
+
 //     //  const xGridLine = axisBottom()
 //     //   .scale(xScale)
 //     //   .tickSize(svgHeight-25, 0, 0)
 //     //   .tickFormat("");
-    
-    
+
 //     //    svg1
 //     //   .append("g")
 //     //   .classed("gridLine", true)
@@ -565,7 +320,7 @@ class scatterplot {
 //     //   .style("color", "#F0F0F0")
 //     //   .attr("opacity", "0.5")
 //     //   .call(xGridLine);
-    
+
 //     //SCALES END
 //     const t = select("svg1").transition().duration(2000);
 
@@ -589,10 +344,10 @@ class scatterplot {
 //             // overwrite the default so the animation looks better:
 //             .attr("x", (d, i) => i * rectWidth)
 //             .attr("y", function (p) {
-              
+
 //              return  height;
 //             })
-            
+
 //             .attr("height", function (d) {
 //               // return yScale(d);
 //               return 0
@@ -635,7 +390,6 @@ class scatterplot {
 //         // tooltip.remove()
 //       });
 
-         
 //             // .attr("transform", "translate(25," + 0 + ")");
 
 //           return rect;
@@ -645,7 +399,7 @@ class scatterplot {
 //           exit
 //             .transition(t)
 //             .attr("y", function (p) {
-              
+
 //               return svgHeight - margin.bottom - yScale(p);
 //             })
 //               .attr("height", 0)
@@ -658,14 +412,13 @@ class scatterplot {
 //       .delay((d, i) => i * 10)
 //       .attr("x", (d, i) => i * rectWidth)
 //         .attr("y", function (p) {
-        
+
 //         return  height - yScale(p);
 //       })
 //       .attr("height", function (d) {
 //               return yScale(d);
 //       })
 //       .attr("width", rectWidth- barWidth)
-   
 
 //     // //Line chart
 //       var x = xScale,
@@ -679,7 +432,7 @@ class scatterplot {
 //           return y(d.count);
 //         });
 //     // .curve(curveBasis);
-    
+
 //     const g2 = svg1
 //       .append("g")
 //       .attr("transform", "translate(" + 55 + "," + 0 + ")");
@@ -714,11 +467,9 @@ class scatterplot {
 //   }
 
 // }
-    
 
 class D3BarChart {
   async myData(user, max_val, allBarData, xScaleDomain, barColor) {
-
     script.barData = [];
     script.allData = user;
     // script.marks_data = user.count;
@@ -729,86 +480,88 @@ class D3BarChart {
     document.getElementById("barchartGraph").innerHTML = "";
 
     //1) d.x_axis  2) HIghest marks of BAR ; 3) Bar Color ; 4)bardata ; 5)y_axis
-    this.makegraph(xScaleDomain,barColor);
+    this.makegraph(xScaleDomain, barColor);
   }
 
   makegraph(xScaleDomain, barColor) {
+    // console.log("users",script.max)
 
-        // console.log("users",script.max)
-
-  
-    
     // console.log("lennn", len)
     const rectWidth = 50;
     const svgHeight = 250,
-      barWidth = 20
-      
-    let len = script.allData.length * (rectWidth) ;
+      barWidth = 20;
+
+    let len = script.allData.length * rectWidth;
     let margin = { top: 5, right: 10, bottom: 35, left: 15 },
       height = svgHeight - margin.bottom,
-      width = len ;
+      width = len;
     // For making the svg
     const svg1 = select("#barchartGraph")
       .append("svg")
       .attr("height", svgHeight)
-      .attr("width", len + 50)
-      // .style("background-color", "red");
+      .attr("width", len + 50);
+    // .style("background-color", "red");
 
     //SCALES START
-        
+
     // let var1 = script.allData.map((d) => d.x_axis)
     // console.log("vaaarrr1",var1)
     let xScale = scaleBand()
-      .domain(xScaleDomain)        //variable1??
+      .domain(xScaleDomain) //variable1??
       .range([0, len]);
-      // .padding(0),
-    
+    // .padding(0),
+
     // variable2??
-    const yScale = scaleLinear().domain([0, script.max]).range([0, svgHeight - margin.bottom - margin.top]);
-    const yScale1 = scaleLinear().domain([0, (script.max)]).range([svgHeight - margin.bottom, 5]);
-     
-    const x_axis = axisBottom(xScale)
-        .tickSize(-height),
+    const yScale = scaleLinear()
+      .domain([0, script.max])
+      .range([0, svgHeight - margin.bottom - margin.top]);
+    const yScale1 = scaleLinear()
+      .domain([0, script.max])
+      .range([svgHeight - margin.bottom, 5]);
+
+    const x_axis = axisBottom(xScale).tickSize(-height),
       xAxisTranslate = svgHeight - margin.bottom + 5;
-    
-  
+
     const y_axis = axisLeft(yScale1)
       .tickSize(-width)
       // .ticks(script.max <= 10 ? script.max
       //   : script.max <= 29 ? (script.max + 5) / 5
       //     : script.max <= 25 || ?);
-      .ticks(script.max >= 350 ? (script.max) / 70 : 5);
-    
-    const g =  svg1
+      .ticks(script.max >= 350 ? script.max / 70 : 5);
+
+    const g = svg1
       .append("g")
-      .attr("transform", "translate(" + 30 + "," +xAxisTranslate + ")")
+      .attr("transform", "translate(" + 30 + "," + xAxisTranslate + ")");
     // .attr("transform","translate(150,150)");
     g.append("g")
-      .attr("class", "bar-x-axis").call(x_axis)
-        .selectAll("text")
-        .style("text-anchor", "end")
+      .attr("class", "bar-x-axis")
+      .call(x_axis)
+      .selectAll("text")
+      .style("text-anchor", "end")
       .style("color", "#A3A3A3")
-      .style("font","Roboto")
-        .attr("dx", "-.8em")
-        .attr("dy", ".15em")
+      .style("font", "Roboto")
+      .attr("dx", "-.8em")
+      .attr("dy", ".15em")
       // .attr("transform", "rotate(-30)");
       .attr("transform", "rotate(-15)");
-    
-    svg1.append("g").attr("class", "bar-x-axis").attr("transform", "translate(30,0)")
+
+    svg1
+      .append("g")
+      .attr("class", "bar-x-axis")
+      .attr("transform", "translate(30,0)")
       .call(y_axis)
-    .selectAll("text")
-        .style("text-anchor", "end")
+      .selectAll("text")
+      .style("text-anchor", "end")
       .style("color", "#A3A3A3")
-      .style("font","Roboto")
-        .attr("dx", "-.8em")
-        .attr("dy", ".15em")
-    
+      .style("font", "Roboto")
+      .attr("dx", "-.8em")
+      .attr("dy", ".15em");
+
     //  const xGridLine = axisBottom()
     //   .scale(xScale)
     //   .tickSize(svgHeight-25, 0, 0)
     //   .tickFormat("");
-    
-    
+
     //    svg1
     //   .append("g")
     //   .classed("gridLine", true)
@@ -816,48 +569,49 @@ class D3BarChart {
     //   .style("color", "#F0F0F0")
     //   .attr("opacity", "0.5")
     //   .call(xGridLine);
-    
+
     //SCALES END
     const t = select("svg1").transition().duration(2000);
 
-     const g1 =  svg1
+    const g1 = svg1
       .append("g")
-      .attr("transform", "translate(" + 25 + ","+ 0 + ")")
+      .attr("transform", "translate(" + 25 + "," + 0 + ")");
 
-    const rect =
-      g1.selectAll("rect")
-        .data(script.barData, (d) => d)
-        .join(
-          (enter) => {
-            const rect = enter
-              .append("rect")
-              .attr("width", rectWidth - barWidth)
-              .attr("stroke-width", 2)
-              // .attr("stroke", "#7E857E")
-              .attr("stroke", "#88888E")
+    const rect = g1
+      .selectAll("rect")
+      .data(script.barData, (d) => d)
+      .join(
+        (enter) => {
+          const rect = enter
+            .append("rect")
+            .attr("width", rectWidth - barWidth)
+            .attr("stroke-width", 2)
+            // .attr("stroke", "#7E857E")
+            .attr("stroke", "#88888E")
 
-              .attr("fill", barColor)
-              // overwrite the default so the animation looks better:
-              .attr("x", (d, i) => i * rectWidth)
-              .attr("y", function (p) {
-              
-                return height;
-              })
-            
-              .attr("height", function (d) {
-                // return yScale(d);
-                return 0
+            .attr("fill", barColor)
+            // overwrite the default so the animation looks better:
+            .attr("x", (d, i) => i * rectWidth)
+            .attr("y", function (p) {
+              return height;
+            })
 
-              }).attr("transform", "translate(" + margin.left + "," + 0 + ")")
-              //mose over start
-              .on("mouseover", function (barData, i) {
-                tooltip
-                  .style("top", event.pageY - 10 + "px")
-                  .style("left", event.pageX + 10 + "px").html(`Marks: ${barData}`).style("visibility", "visible");
-                select(this).attr("fill", "#666666");
+            .attr("height", function (d) {
+              // return yScale(d);
+              return 0;
+            })
+            .attr("transform", "translate(" + margin.left + "," + 0 + ")")
+            //mose over start
+            .on("mouseover", function (barData, i) {
+              tooltip
+                .style("top", event.pageY - 10 + "px")
+                .style("left", event.pageX + 10 + "px")
+                .html(`Marks: ${barData}`)
+                .style("visibility", "visible");
+              select(this).attr("fill", "#666666");
 
-                //tryyyy
-                /*
+              //tryyyy
+              /*
                  svg1
                     .append("circle")
                     .attr("cx", (d) => xScale(d) + 20)
@@ -874,50 +628,47 @@ class D3BarChart {
                   tooltip.style("top", i.pageY - 87 + "px");
                   tooltip.style("display", "inline-block");
                     */
-                //end
-              })
-              .on("mousemove", function () {
-                tooltip
-                // tooltip.html(``).style("visibility", "hidden");
-              })
-              .on("mouseout", function () {
-                tooltip.html(``).style("visibility", "hidden");
-                select(this).attr("fill", barColor);
-                // tooltip.remove()
-              });
+              //end
+            })
+            .on("mousemove", function () {
+              tooltip;
+              // tooltip.html(``).style("visibility", "hidden");
+            })
+            .on("mouseout", function () {
+              tooltip.html(``).style("visibility", "hidden");
+              select(this).attr("fill", barColor);
+              // tooltip.remove()
+            });
 
-         
-            // .attr("transform", "translate(25," + 0 + ")");
+          // .attr("transform", "translate(25," + 0 + ")");
 
-            return rect;
-          },
-          (update) => update,
-          (exit) => {
-            exit
-              .transition(t)
-              .attr("y", function (p) {
-              
-                return svgHeight - margin.bottom - yScale(p);
-              })
-              .attr("height", 0)
-              .remove();
-          }
-        )
-        // animate enter + update selection
-        .transition()
-        .duration(2000)
-        .delay((d, i) => i * 10)
-        .attr("x", (d, i) => i * rectWidth)
-        .attr("y", function (p) {
-        
-          return height - yScale(p);
-        })
-        .attr("height", function (d) {
-          return yScale(d);
-        })
-        .attr("width", rectWidth - barWidth);
-    
-   const tooltip = select("body")
+          return rect;
+        },
+        (update) => update,
+        (exit) => {
+          exit
+            .transition(t)
+            .attr("y", function (p) {
+              return svgHeight - margin.bottom - yScale(p);
+            })
+            .attr("height", 0)
+            .remove();
+        }
+      )
+      // animate enter + update selection
+      .transition()
+      .duration(2000)
+      .delay((d, i) => i * 10)
+      .attr("x", (d, i) => i * rectWidth)
+      .attr("y", function (p) {
+        return height - yScale(p);
+      })
+      .attr("height", function (d) {
+        return yScale(d);
+      })
+      .attr("width", rectWidth - barWidth);
+
+    const tooltip = select("body")
       .append("div")
       .attr("class", "d3-tooltip")
       .style("position", "absolute")
@@ -932,9 +683,8 @@ class D3BarChart {
     // rect.exit().remove();
     // svg.selectAll("rect > *").remove();
 
-
     // //Line chart
-   
+
     function linechart1() {
       var x = xScale,
         y = yScale1,
@@ -949,7 +699,7 @@ class D3BarChart {
             return y(d.count);
           });
       // .curve(curveBasis);
-    
+
       const g2 = svg1
         .append("g")
         .attr("transform", "translate(" + 55 + "," + 0 + ")");
@@ -964,13 +714,14 @@ class D3BarChart {
         .attr("d", line);
     }
 
-        function linechart2() {
+    function linechart2() {
       var x = xScale,
-        y = scaleLinear().domain([0, (script.max)]).range([svgHeight - margin.bottom, 5]),
+        y = scaleLinear()
+          .domain([0, script.max])
+          .range([svgHeight - margin.bottom, 5]),
         line2 = d3Line
           .line()
           .x(function (d) {
-
             return x(d.x_axis);
           })
           // .y(function (d) {
@@ -978,14 +729,13 @@ class D3BarChart {
           //   return y(d.count) ;
           // });
           .y(function (d) {
-
-            return y(d.count) ;
+            return y(d.count);
           });
-        //   function (d) {
-        //   return yScale(d);
-        // }
+      //   function (d) {
+      //   return yScale(d);
+      // }
       // .curve(curveBasis);
-    
+
       const g3 = svg1
         .append("g")
         .attr("transform", "translate(" + 55 + "," + 0 + ")");
@@ -1000,13 +750,9 @@ class D3BarChart {
         .attr("d", line2);
     }
 
-    
     this.makegraph.linechart1 = linechart1;
-    this.makegraph.linechart2= linechart2;
-    
-
+    this.makegraph.linechart2 = linechart2;
   }
-
 }
 
 //GRAPH 3
@@ -1022,8 +768,8 @@ class piePlot {
       .append("svg")
       // .append("svg")
       // .attr("viewBox", `0 0 ${script.svgWidth} ${svgHeight}`)
-      .attr('width', script.width)
-      .attr('height',svgHeight)
+      .attr("width", script.width)
+      .attr("height", svgHeight);
     // .style("background-color", "pink");
 
     const g = svg
@@ -1032,8 +778,8 @@ class piePlot {
       //   "transform",
       //   "translate(" + (script.svgWidth/2) + "," + (svgHeight/2) + ")"
       // );
-    .attr('transform', `translate(${script.svgWidth/10},${svgHeight/2})`);
-// console.log("widthhh", script.svgWidth)
+      .attr("transform", `translate(${script.svgWidth / 10},${svgHeight / 2})`);
+    // console.log("widthhh", script.svgWidth)
     // var color = scaleOrdinal(d3.schemeCategory10);
     let colorScale = scaleOrdinal()
       .domain(script.pie_data.map((d) => d.platform))
@@ -1079,7 +825,10 @@ class piePlot {
     feMerge.append("feMergeNode").attr("in", "offsetBlur");
     feMerge.append("feMergeNode").attr("in", "SourceGraphic");
 
-    const path = d3Line.arc().outerRadius(radius-5).innerRadius(60);
+    const path = d3Line
+      .arc()
+      .outerRadius(radius - 5)
+      .innerRadius(60);
     //  console.log("ok");
 
     const arc = g
@@ -1144,7 +893,7 @@ class piePlot {
       .attr("dy", ".35em")
       .attr("text-anchor", "middle")
       // .attr("style", "font-family:Poppins")
-          .style("font-family", "Poppins")
+      .style("font-family", "Poppins")
       .style("font-weight", "700")
       .attr("font-size", "20")
       .attr("fill", "#696969")
@@ -1171,9 +920,8 @@ class piePlot {
 //GRAPH 4
 class scatterplot_rect {
   async scatterGraph(data) {
-
     const scatterPlots = (selection, props) => {
-      const { xValue, yValue, margin, width, height, data , widthvalue } = props;
+      const { xValue, yValue, margin, width, height, data, widthvalue } = props;
       const innerWidth = script.svgWidth - margin.left - margin.right;
       const innerHeight = 340 - margin.top - margin.bottom;
 
@@ -1183,13 +931,11 @@ class scatterplot_rect {
         // .domain([0, 8])
         .range([0, script.svgWidth])
         .nice();
-      
+
       // const xScale3 = scaleLinear()
       //   // .domain(extent(data.groupsData, widthvalue)) //????
       //   .domain([0, 100])
       //   .range([0, innerWidth]);
-
-
 
       const xScale1 = scaleLinear()
         .domain([0, 8])
@@ -1198,8 +944,7 @@ class scatterplot_rect {
 
       const yScale = scaleBand()
           .domain(data.groupsData.map((d) => d.groupName))
-        .range([innerHeight, 0]),
-        
+          .range([innerHeight, 0]),
         yScale1 = scaleLinear().domain([0, 8]).range([0, 340]).nice(),
         y_axis = axisLeft().scale(yScale1);
       // const yScale = scaleLinear();Q
@@ -1230,7 +975,7 @@ class scatterplot_rect {
       svg_4
         .append("g")
         .attr("class", "y axis")
-        .attr("transform", "translate(0,0)")
+        .attr("transform", "translate(0,0)");
       // .call(y_axis)
 
       // svg_1.select(".x.axis").call(x_axis);
@@ -1239,7 +984,7 @@ class scatterplot_rect {
       svg_4
         .append("g")
         .attr("class", "x axis")
-        .attr("transform", "translate(20," + xAxisTranslate + ")")
+        .attr("transform", "translate(20," + xAxisTranslate + ")");
       // .call(x_axis)
 
       svg_4
@@ -1263,25 +1008,24 @@ class scatterplot_rect {
       rects
         .enter()
         .append("rect")
-        .attr('x', innerWidth)
-        .attr('y', innerHeight)
+        .attr("x", innerWidth)
+        .attr("y", innerHeight)
         .attr("width", function (d) {
-          return 15 * (d.repeatingPercentage);
+          return 15 * d.repeatingPercentage;
           // return xScale3(x(d));
         })
         .attr("height", function (d) {
-          return 10 * (d.repeatingPercentage);
+          return 10 * d.repeatingPercentage;
         })
         .attr("fill", function (d) {
-          return d.numberOfCandidates>= 50 ? "#308D85" : "#E74B1D";
+          return d.numberOfCandidates >= 50 ? "#308D85" : "#E74B1D";
           // return d.active ? "#E74B1D" : "#308D85"; // false
-
         })
         .attr("opacity", 0.7)
-        
-      .on("mouseover", mouseover)
-      .on("mousemove", mousemove)
-      .on("mouseleave", mouseleave);
+
+        .on("mouseover", mouseover)
+        .on("mousemove", mousemove)
+        .on("mouseleave", mouseleave);
 
       svg_4
         .selectAll("rect")
@@ -1296,8 +1040,8 @@ class scatterplot_rect {
     const svg_4 = select("#rect_scatter")
       .append("svg")
       // .attr("viewBox", `0 0 ${script.svgWidth} 350`)
-      .attr("viewBox", `0 0 ${innerWidth} ${innerHeight}`)
-    
+      .attr("viewBox", `0 0 ${innerWidth} ${innerHeight}`);
+
     // .style("background-color", "red")
 
     //  const height =  +svg.attr('height');
@@ -1310,7 +1054,7 @@ class scatterplot_rect {
         yValue: function (d) {
           return d.groupName;
         },
-        widthvalue : function (d) {
+        widthvalue: function (d) {
           return d.repeatingPercentage;
         },
 
@@ -1342,10 +1086,10 @@ class scatterplot_rect {
         .style("top", event.pageY + "px");
       select(this)
         .attr("width", function (d) {
-          return 15 * (d.repeatingPercentage)
+          return 15 * d.repeatingPercentage;
         })
         .attr("height", function (d) {
-          return 10 * (d.repeatingPercentage);
+          return 10 * d.repeatingPercentage;
         })
         .style("stroke", function (d) {
           return d.repeatingPercentage <= 0.5 ? "red" : "blue";
@@ -1361,10 +1105,10 @@ class scatterplot_rect {
       Tooltip.style("opacity", 0);
       select(this)
         .attr("width", function (d) {
-          return 15 * (d.repeatingPercentage)
+          return 15 * d.repeatingPercentage;
         })
         .attr("height", function (d) {
-          return 10 * (d.repeatingPercentage);
+          return 10 * d.repeatingPercentage;
         })
         .style("stroke", "none")
         .style("opacity", 0.8);
@@ -1424,7 +1168,7 @@ class scatterplot_rect {
   }
 }
 
- // // GRAPH 5
+// // GRAPH 5
 
 class treeGraph {
   async dendoGram(classes) {
@@ -1438,9 +1182,9 @@ class treeGraph {
 
     const diameter = script.svgWidth,
       radius = diameter / 2,
-      innerRadius = radius /2;
+      innerRadius = radius / 2;
 
-      // console.log("Radius", radius, "Inner radiusss" , innerRadius)
+    // console.log("Radius", radius, "Inner radiusss" , innerRadius)
     let cluster = d3.cluster().size([360, innerRadius]);
 
     let line = d3
@@ -1580,10 +1324,11 @@ class treeGraph {
         if (!node) {
           node = map[parentTag] = data || { name: parentTag, children: [] };
           if (parentTag.length) {
-          
             // console.log("okkk222",find(parentTag.substring(0, (i = parentTag.lastIndexOf("#")))))
             // node.parent = find(parentTag.substring(0, (i = parentTag.lastIndexOf("."))));
-            node.parent = find(parentTag.substring(0, (i = parentTag.lastIndexOf("#"))));
+            node.parent = find(
+              parentTag.substring(0, (i = parentTag.lastIndexOf("#")))
+            );
             node.parent.children.push(node);
             node.key = parentTag.substring(i + 1);
           }
@@ -1601,7 +1346,7 @@ class treeGraph {
 
     // Return a list of imports for the given array of nodes.
     function packageImports(nodes) {
-    // console.log("nodesss2",nodes)
+      // console.log("nodesss2",nodes)
 
       let map = {},
         importss = [];
@@ -1620,26 +1365,23 @@ class treeGraph {
           d.data.imports.forEach(function (i, j) {
             // console.log("i",i)
             // console.log("hmmm",j , map[i])
-            if (typeof map[i] === 'undefined') {
+            if (typeof map[i] === "undefined") {
               // console.log("haan g")
               return;
-            }
-            else{
-            // for (let k = 0; k <= d.data.imports.length; k++) {
+            } else {
+              // for (let k = 0; k <= d.data.imports.length; k++) {
               // console.log("mappp",j, map[d.data.parentTag], "andd", map[i],"or",i)
               // console.log("break", d.data.imports.length)
               importss.push(map[d.data.parentTag].path(map[i]));
               // console.log("last i 2", importss)
             }
-            
           });
       });
- 
-      // console.log("iiiimmmmmpppp",importss)
+
       return importss;
     }
   }
 }
 // eslint-disable-next-line no-redeclare
-export { D3BarChart, scatterplot, scatterplot_rect, piePlot, treeGraph};
-  // treeGraph1
+export { D3BarChart, scatterplot, scatterplot_rect, piePlot, treeGraph };
+// treeGraph1
