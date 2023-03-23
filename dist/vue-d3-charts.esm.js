@@ -54,8 +54,8 @@ class scatterplot {
       }
     }
     // console.log("count is", count, "and", countneg)
-    if (count <= 65) {
-      let height = 300;
+    if (count <= 70) {
+      let height = 280;
       makescattergraph(height);
     } else if (count <= 160) {
       let height = 450;
@@ -470,6 +470,7 @@ class scatterplot {
 
 class D3BarChart {
   async myData(user, max_val, allBarData, xScaleDomain, barColor) {
+    // console.log("usserr", user)
     script.barData = [];
     script.allData = user;
     // script.marks_data = user.count;
@@ -759,26 +760,26 @@ class D3BarChart {
 class piePlot {
   pieGraph() {
     const svgHeight = 250,
-      // svgWidth = 350
-      radius = Math.min(script.svgWidth, svgHeight) / 2;
-
-    // console.log("pie data", script.pie_data);
+ 
+      radius = Math.min(script.svgWidth/4, svgHeight) / 2;
+    const start_point = (script.svgWidth / 9);
+        // console.log("pie data", script.pie_data);
 
     const svg = select("#pieChart")
       .append("svg")
       // .append("svg")
-      // .attr("viewBox", `0 0 ${script.svgWidth} ${svgHeight}`)
-      .attr("width", script.width)
+      .attr("viewBox", `0 0 ${script.svgWidth / 4} ${svgHeight}`)
+      // .attr("width", script.svgWidth)
       .attr("height", svgHeight);
-    // .style("background-color", "pink");
+    // .style("background-color", "black");
 
     const g = svg
       .append("g")
-      // .attr(
-      //   "transform",
-      //   "translate(" + (script.svgWidth/2) + "," + (svgHeight/2) + ")"
-      // );
-      .attr("transform", `translate(${script.svgWidth / 10},${svgHeight / 2})`);
+      .attr(
+        "transform",
+        "translate(" + (start_point) + "," + (svgHeight/2) + ")"
+      );
+      // .attr("transform", `translate(${script.svgWidth / 4},${svgHeight / 2})`);
     // console.log("widthhh", script.svgWidth)
     // var color = scaleOrdinal(d3.schemeCategory10);
     let colorScale = scaleOrdinal()
@@ -884,7 +885,7 @@ class piePlot {
       .attr("fill", "#696969")
       .attr(
         "transform",
-        "translate(" + (radius + 15) + "," + (radius - 10) + ")"
+        "translate("  + (start_point) +  "," + (radius - 10) + ")"
       )
       .text("Total Tests");
 
@@ -899,7 +900,7 @@ class piePlot {
       .attr("fill", "#696969")
       .attr(
         "transform",
-        "translate(" + (radius + 15) + "," + (radius + 15) + ")"
+        "translate(" +  (start_point) + "," + (radius + 15) + ")"
       )
       .text(` ${sum} `);
 
@@ -1180,8 +1181,9 @@ class treeGraph {
       .style("opacity", 0)
       .style("background-color", "black");
 
+    console.log("svgwidth is", script.svgWidth)
     const diameter = script.svgWidth,
-      radius = diameter / 2,
+      radius = diameter / 3 + 30,
       innerRadius = radius / 2;
 
     // console.log("Radius", radius, "Inner radiusss" , innerRadius)
@@ -1199,11 +1201,11 @@ class treeGraph {
       });
 
     let svg = d3
-      .select("div#container")
+      .select("#dendogram")
       .append("svg")
       .attr("preserveAspectRatio", "xMinYMin meet")
       .attr("viewBox", `-${script.svgWidth / 2} -450 ${script.svgWidth} 900`)
-      .classed("svg-content", true);
+      .classed("svg-content", true)
     // .style("background-color", "pink");
 
     svg
@@ -1270,7 +1272,12 @@ class treeGraph {
       })
 
       .text(function (d) {
-        return d.data.parentTag;
+         if (d.data.parentTag.length > 8) {
+              return d.data.parentTag.substring(0, 5) + "...";
+            } else {
+              return d.data.parentTag;
+            }
+        // return d.data.parentTag;
         // return d.data.key;
       })
       .on("mouseover", mouseovered)
@@ -1382,6 +1389,586 @@ class treeGraph {
     }
   }
 }
+
+class reclinechart{
+  async mygraph1(data) {
+
+    // console.log("data is" , data)
+
+    // this.dataForLineGraph = Object.keys(res.data.data);
+    const margin = { top: 20, right: 20, bottom: 30, left: 50 };
+    // const chartContainer = this.$refs.linechartContainer;
+    const chartWidth = 400;
+    const chartHeight = 150;
+    const width = chartWidth - margin.left - margin.right;
+    const height = chartHeight - margin.top - margin.bottom;
+    if (this.lineGraphCreated === true) {
+      d3.select("#recgraph1")
+        .selectAll("g")
+        .remove();
+    }
+    const svg = d3
+      .select("#recgraph1")
+      .append("svg")
+      .attr("width", chartWidth)
+      .attr("height", chartHeight)
+      // .style("background-color", "black");
+    
+    const graph = svg
+      .append("g")
+      .attr("width", width)
+      .attr("height", height)
+      .attr("transform", `translate(${margin.left},${margin.top})`);
+    
+    // for y data
+    const reverseData = data.map((d) => d.testName);
+     const max = Math.max(...data.map((o) => o.totalCandidates));
+    const xScale = d3
+      .scaleLinear()
+      // .padding(0.25)
+      .domain([0, max])
+      .range([0, width]);
+    
+    const xScale1 = d3
+      .scaleLinear()
+      // .padding(0.25)
+      .domain([0, max])
+      .range([width,0]);
+    
+    const yScale = d3.scaleBand().domain(reverseData).range([height,0]);
+        // const yScale1 = d3.scaleBand().domain(reverseData).range([height,0]);
+
+    const xAxisGroup = graph
+      .append("g")
+      .attr("transform", `translate(0,${height})`);
+    const yAxisGroup = graph.append("g");
+
+    const xAxis = d3.axisBottom(xScale).tickSize(-height);
+    const yAxis = d3
+      .axisLeft(yScale)
+      .ticks(4)
+      .tickSize(-width);
+    xAxisGroup
+      .call(xAxis)
+      .style("color", "#A3A3A3")
+      .selectAll("text")
+      .attr("transform", "translate(0,10)");
+    yAxisGroup.call(yAxis) .style("color", "#A3A3A3");
+
+    const circles = graph.selectAll("circle").data(data);
+
+    const gradient = svg
+      .append("defs")
+      .append("linearGradient")
+      .attr("id", "bar-gradient")
+      .attr("x1", "0%")
+      .attr("y1", "0%")
+      .attr("x2", "0%")
+      .attr("y2", "100%");
+
+    gradient
+      .append("stop")
+      .attr("offset", "0%")
+      .attr("stop-color", "#ffffff");
+
+    gradient
+      .append("stop")
+      .attr("offset", "100%")
+      .attr("stop-color", "#97d9e1");
+
+    var div = d3
+      .select("body")
+      .append("div")
+      .attr("class", "toolTip")
+      .classed("toolTipForBarGraph", true);
+    circles
+      .enter()
+      .append("circle")
+      .attr("r", 5)
+      .attr("cx", (data) => xScale(data.totalCandidates))
+      .attr("cy", (data) => yScale(data.testName)+10)
+      .attr("fill", "#265B86")
+      .attr("stroke-width", function () {
+        return 2;
+      })
+      // .attr("stroke", "#3379B3")
+      .attr("stroke", "white")
+      .style("filter", "url(#drop-shadow)")
+      .on("click", function (e, d) {
+        // console.log(e,d)
+        // graph
+        //   .append("rect")
+        //   .attr("x", () => xScale(d.totalCandidates)-20)
+        //   .attr("y", () => yScale(d.testName) + 20)
+        //   .attr("width", 40)
+        //   .attr("height", () => height - yScale(d.testName) - 20)
+        //   .attr("fill", "url(#bar-gradient)");
+
+        // div.style("left", e.pageX - 90 + "px");
+        // div.style("top", e.pageY - 130 + "px");
+        // div.style("display", "inline-block");
+//         div.html(
+//           `<div class="groupNameLine">
+//             <div class="mr-3">
+//            Total Evaluated Candidates 
+// </div>
+// <div>${d.totalEvaluated}</div>
+//             </div>
+//             <div class="countDivLine">
+//            <div class="countDivData">
+//             <div class="colorlineLine"></div>
+//            <div class="graphFonts" >
+//             <div class="d-flex align-items-center justify-content-between p-2">
+//           <div>  Total Candidates</div>
+// <div>
+// ${d.totalCandidates}
+//             </div>
+//            </div>
+
+//             <div class="d-flex align-items-center justify-content-between p-2">
+//           <div>  Total Tests</div>
+
+//            <div> ${d.totalTests}</div>
+//             </div>
+//            </div>
+//            </div>
+//             </div>
+//             `
+//         );
+      })
+      .on("mouseout", function () {
+      
+        // graph.select("rect").remove();
+        // div.style("display", "none");
+      });
+    
+    var defs = svg.append("defs");
+     var filter = defs
+      .append("filter")
+      .attr("id", "drop-shadow")
+      .attr("height", "130%");
+
+     filter
+      .append("feGaussianBlur")
+      .attr("in", "SourceAlpha")
+      .attr("stdDeviation", 0)
+      .attr("result", "blur");
+     filter
+      .append("feOffset")
+      .attr("in", "blur")
+      .attr("dx", 0)
+      .attr("dy", 0)
+      .attr("result", "offsetBlur");
+     var feMerge = filter.append("feMerge");
+
+    feMerge.append("feMergeNode").attr("in", "offsetBlur");
+    feMerge.append("feMergeNode").attr("in", "SourceGraphic");
+
+
+    
+    
+    //end
+    const line = d3
+      .line()
+      .x((d) => xScale(d.totalCandidates))
+      .y((d) => yScale(d.testName));
+        // .curve(d3.curveCardinal);
+   const g4 = svg
+        .append("g")
+        .attr("transform", "translate(" + 50 + "," + 30 + ")");
+      g4
+        .append("path")
+        .datum(data)
+        .attr("fill", "none")
+        .attr("stroke", "#3379B3")
+        .attr("d", line);
+
+
+    this.lineGraphCreated = true;
+  }
+
+    async mygraph2(data) {
+
+    // console.log("data is" , data)
+
+    // this.dataForLineGraph = Object.keys(res.data.data);
+    const margin = { top: 20, right: 20, bottom: 30, left: 50 };
+    // const chartContainer = this.$refs.linechartContainer;
+    const chartWidth = 400;
+    const chartHeight = 150;
+    const width = chartWidth - margin.left - margin.right;
+    const height = chartHeight - margin.top - margin.bottom;
+    if (this.lineGraphCreated === true) {
+      d3.select("#recgraph2")
+        .selectAll("g")
+        .remove();
+    }
+    const svg = d3
+      .select("#recgraph2")
+      .append("svg")
+      .attr("width", chartWidth)
+      .attr("height", chartHeight)
+      // .style("background-color", "black");
+    
+    const graph = svg
+      .append("g")
+      .attr("width", width)
+      .attr("height", height)
+      .attr("transform", `translate(${margin.left},${margin.top})`);
+    
+    // for y data
+    const reverseData = data.map((d) => d.testName);
+     const max = Math.max(...data.map((o) => o.totalCandidates));
+    const xScale = d3
+      .scaleLinear()
+      // .padding(0.25)
+      .domain([0, max])
+      .range([0, width]);
+    
+    const xScale1 = d3
+      .scaleLinear()
+      // .padding(0.25)
+      .domain([0, max])
+      .range([width,0]);
+    
+    const yScale = d3.scaleBand().domain(reverseData).range([0,height]);
+    const xAxisGroup = graph
+      .append("g")
+      .attr("transform", `translate(0,${height})`);
+    const yAxisGroup = graph.append("g");
+
+    const xAxis = d3.axisBottom(xScale).tickSize(-height);
+    const yAxis = d3
+      .axisLeft(yScale)
+      .ticks(4)
+      .tickSize(-width);
+    xAxisGroup
+      .call(xAxis)
+      .style("color", "#A3A3A3")
+      .selectAll("text")
+      .attr("transform", "translate(0,10)");
+    yAxisGroup.call(yAxis) .style("color", "#A3A3A3");
+
+    const circles = graph.selectAll("circle").data(data);
+    circles
+      .enter()
+      .append("circle")
+      .attr("r", 5)
+      .attr("cx", (data) => xScale(data.totalCandidates))
+      .attr("cy", (data) => yScale(data.testName)+10)
+      .attr("fill", "#265B86")
+      .attr("stroke-width", function () {
+        return 2;
+      })
+      // .attr("stroke", "#3379B3")
+      .attr("stroke", "white")
+      .style("filter", "url(#drop-shadow)")
+      .on("mouseover", function (e, d) {
+        
+      })
+      .on("mouseout", function () {
+
+      });
+    
+    var defs = svg.append("defs");
+     var filter = defs
+      .append("filter")
+      .attr("id", "drop-shadow")
+      .attr("height", "130%");
+
+     filter
+      .append("feGaussianBlur")
+      .attr("in", "SourceAlpha")
+      .attr("stdDeviation", 0)
+      .attr("result", "blur");
+     filter
+      .append("feOffset")
+      .attr("in", "blur")
+      .attr("dx", 0)
+      .attr("dy", 0)
+      .attr("result", "offsetBlur");
+     var feMerge = filter.append("feMerge");
+
+    feMerge.append("feMergeNode").attr("in", "offsetBlur");
+    feMerge.append("feMergeNode").attr("in", "SourceGraphic");
+
+
+    
+    
+    //end
+    const line = d3
+      .line()
+      .x((d) => xScale(d.totalCandidates))
+      .y((d) => yScale(d.testName) + 10);
+        // .curve(d3.curveCardinal);
+   
+      graph
+        .append("path")
+        .data([data])
+        .attr("fill", "none")
+        .attr("stroke", "#3379B3")
+        .attr("d", line);
+
+
+    this.lineGraphCreated = true;
+  }
+
+     async mygraph3(data) {
+
+    // console.log("data is" , data)
+
+    // this.dataForLineGraph = Object.keys(res.data.data);
+    const margin = { top: 20, right: 20, bottom: 30, left: 50 };
+    // const chartContainer = this.$refs.linechartContainer;
+    const chartWidth = 400;
+    const chartHeight = 150;
+    const width = chartWidth - margin.left - margin.right;
+    const height = chartHeight - margin.top - margin.bottom;
+    if (this.lineGraphCreated === true) {
+      d3.select("#recgraph3")
+        .selectAll("g")
+        .remove();
+    }
+    const svg = d3
+      .select("#recgraph3")
+      .append("svg")
+      .attr("width", chartWidth)
+      .attr("height", chartHeight)
+      // .style("background-color", "black");
+    
+    const graph = svg
+      .append("g")
+      .attr("width", width)
+      .attr("height", height)
+      .attr("transform", `translate(${margin.left},${margin.top})`);
+    
+    // for y data
+    const reverseData = data.map((d) => d.testName);
+     const max = Math.max(...data.map((o) => o.totalCandidates));
+    const xScale = d3
+      .scaleLinear()
+      // .padding(0.25)
+      .domain([0, max])
+      .range([0, width]);
+    
+    const xScale1 = d3
+      .scaleLinear()
+      // .padding(0.25)
+      .domain([0, max])
+      .range([width,0]);
+    
+    const yScale = d3.scaleBand().domain(reverseData).range([0,height]);
+    const xAxisGroup = graph
+      .append("g")
+      .attr("transform", `translate(0,${height})`);
+    const yAxisGroup = graph.append("g");
+
+    const xAxis = d3.axisBottom(xScale).tickSize(-height);
+    const yAxis = d3
+      .axisLeft(yScale)
+      .ticks(4)
+      .tickSize(-width);
+    xAxisGroup
+      .call(xAxis)
+      .style("color", "#A3A3A3")
+      .selectAll("text")
+      .attr("transform", "translate(0,10)");
+    yAxisGroup.call(yAxis) .style("color", "#A3A3A3");
+
+    const circles = graph.selectAll("circle").data(data);
+
+      circles
+      .enter()
+      .append("circle")
+      .attr("r", 5)
+      .attr("cx", (data) => xScale(data.totalCandidates))
+      .attr("cy", (data) => yScale(data.testName)+10)
+      .attr("fill", "#265B86")
+      .attr("stroke-width", function () {
+        return 2;
+      })
+      // .attr("stroke", "#3379B3")
+      .attr("stroke", "white")
+      .style("filter", "url(#drop-shadow)")
+      .on("mouseover", function (e, d) {
+        
+  
+      })
+      .on("mouseout", function () {
+
+      });
+    
+    var defs = svg.append("defs");
+     var filter = defs
+      .append("filter")
+      .attr("id", "drop-shadow")
+      .attr("height", "130%");
+
+     filter
+      .append("feGaussianBlur")
+      .attr("in", "SourceAlpha")
+      .attr("stdDeviation", 0)
+      .attr("result", "blur");
+     filter
+      .append("feOffset")
+      .attr("in", "blur")
+      .attr("dx", 0)
+      .attr("dy", 0)
+      .attr("result", "offsetBlur");
+     var feMerge = filter.append("feMerge");
+
+    feMerge.append("feMergeNode").attr("in", "offsetBlur");
+    feMerge.append("feMergeNode").attr("in", "SourceGraphic");
+
+
+    
+    
+    //end
+    const line = d3
+      .line()
+      .x((d) => xScale(d.totalCandidates))
+      .y((d) => yScale(d.testName) + 10);
+        // .curve(d3.curveCardinal);
+   
+      graph
+        .append("path")
+        .data([data])
+        .attr("fill", "none")
+        .attr("stroke", "#3379B3")
+        .attr("d", line);
+
+
+    this.lineGraphCreated = true;
+  }
+
+     async mygraph4(data) {
+
+    // console.log("data is" , data)
+
+    // this.dataForLineGraph = Object.keys(res.data.data);
+    const margin = { top: 20, right: 20, bottom: 30, left: 50 };
+    // const chartContainer = this.$refs.linechartContainer;
+    const chartWidth = 400;
+    const chartHeight = 150;
+    const width = chartWidth - margin.left - margin.right;
+    const height = chartHeight - margin.top - margin.bottom;
+    if (this.lineGraphCreated === true) {
+      d3.select("#recgraph4")
+        .selectAll("g")
+        .remove();
+    }
+    const svg = d3
+      .select("#recgraph4")
+      .append("svg")
+      .attr("width", chartWidth)
+      .attr("height", chartHeight)
+      // .style("background-color", "black");
+    
+    const graph = svg
+      .append("g")
+      .attr("width", width)
+      .attr("height", height)
+      .attr("transform", `translate(${margin.left},${margin.top})`);
+    
+    // for y data
+    const reverseData = data.map((d) => d.testName);
+     const max = Math.max(...data.map((o) => o.totalCandidates));
+    const xScale = d3
+      .scaleLinear()
+      // .padding(0.25)
+      .domain([0, max])
+      .range([0, width]);
+    
+    const xScale1 = d3
+      .scaleLinear()
+      // .padding(0.25)
+      .domain([0, max])
+      .range([width,0]);
+    
+    const yScale = d3.scaleBand().domain(reverseData).range([0,height]);
+    const xAxisGroup = graph
+      .append("g")
+      .attr("transform", `translate(0,${height})`);
+    const yAxisGroup = graph.append("g");
+
+    const xAxis = d3.axisBottom(xScale).tickSize(-height);
+    const yAxis = d3
+      .axisLeft(yScale)
+      .ticks(4)
+      .tickSize(-width);
+    xAxisGroup
+      .call(xAxis)
+      .style("color", "#A3A3A3")
+      .selectAll("text")
+      .attr("transform", "translate(0,10)");
+    yAxisGroup.call(yAxis) .style("color", "#A3A3A3");
+
+    const circles = graph.selectAll("circle").data(data);
+
+        circles
+      .enter()
+      .append("circle")
+      .attr("r", 5)
+      .attr("cx", (data) => xScale(data.totalCandidates))
+      .attr("cy", (data) => yScale(data.testName)+10)
+      .attr("fill", "#265B86")
+      .attr("stroke-width", function () {
+        return 2;
+      })
+      // .attr("stroke", "#3379B3")
+      .attr("stroke", "white")
+      .style("filter", "url(#drop-shadow)")
+      .on("mouseover", function (e, d) {
+       
+      })
+      .on("mouseout", function () {
+      
+
+      });
+    
+    var defs = svg.append("defs");
+     var filter = defs
+      .append("filter")
+      .attr("id", "drop-shadow")
+      .attr("height", "130%");
+
+     filter
+      .append("feGaussianBlur")
+      .attr("in", "SourceAlpha")
+      .attr("stdDeviation", 0)
+      .attr("result", "blur");
+     filter
+      .append("feOffset")
+      .attr("in", "blur")
+      .attr("dx", 0)
+      .attr("dy", 0)
+      .attr("result", "offsetBlur");
+     var feMerge = filter.append("feMerge");
+
+    feMerge.append("feMergeNode").attr("in", "offsetBlur");
+    feMerge.append("feMergeNode").attr("in", "SourceGraphic");
+
+
+    
+    
+    //end
+    const line = d3
+      .line()
+      .x((d) => xScale(d.totalCandidates))
+      .y((d) => yScale(d.testName) + 10);
+        // .curve(d3.curveCardinal);
+   
+      graph
+        .append("path")
+        .data([data])
+        .attr("fill", "none")
+        .attr("stroke", "#3379B3")
+        .attr("d", line);
+
+
+    this.lineGraphCreated = true;
+  }
+}
 // eslint-disable-next-line no-redeclare
-export { D3BarChart, scatterplot, scatterplot_rect, piePlot, treeGraph };
+export { D3BarChart, scatterplot, scatterplot_rect, piePlot, treeGraph,reclinechart };
 // treeGraph1
