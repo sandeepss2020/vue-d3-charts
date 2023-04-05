@@ -54,7 +54,7 @@ class scatterplot {
       }
     }
     // console.log("count is", count, "and", countneg)
-    if (count <= 70) {
+    if (count <= 80) {
       let height = 280;
       makescattergraph(height);
     } else if (count <= 160) {
@@ -206,6 +206,7 @@ class scatterplot {
           })
           .style("stroke-width", 5);
         // .style("opacity", 0.3);
+        Tooltip.style("display", "inline-block");
       };
 
       var tipSVG = select("#tipDiv")
@@ -223,6 +224,7 @@ class scatterplot {
           })
           .style("stroke", "none")
           .style("opacity", 0.8);
+        Tooltip.style("display", "none");
       };
     }
   }
@@ -603,12 +605,13 @@ class D3BarChart {
             })
             .attr("transform", "translate(" + margin.left + "," + 0 + ")")
             //mose over start
-            .on("mouseover", function (barData, i) {
+            .on("mouseover", function (d, barData) {
               tooltip
                 .style("top", event.pageY - 10 + "px")
                 .style("left", event.pageX + 10 + "px")
                 .html(`Marks: ${barData}`)
                 .style("visibility", "visible");
+              tooltip.style("display", "inline-block");
               select(this).attr("fill", "#666666");
 
               //tryyyy
@@ -638,7 +641,7 @@ class D3BarChart {
             .on("mouseout", function () {
               tooltip.html(``).style("visibility", "hidden");
               select(this).attr("fill", barColor);
-              // tooltip.remove()
+              tooltip.style("display", "none");
             });
 
           // .attr("transform", "translate(25," + 0 + ")");
@@ -758,13 +761,14 @@ class D3BarChart {
 
 //GRAPH 3
 class piePlot {
-  pieGraph() {
+  pieGraph(id) {
+    // console.log("pieee", id);
     const svgHeight = 250,
       radius = Math.min(script.svgWidth / 4, svgHeight) / 2;
     const start_point = script.svgWidth / 9;
     // console.log("pie data", script.pie_data);
 
-    const svg = select("#pieChart")
+    const svg = select(id)
       .append("svg")
       // .append("svg")
       .attr("viewBox", `0 0 ${script.svgWidth / 4} ${svgHeight}`)
@@ -843,27 +847,27 @@ class piePlot {
 
       .attr("fill", function (d) {
         return colorScale(d.data.percentage);
-      })
-      .on("mouseover", function (d, i) {
-        // console.log("doneeee");
-        tooltip
-          .html(`Percentage: ${d.data.percentage}`)
-          .style("visibility", "visible");
-        // console.log("percent is", d);
-        select(this).attr("fill", "#F70D1A");
-      })
-
-      .on("mousemove", function () {
-        tooltip
-          .style("top", event.pageY - 10 + "px")
-          .style("left", event.pageX + 10 + "px");
-      })
-      .on("mouseout", function () {
-        tooltip.html(``).style("visibility", "hidden");
-        select(this).attr("fill", function (d) {
-          return colorScale(d.data.percentage);
-        });
       });
+    // .on("mouseover", function (d, i) {
+    //   // console.log("doneeee");
+    //   tooltip
+    //     .html(`Percentage: ${d.data.percentage}`)
+    //     .style("visibility", "visible");
+    //   // console.log("percent is", d);
+    //   select(this).attr("fill", "#F70D1A");
+    // })
+
+    // .on("mousemove", function () {
+    //   tooltip
+    //     .style("top", event.pageY - 10 + "px")
+    //     .style("left", event.pageX + 10 + "px");
+    // })
+    // .on("mouseout", function () {
+    //   tooltip.html(``).style("visibility", "hidden");
+    //   select(this).attr("fill", function (d) {
+    //     return colorScale(d.data.percentage);
+    //   });
+    // });
 
     let sum = 0;
     script.pie_data.forEach((x) => {
@@ -918,12 +922,18 @@ class scatterplot_rect {
       const { xValue, yValue, margin, width, height, data, widthvalue } = props;
       const innerWidth = script.svgWidth - margin.left - margin.right;
       const innerHeight = 340 - margin.top - margin.bottom;
-
+      // console.log("llllll",data.groupsData)
       // const xScale = scaleBand().domain(data.map((d) => d.name)).range([0, innerWidth])
+      // //to check the x scale original
+      // const xScale = scaleLinear()
+      //   .domain(extent(data.groupsData, xValue)) //????
+      //   // .domain([0, 8])
+      //   .range([0, script.svgWidth])
+      //   .nice();
       const xScale = scaleLinear()
-        .domain(extent(data.groupsData, xValue)) //????
-        // .domain([0, 8])
-        .range([0, script.svgWidth])
+        .domain([0, 8])
+        // .range([0, script.svgWidth])
+        .range([innerHeight, 0])
         .nice();
 
       const xScale1 = scaleLinear()
@@ -932,8 +942,14 @@ class scatterplot_rect {
         .nice();
 
       const yScale = scaleBand()
-          .domain(data.groupsData.map((d) => d.groupName))
-          .range([innerHeight, 0]),
+        .domain(data.groupsData.map((d) => d.groupName))
+        .range([innerHeight, 0]);
+      // .range([0, innerWidth]);
+
+      const yScale2 = scaleLinear()
+          .domain([0, data.groupsData.length])
+          // .range([innerHeight, 0]),
+          .range([0, innerWidth]),
         yScale1 = scaleLinear().domain([0, 8]).range([0, 340]).nice(),
         y_axis = axisLeft().scale(yScale1);
 
@@ -992,10 +1008,12 @@ class scatterplot_rect {
         .attr("x", innerWidth)
         .attr("y", innerHeight)
         .attr("width", function (d) {
-          if (d.repeatingPercentage < 0.2) {
-            return 15 * Math.exp(d.repeatingPercentage);
+          if (d.repeatingPercentage === 0) {
+            return;
+          } else if (d.repeatingPercentage < 0.2) {
+            return 8 * Math.exp(d.repeatingPercentage);
           } else if (d.repeatingPercentage < 0.5) {
-            return d.repeatingPercentage * 15;
+            return 10 * Math.exp(d.repeatingPercentage);
           } else {
             return d.repeatingPercentage * 15;
           }
@@ -1004,10 +1022,12 @@ class scatterplot_rect {
           // return xScale3(x(d));
         })
         .attr("height", function (d) {
-          if (d.repeatingPercentage < 0.2) {
-            return 10 * Math.exp(d.repeatingPercentage);
+          if (d.repeatingPercentage === 0) {
+            return;
+          } else if (d.repeatingPercentage < 0.2) {
+            return 5 * Math.exp(d.repeatingPercentage);
           } else if (d.repeatingPercentage < 0.5) {
-            return d.repeatingPercentage * 10;
+            return 7 * Math.exp(d.repeatingPercentage);
           } else {
             return d.repeatingPercentage * 10;
           }
@@ -1028,8 +1048,15 @@ class scatterplot_rect {
         .transition()
         .duration(2000)
         .delay((d, i) => i * 5)
+        // .attr("y", (d) => yScale(yValue(d)) )
+        // .attr("x", (d) => xScale1(xValue(d)))
         .attr("y", (d) => yScale(yValue(d)))
-        .attr("x", (d) => xScale1(xValue(d)));
+        .attr("x", (d, i) =>
+          yScale2(
+            Math.floor(Math.random() * data.groupsData.length)
+            // console.log(Math.floor(Math.random() * data.groupsData.length))
+          )
+        );
     };
 
     const svg_4 = select("#rect_scatter")
@@ -1073,40 +1100,63 @@ class scatterplot_rect {
       .style("padding", "5px");
 
     // Three function that change the tooltip when user hover / move / leave a cell
-    let mouseover = function (d) {
+    let mouseover = function (d, data) {
       Tooltip.style("opacity", 1)
         .style("visibility", "visible")
-        .html("Number Of candidates are :  " + d.numberOfCandidates)
+        .style("display", "inline-block")
+        .html("Number Of candidates are :  " + data.numberOfCandidates)
         .style("left", event.pageX + 70 + "px")
         .style("top", event.pageY + "px");
       select(this)
-        .attr("width", function (d) {
-          return 15 * d.repeatingPercentage;
-        })
-        .attr("height", function (d) {
-          return 10 * d.repeatingPercentage;
-        })
+        // .attr("width", function (d) {
+        //   return 15 * d.repeatingPercentage;
+        // })
+        // .attr("height", function (d) {
+        //   return 10 * d.repeatingPercentage;
+        // })
         .style("stroke", function (d) {
           return d.repeatingPercentage <= 0.5 ? "red" : "blue";
         })
         .style("opacity", 0.54);
     };
-    let mousemove = function (d) {
-      Tooltip.html("Number Of candidates are :  " + d.numberOfCandidates)
-        .style("left", event.pageX + 70 + "px")
-        .style("top", event.pageY + "px");
+    let mousemove = function (d, data) {
+      Tooltip.html(
+        "Number Of candidates are :  " +
+          data.numberOfCandidates +
+          ",," +
+          data.repeatingPercentage
+      )
+        .style("left", event.pageX + 10 + "px")
+        .style("top", event.pageY + 0 + "px");
     };
     let mouseleave = function (d) {
       Tooltip.style("opacity", 0);
       select(this)
         .attr("width", function (d) {
-          return 15 * d.repeatingPercentage;
+          if (d.repeatingPercentage === 0) {
+            return;
+          } else if (d.repeatingPercentage < 0.2) {
+            return 8 * Math.exp(d.repeatingPercentage);
+          } else if (d.repeatingPercentage < 0.5) {
+            return 10 * Math.exp(d.repeatingPercentage);
+          } else {
+            return d.repeatingPercentage * 15;
+          }
         })
         .attr("height", function (d) {
-          return 10 * d.repeatingPercentage;
+          if (d.repeatingPercentage === 0) {
+            return;
+          } else if (d.repeatingPercentage < 0.2) {
+            return 5 * Math.exp(d.repeatingPercentage);
+          } else if (d.repeatingPercentage < 0.5) {
+            return 7 * Math.exp(d.repeatingPercentage);
+          } else {
+            return d.repeatingPercentage * 10;
+          }
         })
         .style("stroke", "none")
         .style("opacity", 0.8);
+      Tooltip.style("display", "none");
     };
     /*
     // create a tooltip
@@ -1464,7 +1514,7 @@ class treeGraph {
       .style("opacity", 0)
       .style("background-color", "black");
 
-    console.log("svgwidth is", script.svgWidth);
+    // console.log("svgwidth is", script.svgWidth)
     const diameter = script.svgWidth,
       radius = diameter / 3 + 30,
       innerRadius = radius / 2;
@@ -2383,6 +2433,717 @@ class reclinechart {
     this.lineGraphCreated = true;
   }
 }
+
+// class reclinechart {
+//   //   async mygraph1(data) {
+
+//   //     // console.log("data is" , data)
+
+//   //     // this.dataForLineGraph = Object.keys(res.data.data);
+//   //     const margin = { top: 20, right: 20, bottom: 30, left: 50 };
+//   //     // const chartContainer = this.$refs.linechartContainer;
+//   //     const chartWidth = 400;
+//   //     const chartHeight = 150;
+//   //     const width = chartWidth - margin.left - margin.right;
+//   //     const height = chartHeight - margin.top - margin.bottom;
+//   //     if (this.lineGraphCreated === true) {
+//   //       d3.select("#recgraph1")
+//   //         .selectAll("g")
+//   //         .remove();
+//   //     }
+//   //     const svg = d3
+//   //       .select("#recgraph1")
+//   //       .append("svg")
+//   //       .attr("width", chartWidth)
+//   //       .attr("height", chartHeight)
+//   //       // .style("background-color", "black");
+
+//   //     const graph = svg
+//   //       .append("g")
+//   //       .attr("width", width)
+//   //       .attr("height", height)
+//   //       .attr("transform", `translate(${margin.left},${margin.top})`);
+
+//   //     // for y data
+//   //     const reverseData = data.map((d) => d.testName);
+//   //      const max = Math.max(...data.map((o) => o.totalCandidates));
+//   //     const xScale = d3
+//   //       .scaleLinear()
+//   //       // .padding(0.25)
+//   //       .domain([0, max])
+//   //       .range([0, width]);
+
+//   //     const xScale1 = d3
+//   //       .scaleLinear()
+//   //       // .padding(0.25)
+//   //       .domain([0, max])
+//   //       .range([width,0]);
+
+//   //     const yScale = d3.scaleBand().domain(reverseData).range([height,0]);
+//   //         // const yScale1 = d3.scaleBand().domain(reverseData).range([height,0]);
+
+//   //     const xAxisGroup = graph
+//   //       .append("g")
+//   //       .attr("transform", `translate(0,${height})`);
+//   //     const yAxisGroup = graph.append("g");
+
+//   //     const xAxis = d3.axisBottom(xScale).tickSize(-height);
+//   //     const yAxis = d3
+//   //       .axisLeft(yScale)
+//   //       .ticks(4)
+//   //       .tickSize(-width);
+//   //     xAxisGroup
+//   //       .call(xAxis)
+//   //       .style("color", "#A3A3A3")
+//   //       .selectAll("text")
+//   //       .attr("transform", "translate(0,10)");
+//   //     yAxisGroup.call(yAxis) .style("color", "#A3A3A3");
+
+//   //     const circles = graph.selectAll("circle").data(data);
+
+//   //     const gradient = svg
+//   //       .append("defs")
+//   //       .append("linearGradient")
+//   //       .attr("id", "bar-gradient")
+//   //       .attr("x1", "0%")
+//   //       .attr("y1", "0%")
+//   //       .attr("x2", "0%")
+//   //       .attr("y2", "100%");
+
+//   //     gradient
+//   //       .append("stop")
+//   //       .attr("offset", "0%")
+//   //       .attr("stop-color", "#ffffff");
+
+//   //     gradient
+//   //       .append("stop")
+//   //       .attr("offset", "100%")
+//   //       .attr("stop-color", "#97d9e1");
+
+//   //     var div = d3
+//   //       .select("body")
+//   //       .append("div")
+//   //       .attr("class", "toolTip")
+//   //       .classed("toolTipForBarGraph", true);
+//   //     circles
+//   //       .enter()
+//   //       .append("circle")
+//   //       .attr("r", 5)
+//   //       .attr("cx", (data) => xScale(data.totalCandidates))
+//   //       .attr("cy", (data) => yScale(data.testName)+10)
+//   //       .attr("fill", "#265B86")
+//   //       .attr("stroke-width", function () {
+//   //         return 2;
+//   //       })
+//   //       // .attr("stroke", "#3379B3")
+//   //       .attr("stroke", "white")
+//   //       .style("filter", "url(#drop-shadow)")
+//   //       .on("click", function (e, d) {
+//   //         // console.log(e,d)
+//   //         // graph
+//   //         //   .append("rect")
+//   //         //   .attr("x", () => xScale(d.totalCandidates)-20)
+//   //         //   .attr("y", () => yScale(d.testName) + 20)
+//   //         //   .attr("width", 40)
+//   //         //   .attr("height", () => height - yScale(d.testName) - 20)
+//   //         //   .attr("fill", "url(#bar-gradient)");
+
+//   //         // div.style("left", e.pageX - 90 + "px");
+//   //         // div.style("top", e.pageY - 130 + "px");
+//   //         // div.style("display", "inline-block");
+//   // //         div.html(
+//   // //           `<div class="groupNameLine">
+//   // //             <div class="mr-3">
+//   // //            Total Evaluated Candidates
+//   // // </div>
+//   // // <div>${d.totalEvaluated}</div>
+//   // //             </div>
+//   // //             <div class="countDivLine">
+//   // //            <div class="countDivData">
+//   // //             <div class="colorlineLine"></div>
+//   // //            <div class="graphFonts" >
+//   // //             <div class="d-flex align-items-center justify-content-between p-2">
+//   // //           <div>  Total Candidates</div>
+//   // // <div>
+//   // // ${d.totalCandidates}
+//   // //             </div>
+//   // //            </div>
+
+//   // //             <div class="d-flex align-items-center justify-content-between p-2">
+//   // //           <div>  Total Tests</div>
+
+//   // //            <div> ${d.totalTests}</div>
+//   // //             </div>
+//   // //            </div>
+//   // //            </div>
+//   // //             </div>
+//   // //             `
+//   // //         );
+//   //       })
+//   //       .on("mouseout", function () {
+
+//   //         // graph.select("rect").remove();
+//   //         // div.style("display", "none");
+//   //       });
+
+//   //     var defs = svg.append("defs");
+//   //      var filter = defs
+//   //       .append("filter")
+//   //       .attr("id", "drop-shadow")
+//   //       .attr("height", "130%");
+
+//   //      filter
+//   //       .append("feGaussianBlur")
+//   //       .attr("in", "SourceAlpha")
+//   //       .attr("stdDeviation", 0)
+//   //       .attr("result", "blur");
+//   //      filter
+//   //       .append("feOffset")
+//   //       .attr("in", "blur")
+//   //       .attr("dx", 0)
+//   //       .attr("dy", 0)
+//   //       .attr("result", "offsetBlur");
+//   //      var feMerge = filter.append("feMerge");
+
+//   //     feMerge.append("feMergeNode").attr("in", "offsetBlur");
+//   //     feMerge.append("feMergeNode").attr("in", "SourceGraphic");
+
+//   //     //end
+//   //     const line = d3
+//   //       .line()
+//   //       .x((d) => xScale(d.totalCandidates))
+//   //       .y((d) => yScale(d.testName));
+//   //         // .curve(d3.curveCardinal);
+//   //    const g4 = svg
+//   //         .append("g")
+//   //         .attr("transform", "translate(" + 50 + "," + 30 + ")");
+//   //       g4
+//   //         .append("path")
+//   //         .datum(data)
+//   //         .attr("fill", "none")
+//   //         .attr("stroke", "#3379B3")
+//   //         .attr("d", line);
+
+//   //     this.lineGraphCreated = true;
+//   //   }
+
+//   async mygraph1(data) {
+//     data = data[3];
+//     console.log("data is", data);
+//     //  console.log("chhhk dddd",typeof(data))
+
+//     // this.dataForLineGraph = Object.keys(res.data.data);
+//     const margin = { top: 20, right: 20, bottom: 30, left: 50 };
+//     // const chartContainer = this.$refs.linechartContainer;
+//     const chartWidth = 400;
+//     const chartHeight = 150;
+//     const width = chartWidth - margin.left - margin.right;
+//     const height = chartHeight - margin.top - margin.bottom;
+//     if (this.lineGraphCreated === true) {
+//       d3.select("#recgraph1").selectAll("g").remove();
+//     }
+//     const svg = d3
+//       .select("#recgraph1")
+//       .append("svg")
+//       .attr("width", chartWidth)
+//       .attr("height", chartHeight);
+//     // .style("background-color", "black");
+
+//     const graph = svg
+//       .append("g")
+//       .attr("width", width)
+//       .attr("height", height)
+//       .attr("transform", `translate(${margin.left},${margin.top})`);
+
+//     // for y data
+//     //  const reverseData = data.map((d) => d.testName);
+//     const reverseData = data.progress;
+//     const name = reverseData.map((d) => d.level);
+//     //  let reverseData = []
+//     //  for (let i = 0; i < chk.length; i++)
+//     //  {
+//     //    for (let j = 0; j < chk[i].length;j++)
+//     //         reverseData.push(chk[i][j].Level)
+//     //    }
+//     // const chks = chk.map((d)=>d)
+
+//     console.log("reverse", reverseData);
+//     console.log("nameee", name);
+
+//     //  const max = Math.max(...data.map((o) => o.progress.length));
+//     const max = reverseData.length;
+//     console.log("chhhk", max);
+//     const xScale = d3
+//       .scaleLinear()
+//       // .padding(0.25)
+//       .domain([0, max])
+//       .range([0, width]);
+//     const xScale1 = d3
+//       .scaleLinear()
+//       // .padding(0.25)
+//       .domain([0, max])
+//       .range([width, 0]);
+
+//     const yScale = d3.scaleBand().domain(name).range([height, 0]);
+//     const xAxisGroup = graph
+//       .append("g")
+//       .attr("transform", `translate(0,${height})`);
+//     const yAxisGroup = graph.append("g");
+
+//     const xAxis = d3.axisBottom(xScale).tickSize(-height).ticks(max);
+//     const yAxis = d3.axisLeft(yScale).ticks(4).tickSize(-width);
+//     xAxisGroup
+//       .call(xAxis)
+//       .style("color", "#A3A3A3")
+//       .selectAll("text")
+//       .attr("transform", "translate(0,10)");
+//     yAxisGroup.call(yAxis).style("color", "#A3A3A3");
+
+//     const circles = graph.selectAll("circle").data(reverseData);
+
+//     circles
+//       .enter()
+//       .append("circle")
+//       .attr("r", 5)
+//       .attr("cx", (data, i) => xScale(i))
+//       .attr("cy", (reverseData) => yScale(reverseData.level) + 10)
+//       .attr("fill", "#265B86")
+//       .attr("stroke-width", function () {
+//         return 2;
+//       })
+//       // .attr("stroke", "#3379B3")
+//       .attr("stroke", "white")
+//       .style("filter", "url(#drop-shadow)")
+//       .on("mouseover", function (e, d) {})
+//       .on("mouseout", function () {});
+
+//     var defs = svg.append("defs");
+//     var filter = defs
+//       .append("filter")
+//       .attr("id", "drop-shadow")
+//       .attr("height", "130%");
+
+//     filter
+//       .append("feGaussianBlur")
+//       .attr("in", "SourceAlpha")
+//       .attr("stdDeviation", 0)
+//       .attr("result", "blur");
+//     filter
+//       .append("feOffset")
+//       .attr("in", "blur")
+//       .attr("dx", 0)
+//       .attr("dy", 0)
+//       .attr("result", "offsetBlur");
+//     var feMerge = filter.append("feMerge");
+
+//     feMerge.append("feMergeNode").attr("in", "offsetBlur");
+//     feMerge.append("feMergeNode").attr("in", "SourceGraphic");
+
+//     //end
+//     const line = d3
+//       .line()
+//       .x((data, i) => xScale(i))
+//       .y((reverseData) => yScale(reverseData.level) + 10);
+//     // .curve(d3.curveCardinal);
+
+//     graph
+//       .append("path")
+//       .data([reverseData])
+//       .attr("fill", "none")
+//       .attr("stroke", "#3379B3")
+//       .attr("d", line);
+
+//     this.lineGraphCreated = true;
+//   }
+
+//   async mygraph2(data) {
+//     data = data[0];
+//     console.log("data is", data);
+//     //  console.log("chhhk dddd",typeof(data))
+
+//     // this.dataForLineGraph = Object.keys(res.data.data);
+//     const margin = { top: 20, right: 20, bottom: 30, left: 50 };
+//     // const chartContainer = this.$refs.linechartContainer;
+//     const chartWidth = 400;
+//     const chartHeight = 150;
+//     const width = chartWidth - margin.left - margin.right;
+//     const height = chartHeight - margin.top - margin.bottom;
+//     if (this.lineGraphCreated === true) {
+//       d3.select("#recgraph2").selectAll("g").remove();
+//     }
+//     const svg = d3
+//       .select("#recgraph2")
+//       .append("svg")
+//       .attr("width", chartWidth)
+//       .attr("height", chartHeight);
+//     // .style("background-color", "black");
+
+//     const graph = svg
+//       .append("g")
+//       .attr("width", width)
+//       .attr("height", height)
+//       .attr("transform", `translate(${margin.left},${margin.top})`);
+
+//     // for y data
+//     //  const reverseData = data.map((d) => d.testName);
+//     const reverseData = data.progress;
+//     const name = reverseData.map((d) => d.level);
+//     //  let reverseData = []
+//     //  for (let i = 0; i < chk.length; i++)
+//     //  {
+//     //    for (let j = 0; j < chk[i].length;j++)
+//     //         reverseData.push(chk[i][j].Level)
+//     //    }
+//     // const chks = chk.map((d)=>d)
+
+//     console.log("reverse", reverseData);
+//     console.log("nameee", name);
+
+//     //  const max = Math.max(...data.map((o) => o.progress.length));
+//     const max = reverseData.length;
+//     console.log("chhhk", max);
+//     const xScale = d3
+//       .scaleLinear()
+//       // .padding(0.25)
+//       .domain([0, max])
+//       .range([0, width]);
+//     const xScale1 = d3
+//       .scaleLinear()
+//       // .padding(0.25)
+//       .domain([0, max])
+//       .range([width, 0]);
+
+//     const yScale = d3.scaleBand().domain(name).range([height, 0]);
+//     const xAxisGroup = graph
+//       .append("g")
+//       .attr("transform", `translate(0,${height})`);
+//     const yAxisGroup = graph.append("g");
+
+//     const xAxis = d3.axisBottom(xScale).tickSize(-height).ticks(max);
+//     const yAxis = d3.axisLeft(yScale).ticks(4).tickSize(-width);
+//     xAxisGroup
+//       .call(xAxis)
+//       .style("color", "#A3A3A3")
+//       .selectAll("text")
+//       .attr("transform", "translate(0,10)");
+//     yAxisGroup.call(yAxis).style("color", "#A3A3A3");
+
+//     const circles = graph.selectAll("circle").data(reverseData);
+
+//     circles
+//       .enter()
+//       .append("circle")
+//       .attr("r", 5)
+//       .attr("cx", (data, i) => xScale(i))
+//       .attr("cy", (reverseData) => yScale(reverseData.level) + 50)
+//       .attr("fill", "#265B86")
+//       .attr("stroke-width", function () {
+//         return 2;
+//       })
+//       // .attr("stroke", "#3379B3")
+//       .attr("stroke", "white")
+//       .style("filter", "url(#drop-shadow)")
+//       .on("mouseover", function (e, d) {})
+//       .on("mouseout", function () {});
+
+//     var defs = svg.append("defs");
+//     var filter = defs
+//       .append("filter")
+//       .attr("id", "drop-shadow")
+//       .attr("height", "130%");
+
+//     filter
+//       .append("feGaussianBlur")
+//       .attr("in", "SourceAlpha")
+//       .attr("stdDeviation", 0)
+//       .attr("result", "blur");
+//     filter
+//       .append("feOffset")
+//       .attr("in", "blur")
+//       .attr("dx", 0)
+//       .attr("dy", 0)
+//       .attr("result", "offsetBlur");
+//     var feMerge = filter.append("feMerge");
+
+//     feMerge.append("feMergeNode").attr("in", "offsetBlur");
+//     feMerge.append("feMergeNode").attr("in", "SourceGraphic");
+
+//     //end
+//     const line = d3
+//       .line()
+//       .x((data, i) => xScale(i))
+//       .y((reverseData) => yScale(reverseData.level) + 10);
+//     // .curve(d3.curveCardinal);
+
+//     graph
+//       .append("path")
+//       .data([reverseData])
+//       .attr("fill", "none")
+//       .attr("stroke", "#3379B3")
+//       .attr("d", line);
+
+//     this.lineGraphCreated = true;
+//   }
+
+//   async mygraph3(data) {
+//     data = data[1];
+//     console.log("data is", data);
+//     //  console.log("chhhk dddd",typeof(data))
+
+//     // this.dataForLineGraph = Object.keys(res.data.data);
+//     const margin = { top: 20, right: 20, bottom: 30, left: 50 };
+//     // const chartContainer = this.$refs.linechartContainer;
+//     const chartWidth = 400;
+//     const chartHeight = 150;
+//     const width = chartWidth - margin.left - margin.right;
+//     const height = chartHeight - margin.top - margin.bottom;
+//     if (this.lineGraphCreated === true) {
+//       d3.select("#recgraph3").selectAll("g").remove();
+//     }
+//     const svg = d3
+//       .select("#recgraph3")
+//       .append("svg")
+//       .attr("width", chartWidth)
+//       .attr("height", chartHeight);
+//     // .style("background-color", "black");
+
+//     const graph = svg
+//       .append("g")
+//       .attr("width", width)
+//       .attr("height", height)
+//       .attr("transform", `translate(${margin.left},${margin.top})`);
+
+//     // for y data
+//     //  const reverseData = data.map((d) => d.testName);
+//     const reverseData = data.progress;
+//     const name = reverseData.map((d) => d.level);
+//     //  let reverseData = []
+//     //  for (let i = 0; i < chk.length; i++)
+//     //  {
+//     //    for (let j = 0; j < chk[i].length;j++)
+//     //         reverseData.push(chk[i][j].Level)
+//     //    }
+//     // const chks = chk.map((d)=>d)
+
+//     console.log("reverse", reverseData);
+//     console.log("nameee", name);
+
+//     //  const max = Math.max(...data.map((o) => o.progress.length));
+//     const max = reverseData.length;
+//     console.log("chhhk", max);
+//     const xScale = d3
+//       .scaleLinear()
+//       // .padding(0.25)
+//       .domain([0, max])
+//       .range([0, width]);
+//     const xScale1 = d3
+//       .scaleLinear()
+//       // .padding(0.25)
+//       .domain([0, max])
+//       .range([width, 0]);
+
+//     const yScale = d3.scaleBand().domain(name).range([height, 0]);
+//     const xAxisGroup = graph
+//       .append("g")
+//       .attr("transform", `translate(0,${height})`);
+//     const yAxisGroup = graph.append("g");
+
+//     const xAxis = d3.axisBottom(xScale).tickSize(-height).ticks(max);
+//     const yAxis = d3.axisLeft(yScale).ticks(4).tickSize(-width);
+//     xAxisGroup
+//       .call(xAxis)
+//       .style("color", "#A3A3A3")
+//       .selectAll("text")
+//       .attr("transform", "translate(0,10)");
+//     yAxisGroup.call(yAxis).style("color", "#A3A3A3");
+
+//     const circles = graph.selectAll("circle").data(reverseData);
+
+//     circles
+//       .enter()
+//       .append("circle")
+//       .attr("r", 5)
+//       .attr("cx", (data, i) => xScale(i))
+//       .attr("cy", (reverseData) => yScale(reverseData.level) + 10)
+//       .attr("fill", "#265B86")
+//       .attr("stroke-width", function () {
+//         return 2;
+//       })
+//       // .attr("stroke", "#3379B3")
+//       .attr("stroke", "white")
+//       .style("filter", "url(#drop-shadow)")
+//       .on("mouseover", function (e, d) {})
+//       .on("mouseout", function () {});
+
+//     var defs = svg.append("defs");
+//     var filter = defs
+//       .append("filter")
+//       .attr("id", "drop-shadow")
+//       .attr("height", "130%");
+
+//     filter
+//       .append("feGaussianBlur")
+//       .attr("in", "SourceAlpha")
+//       .attr("stdDeviation", 0)
+//       .attr("result", "blur");
+//     filter
+//       .append("feOffset")
+//       .attr("in", "blur")
+//       .attr("dx", 0)
+//       .attr("dy", 0)
+//       .attr("result", "offsetBlur");
+//     var feMerge = filter.append("feMerge");
+
+//     feMerge.append("feMergeNode").attr("in", "offsetBlur");
+//     feMerge.append("feMergeNode").attr("in", "SourceGraphic");
+
+//     //end
+//     const line = d3
+//       .line()
+//       .x((data, i) => xScale(i))
+//       .y((reverseData) => yScale(reverseData.level) + 10);
+//     // .curve(d3.curveCardinal);
+
+//     graph
+//       .append("path")
+//       .data([reverseData])
+//       .attr("fill", "none")
+//       .attr("stroke", "#3379B3")
+//       .attr("d", line);
+
+//     this.lineGraphCreated = true;
+//   }
+
+//   async mygraph4(data) {
+//     data = data[2];
+//     console.log("data is", data);
+//     //  console.log("chhhk dddd",typeof(data))
+
+//     // this.dataForLineGraph = Object.keys(res.data.data);
+//     const margin = { top: 20, right: 20, bottom: 30, left: 50 };
+//     // const chartContainer = this.$refs.linechartContainer;
+//     const chartWidth = 400;
+//     const chartHeight = 150;
+//     const width = chartWidth - margin.left - margin.right;
+//     const height = chartHeight - margin.top - margin.bottom;
+//     if (this.lineGraphCreated === true) {
+//       d3.select("#recgraph4").selectAll("g").remove();
+//     }
+//     const svg = d3
+//       .select("#recgraph4")
+//       .append("svg")
+//       .attr("width", chartWidth)
+//       .attr("height", chartHeight);
+//     // .style("background-color", "black");
+
+//     const graph = svg
+//       .append("g")
+//       .attr("width", width)
+//       .attr("height", height)
+//       .attr("transform", `translate(${margin.left},${margin.top})`);
+
+//     // for y data
+//     //  const reverseData = data.map((d) => d.testName);
+//     const reverseData = data.progress;
+//     const name = reverseData.map((d) => d.level);
+//     //  let reverseData = []
+//     //  for (let i = 0; i < chk.length; i++)
+//     //  {
+//     //    for (let j = 0; j < chk[i].length;j++)
+//     //         reverseData.push(chk[i][j].Level)
+//     //    }
+//     // const chks = chk.map((d)=>d)
+
+//     console.log("reverse", reverseData);
+//     console.log("nameee", name);
+
+//     //  const max = Math.max(...data.map((o) => o.progress.length));
+//     const max = reverseData.length;
+//     console.log("chhhk", max);
+//     const xScale = d3
+//       .scaleLinear()
+//       // .padding(0.25)
+//       .domain([0, max])
+//       .range([0, width]);
+
+//     const xScale1 = d3
+//       .scaleLinear()
+//       // .padding(0.25)
+//       .domain([0, max])
+//       .range([width, 0]);
+
+//     const yScale = d3.scaleBand().domain(name).range([height, 0]);
+//     const xAxisGroup = graph
+//       .append("g")
+//       .attr("transform", `translate(0,${height})`);
+//     const yAxisGroup = graph.append("g");
+
+//     const xAxis = d3.axisBottom(xScale).tickSize(-height);
+//     const yAxis = d3.axisLeft(yScale).ticks(4).tickSize(-width);
+//     xAxisGroup
+//       .call(xAxis)
+//       .style("color", "#A3A3A3")
+//       .selectAll("text")
+//       .attr("transform", "translate(0,10)");
+//     yAxisGroup.call(yAxis).style("color", "#A3A3A3");
+
+//     const circles = graph.selectAll("circle").data(reverseData);
+
+//     circles
+//       .enter()
+//       .append("circle")
+//       .attr("r", 5)
+//       .attr("cx", (data, i) => xScale(i))
+//       .attr("cy", (reverseData) => yScale(reverseData.level) + 10)
+//       .attr("fill", "#265B86")
+//       .attr("stroke-width", function () {
+//         return 2;
+//       })
+//       // .attr("stroke", "#3379B3")
+//       .attr("stroke", "white")
+//       .style("filter", "url(#drop-shadow)")
+//       .on("mouseover", function (e, d) {})
+//       .on("mouseout", function () {});
+
+//     var defs = svg.append("defs");
+//     var filter = defs
+//       .append("filter")
+//       .attr("id", "drop-shadow")
+//       .attr("height", "130%");
+
+//     filter
+//       .append("feGaussianBlur")
+//       .attr("in", "SourceAlpha")
+//       .attr("stdDeviation", 0)
+//       .attr("result", "blur");
+//     filter
+//       .append("feOffset")
+//       .attr("in", "blur")
+//       .attr("dx", 0)
+//       .attr("dy", 0)
+//       .attr("result", "offsetBlur");
+//     var feMerge = filter.append("feMerge");
+
+//     feMerge.append("feMergeNode").attr("in", "offsetBlur");
+//     feMerge.append("feMergeNode").attr("in", "SourceGraphic");
+
+//     //end
+//     const line = d3
+//       .line()
+//       .x((data, i) => xScale(i))
+//       .y((reverseData) => yScale(reverseData.level) + 10);
+//     // .curve(d3.curveCardinal);
+
+//     graph
+//       .append("path")
+//       .data([reverseData])
+//       .attr("fill", "none")
+//       .attr("stroke", "#3379B3")
+//       .attr("d", line);
+
+//     this.lineGraphCreated = true;
+//   }
+// }
 //Recruitment Graphsssss
 class DensityChart {
   // // Original data
