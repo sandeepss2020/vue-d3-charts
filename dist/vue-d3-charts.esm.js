@@ -1051,7 +1051,7 @@ class scatterplot_rect {
         .attr("opacity", 0.7)
 
         .on("mouseover", mouseover)
-        .on("mousemove", mousemove)
+    
         .on("mouseleave", mouseleave);
 
       svg_4
@@ -1105,17 +1105,18 @@ class scatterplot_rect {
     .append("div")
     .style("opacity", 0)
     .attr("class", "tooltip")
-    .style("background-color", "white")
-    .style("border-radius", "5px")
-    .style("padding", "5px");
+    // .style("background-color", "white")
+    // .style("border-radius", "5px")
+    // .style("padding", "5px");
 
     // Three function that change the tooltip when user hover / move / leave a cell
     let mouseover = function (d, datapoints) {
+
       // console.log(datapoints.numberOfTests)
       
       
       Tooltip.style("opacity", 1)
-        .style("visibility", "visible")
+        .style("display", "inline-block")
         .html(
 
           `<div class="scatter-main">
@@ -1133,7 +1134,7 @@ class scatterplot_rect {
     <div>`
         )
         .style("left", event.pageX + 20 + "px")
-        .style("top", event.pageY + "px");
+        .style("top", event.pageY + -10 +"px");
       select(this)
         // .attr("width", function (d) {
         //   return 15 * d.repeatingPercentage;
@@ -1146,16 +1147,7 @@ class scatterplot_rect {
         })
         .style("opacity", 0.54);
     };
-    let mousemove = function (d, data) {
-      Tooltip.html(
-        "Number Of candidates are :  " +
-          data.numberOfCandidates +
-          ",," +
-          data.repeatingPercentage
-      )
-        .style("left", event.pageX + 10 + "px")
-        .style("top", event.pageY + 0 + "px");
-    };
+    
     let mouseleave = function (d) {
       Tooltip.style("opacity", 0);
       select(this)
