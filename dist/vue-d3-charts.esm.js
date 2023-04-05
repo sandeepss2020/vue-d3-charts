@@ -189,11 +189,23 @@ class scatterplot {
       let mouseover = function (d, datapoints) {
         // console.log(datapoints.uniqueTotalCandidates)
         Tooltip.style("opacity", 1)
-          .style("visibility", "visible")
-          .html(
-            "<p>Topic name<p> <div id='tipDiv'></div>" +
-              datapoints.uniqueTotalCandidates
-          )
+        .style("visibility", "visible")
+        .html(
+
+          `<div class="scatter-main">
+          <div class="scatter-header">Topic name</div> 
+          <div id='tipDiv'></div>
+     <div class="scatterbody-content"> 
+     <div class="d-flex ">
+     <div style="width:5%"><img src='https://raw.githubusercontent.com/sandeepss2020/vue-d3-charts/master/Group%2056415.svg'></img></div>
+     <div  style="width:85%">
+     <div class="scatter-texthead">Tests</div>
+     <div class="scatter-textbody">  Lorem ipsum dolor sit amet consectetur adipisicing </div>
+     </div>
+     <div style="width:10%" class="scatter-testnum">${datapoints.uniqueTotalCandidates} </div>
+     </div>
+    <div>`
+        )
           .style("left", event.pageX + 20 + "px")
           .style("top", event.pageY + "px");
         select(this)
@@ -605,14 +617,14 @@ class D3BarChart {
             })
             .attr("transform", "translate(" + margin.left + "," + 0 + ")")
             //mose over start
-            .on("mouseover", function (d, barData) {
+            .on("mouseover", function (barData, i) {
               tooltip
                 .style("top", event.pageY - 10 + "px")
                 .style("left", event.pageX + 10 + "px")
-                .html(`Marks: ${barData}`)
+                .html(`${i}`)
                 .style("visibility", "visible");
-              tooltip.style("display", "inline-block");
               select(this).attr("fill", "#666666");
+
 
               //tryyyy
               /*
@@ -1090,22 +1102,37 @@ class scatterplot_rect {
     }
 
     var Tooltip = select("body")
-      .append("div")
-      .style("opacity", 0)
-      .attr("class", "tooltip")
-      .style("background-color", "white")
-      .style("border", "solid")
-      .style("border-width", "2px")
-      .style("border-radius", "5px")
-      .style("padding", "5px");
+    .append("div")
+    .style("opacity", 0)
+    .attr("class", "tooltip")
+    .style("background-color", "white")
+    .style("border-radius", "5px")
+    .style("padding", "5px");
 
     // Three function that change the tooltip when user hover / move / leave a cell
-    let mouseover = function (d, data) {
+    let mouseover = function (d, datapoints) {
+      // console.log(datapoints.numberOfTests)
+      
+      
       Tooltip.style("opacity", 1)
         .style("visibility", "visible")
-        .style("display", "inline-block")
-        .html("Number Of candidates are :  " + data.numberOfCandidates)
-        .style("left", event.pageX + 70 + "px")
+        .html(
+
+          `<div class="scatter-main">
+          <div class="scatter2-header">Recruitment Group</div> 
+          <div id='tipDiv'></div>
+     <div class="scatterbody2-content"> 
+     <div class="d-flex ">
+     <div style="width:5%"><img src='https://raw.githubusercontent.com/sandeepss2020/vue-d3-charts/master/Group%2056416.svg'></img></div>
+     <div  style="width:85%">
+     <div class="scatter-texthead">Tagged Tests</div>
+     <div class="scatter-textbody">  Lorem ipsum dolor sit amet consectetur adipisicing </div>
+     </div>
+     <div style="width:10%" class="scatter-testnum">${datapoints.numberOfTests} </div>
+     </div>
+    <div>`
+        )
+        .style("left", event.pageX + 20 + "px")
         .style("top", event.pageY + "px");
       select(this)
         // .attr("width", function (d) {

@@ -10,6 +10,7 @@ Simply yet configurable charts build with D3.
 npm install --save vue-d3-charts-hire3x
 ```
 
+
 ### Usage
 
 Import:
