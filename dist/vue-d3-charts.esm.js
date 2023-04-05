@@ -3172,6 +3172,9 @@ class reclinechart {
 //   }
 // }
 //Recruitment Graphsssss
+//Recruitment Graphsssss
+
+
 class DensityChart {
   // // Original data
   //   async createDensity(datass) {
@@ -3462,43 +3465,40 @@ class DensityChart {
     lineChartData1[0] = { ...Data2[0] };
     lineChartData2[0] = { ...Data2[1] };
     lineChartData3[0] = { ...Data2[2] };
-    console.log("objjj", lineChartData2);
+    // console.log("objjj", lineChartData2);
     // console.log("11", lineChartData, "222", lineChartData2);
 
     const margin = {
       top: 20,
       bottom: 20,
-      left: 20,
+      left: 25,
       right: 20,
     };
 
-    const svgWidth = 600;
+    const svgWidth = 800;
     const svgHeight = 300;
 
-    const width = svgWidth - margin.left - margin.right;
-    const height = svgHeight - margin.top - margin.bottom;
+    const width1 = svgWidth - margin.left - margin.right;
+    const height1 = svgHeight - margin.top - margin.bottom;
 
     const svg = d3
       .select("#density_graph")
       .append("svg")
       .attr("width", svgWidth)
-      .attr("height", svgHeight);
+      .attr("height", svgHeight)
     // .style("background-color", "red");
-
-    // .append('g')
-    // .attr("transform", "translate(5," + 5 + ")")
 
     const g = svg
       .append("g")
       // .attr('transform', `translate(${margin.left}, ${margin.top})`);
 
-      .attr("transform", "translate(" + 25 + "," + margin.bottom + ")");
+      .attr("transform", "translate(" + margin.left + "," + margin.bottom + ")");
 
     const xAxisTranslate = svgHeight - margin.bottom;
 
     const g1 = svg
       .append("g")
-      .attr("transform", "translate(" + 25 + "," + xAxisTranslate + ")");
+      .attr("transform", "translate(" + margin.left + "," + xAxisTranslate + ")");
 
     const parsedData1 = lineChartData1.map((company) => ({
       ticker: company.ticker,
@@ -3531,16 +3531,20 @@ class DensityChart {
       xScaleDomain2 = parsedData2[0].values.map((d) => d.date),
       xScaleDomain3 = parsedData3[0].values.map((d) => d.date);
 
-    // console.log("dataaa1 ",parsedData1);
+    // console.log("xscaledomain ",xScaleDomain1);
     // console.log("data2", parsedData2);
 
-    const xScale = scaleBand()
+    const xScale = d3.scalePoint()
       .domain(xScaleDomain1)
-      .range([0, svgWidth + 50]);
+      .range([0, width1]);
 
-    const xScale1 = scaleBand().domain(xScaleDomain1).range([0, svgWidth]);
+    const xScale1 = d3.scalePoint().domain(xScaleDomain1).range([0, width1]);
 
-    const xScale2 = scaleBand().domain(xScaleDomain2).range([0, svgWidth]);
+
+    const xScale11 = scaleLinear()
+      .domain([1, 7])
+      .range([0, width1])
+      .nice();
 
     const xScale3 = scaleBand().domain(xScaleDomain3).range([0, svgWidth]);
 
@@ -3548,22 +3552,81 @@ class DensityChart {
     const max2 = Math.max(...parsedData2[0].values.map((o) => o.close));
     const max3 = Math.max(...parsedData3[0].values.map((o) => o.close));
 
+    
+
+    let largest = Math.max(max1, max2, max3);
+    // console.log("max", largest);
+    if(largest % 5 !==0){
+     
+      largest = largest + (5 -(largest % 5))
+      //  console.log(largest);
+    }
+
+    const yScale_grid = d3
+      .scaleLinear()
+      .domain([0, 4])
+      .range([height1, 0])
+      .nice();
+
+    const yScale = d3
+      .scaleLinear()
+      .domain([5, largest])
+      .range([height1,5 ]);
+
     const yScale1 = d3
       .scaleLinear()
       .domain([0, max1])
-      .range([svgHeight - margin.bottom, 5]);
+      .range([svgHeight - margin.bottom, 0]);
 
-    const yScale2 = d3.scaleLinear().domain([0, max2]).range([height, 0]);
+    const yScale2 = d3.scaleLinear().domain([0, max2]).range([height1, 0]);
 
-    const yScale3 = d3.scaleLinear().domain([0, max3]).range([height, 0]);
+    const yScale3 = d3.scaleLinear().domain([0, max3]).range([height1, 0]);
 
-    const x_axis = axisBottom(xScale1).tickSize(-height - 15);
-    const y_axis = axisLeft(yScale1)
-      .tickSize(-width + 2)
-      // .ticks(script.max <= 10 ? script.max
-      //   : script.max <= 29 ? (script.max + 5) / 5
-      //     : script.max <= 25 || ?);
-      .ticks(7);
+    const x_axis = axisBottom(xScale1).tickSizeOuter(0)
+      .tickSizeInner(0);
+
+    const xGridLine = axisBottom(xScale11)
+      .scale(xScale11)
+      .tickSize(-svgHeight, 0, 0)
+      .ticks(7)
+      .tickFormat("");
+
+    svg
+      .append("g")
+      .classed("gridLine", true)
+      .attr("transform", "translate(" + margin.left + "," + xAxisTranslate + ")")
+      .style("color", "#DCDCDC")
+      .attr("opacity", "0.5")
+      .call(xGridLine);
+
+    const yGridLine = axisLeft(yScale_grid)
+      .scale(yScale_grid)
+      .tickSize(-width1, 0, 0)
+      .ticks(4)
+      .tickFormat("");
+
+
+    svg
+      .append("g")
+      .classed("gridLine", true)
+      .attr("transform", "translate(25,0)")
+      .style("color", "#DCDCDC")
+      .attr("opacity", "0.5")
+      .call(yGridLine);
+
+    const y_axis = axisLeft(yScale)
+      // .tickSize(-width1)
+      .ticks(5)
+      .tickSizeOuter(0)
+      .tickSizeInner(0);
+
+    svg
+      .append("g")
+      .attr("class", "y axis")
+      .attr("transform", "translate(" + 25 + "," + 0 + ")")
+      .style("color", "#A3A3A3")
+      .call(y_axis);
+
 
     //LINE 1 STARTS
     const line1 = d3
@@ -3580,12 +3643,288 @@ class DensityChart {
         const lineValues1 = line1(d.values).slice(1);
         const splitedValues1 = lineValues1.split(",");
 
-        return `M0,${height},${lineValues1},l0,${
-          height - splitedValues1[splitedValues1.length - 1]
-        }`;
+        return `M0,${height1},${lineValues1},l0,${height1 - splitedValues1[splitedValues1.length - 1]
+          }`;
       })
       // .style('fill', '#E31A1C')
-      .style("fill", "#e2f7cf")
+      .style("fill", "#C3FDB8")
+
+      .style("opacity", 0.4);
+
+    g.selectAll(".line")
+      .data(parsedData1)
+      .enter()
+      .append("path")
+      .attr("d", (d) => line1(d.values))
+      .attr("stroke-width", "1")
+      .style("fill", "none")
+      .style("filter", "url(#glow)")
+      .attr("stroke", "#6ED810");
+
+    //LINE 1 ENDS
+
+    //LINE 2 STARTS
+    const line2 = d3
+      .line()
+      .x((d) => xScale(d.date))
+      .y((d) => yScale2(d.close))
+      .curve(d3.curveCatmullRom.alpha(0.5));
+
+    g.selectAll(".line")
+      .data(parsedData2)
+      .enter()
+      .append("path")
+      .attr("d", (d) => {
+        const lineValues2 = line2(d.values).slice(1);
+        const splitedValues2 = lineValues2.split(",");
+
+        return `M0,${height1},${lineValues2},l0,${height1 - splitedValues2[splitedValues2.length - 1]
+          }`;
+      })
+      .style("fill", "#FFC145")
+      .style("opacity", 0.5);
+
+    g.selectAll(".line")
+      .data(parsedData2)
+      .enter()
+      .append("path")
+      .attr("d", (d) => line2(d.values))
+      .attr("stroke-width", "1")
+      .style("fill", "none")
+      // .style('filter', 'url(#glow)')
+      .attr("stroke", "#FF7F00");
+
+    //LINE2 ENDS
+
+    //LINE3 STARTS
+
+    const line3 = d3
+      .line()
+      .x((d) => xScale(d.date))
+      .y((d) => yScale3(d.close))
+      .curve(d3.curveCatmullRom.alpha(0.5));
+
+    g.selectAll(".line")
+      .data(parsedData3)
+      .enter()
+      .append("path")
+      .attr("d", (d) => {
+        const lineValues2 = line3(d.values).slice(1);
+        const splitedValues2 = lineValues2.split(",");
+
+        return `M0,${height1},${lineValues2},l0,${height1 - splitedValues2[splitedValues2.length - 1]
+          }`;
+      })
+      .style("fill", "#F67280")
+      .style("opacity", 0.3);
+
+    g.selectAll(".line")
+      .data(parsedData3)
+      .enter()
+      .append("path")
+      .attr("d", (d) => line3(d.values))
+      .attr("stroke-width", "1")
+      .style("fill", "none")
+      .style("filter", "url(#glow)")
+      .attr("stroke", "#E31A1C");
+
+    //LINE3 ENDS
+
+    g1.append("g")
+      .attr("class", "bar-x-axis")
+      .call(x_axis)
+      .style("color", "#A3A3A3")
+      .selectAll("text")
+      .text(function (d) {
+        // console.log(d.split(',')[0])
+        return d.split(',')[0]
+      })
+      .style("text-anchor", "end")
+      .style("color", "#A3A3A3")
+      .style("font", "Roboto")
+      .attr("dx", ".8em")
+      .attr("dy", ".15em")
+      // .attr("transform", "rotate(-30)");
+      .attr("transform", "translate(" + 10 + "," + 5 + ")");
+
+    // svg
+    //   .append("g")
+    //   .attr("class", "bar-x-axis")
+    //   .attr("transform", "translate(25,0)")
+    //   .call(y_axis)
+    //   .selectAll("text")
+    //   .style("text-anchor", "end")
+    //   .style("color", "#A3A3A3")
+    //   .style("font", "Roboto")
+    //   .attr("dx", "-.8em")
+    //   .attr("dy", ".15em");
+
+    //  const tick2 =  g.append('g')
+    //   .attr("transform", "translate(0," + 0 + ")")
+    //   .call(d3.axisLeft(yScale1)
+    //     .ticks(5));
+    // tick2
+    // .selectAll('line')
+    //   .attr('stroke', `5, 5`)
+    //   .attr('stroke', '#ccc')
+    //   .attr('x2', `${svgWidth}px`)
+
+    svg.select(".domain").attr("stroke", "#ddd");
+  }
+
+  async createDensity2(id, datass) {
+    // document.getElementById(id).innerHTML = ""
+    const Data2 = datass;
+    const lineChartData1 = [],
+      lineChartData2 = [],
+      lineChartData3 = [];
+
+    lineChartData1[0] = { ...Data2[0] };
+    lineChartData2[0] = { ...Data2[1] };
+    lineChartData3[0] = { ...Data2[2] };
+    // console.log("objjj", lineChartData2);
+    // console.log("11", lineChartData, "222", lineChartData2);
+
+    const margin = {
+      top: 3,
+      bottom: 3,
+      left: 3,
+      right: 3,
+    };
+
+    const svgWidth = 100;
+    const svgHeight = 55;
+
+    const width1 = svgWidth - margin.left - margin.right;
+    const height1 = svgHeight - margin.top - margin.bottom;
+
+    const svg = d3
+      .select(id)
+      .append("svg")
+      .attr("width", svgWidth)
+      .attr("height", svgHeight);
+    // .style("background-color", "red");
+
+    const g = svg
+      .append("g")
+      // .attr('transform', `translate(${margin.left}, ${margin.top})`);
+
+      .attr("transform", "translate(" + 0 + "," + margin.bottom + ")");
+
+    const xAxisTranslate = svgHeight - margin.bottom;
+
+    const g1 = svg
+      .append("g")
+      .attr("transform", "translate(" + 0 + "," + xAxisTranslate + ")");
+
+    const parsedData1 = lineChartData1.map((company) => ({
+      ticker: company.ticker,
+      values: company.data.map((val) => ({
+        close: val.value,
+        // date: parseTime(val.date)
+        date: val.date,
+      })),
+    }));
+
+    const parsedData2 = lineChartData2.map((company) => ({
+      ticker: company.ticker,
+      values: company.data.map((val) => ({
+        close: val.value,
+        // date: parseTime(val.date)
+        date: val.date,
+      })),
+    }));
+
+    const parsedData3 = lineChartData3.map((company) => ({
+      ticker: company.ticker,
+      values: company.data.map((val) => ({
+        close: val.value,
+        // date: parseTime(val.date)
+        date: val.date,
+      })),
+    }));
+
+    let xScaleDomain1 = parsedData1[0].values.map((d) => d.date),
+      xScaleDomain2 = parsedData2[0].values.map((d) => d.date),
+      xScaleDomain3 = parsedData3[0].values.map((d) => d.date);
+
+    // console.log("xscaledomain ",xScaleDomain1);
+    // console.log("data2", parsedData2);
+
+    const xScale = d3.scalePoint()
+      .domain(xScaleDomain1)
+      .range([0, width1]);
+
+    const xScale1 = d3.scalePoint().domain(xScaleDomain1).range([0, width1]);
+
+
+    const xScale11 = scaleLinear()
+      .domain([1, 7])
+      .range([0, width1])
+      .nice();
+
+    const xScale3 = scaleBand().domain(xScaleDomain3).range([0, svgWidth]);
+
+    const max1 = Math.max(...parsedData1[0].values.map((o) => o.close));
+    const max2 = Math.max(...parsedData2[0].values.map((o) => o.close));
+    const max3 = Math.max(...parsedData3[0].values.map((o) => o.close));
+
+    const yScale1 = d3
+      .scaleLinear()
+      .domain([0, max1])
+      .range([svgHeight - margin.bottom, 0]);
+
+    const yScale2 = d3.scaleLinear().domain([0, max2]).range([height1, 0]);
+
+    const yScale3 = d3.scaleLinear().domain([0, max3]).range([height1, 0]);
+
+    const x_axis = axisBottom(xScale1).tickSizeOuter(0)
+      .tickSizeInner(0);
+
+    const xGridLine = axisBottom(xScale11)
+      .scale(xScale11)
+      .tickSize(-svgHeight, 0, 0)
+      .ticks(7)
+      .tickFormat("");
+
+    svg
+      .append("g")
+      .classed("gridLine", true)
+      .attr("transform", "translate(" + 0 + "," + xAxisTranslate + ")")
+      .style("color", "#DCDCDC")
+      .attr("opacity", "0.5")
+      .call(xGridLine);
+
+
+
+    const y_axis = axisLeft(yScale1)
+      .tickSize(-width1)
+      // .ticks(script.max <= 10 ? script.max
+      //   : script.max <= 29 ? (script.max + 5) / 5
+      //     : script.max <= 25 || ?);
+      .ticks(7)
+      .tickFormat("");
+
+    //LINE 1 STARTS
+    const line1 = d3
+      .line()
+      .x((d) => xScale(d.date))
+      .y((d) => yScale1(d.close))
+      .curve(d3.curveCatmullRom.alpha(0.5));
+
+    g.selectAll(".line")
+      .data(parsedData1)
+      .enter()
+      .append("path")
+      .attr("d", (d) => {
+        const lineValues1 = line1(d.values).slice(1);
+        const splitedValues1 = lineValues1.split(",");
+
+        return `M0,${height1},${lineValues1},l0,${height1 - splitedValues1[splitedValues1.length - 1]
+          }`;
+      })
+      .style("fill", "none")
+      // .style("fill", "#e2f7cf")
 
       .style("opacity", 0.2);
 
@@ -3616,11 +3955,10 @@ class DensityChart {
         const lineValues2 = line2(d.values).slice(1);
         const splitedValues2 = lineValues2.split(",");
 
-        return `M0,${height},${lineValues2},l0,${
-          height - splitedValues2[splitedValues2.length - 1]
-        }`;
+        return `M0,${height1},${lineValues2},l0,${height1 - splitedValues2[splitedValues2.length - 1]
+          }`;
       })
-      .style("fill", "#fcc885")
+      .style("fill", "none")
       .style("opacity", 0.3);
 
     g.selectAll(".line")
@@ -3651,11 +3989,10 @@ class DensityChart {
         const lineValues2 = line3(d.values).slice(1);
         const splitedValues2 = lineValues2.split(",");
 
-        return `M0,${height},${lineValues2},l0,${
-          height - splitedValues2[splitedValues2.length - 1]
-        }`;
+        return `M0,${height1},${lineValues2},l0,${height1 - splitedValues2[splitedValues2.length - 1]
+          }`;
       })
-      .style("fill", "#E31A1C")
+      .style("fill", "none")
       .style("opacity", 0.3);
 
     g.selectAll(".line")
@@ -3670,30 +4007,317 @@ class DensityChart {
 
     //LINE3 ENDS
 
-    g1.append("g")
-      .attr("class", "bar-x-axis")
-      .call(x_axis)
-      .style("color", "#A3A3A3")
-      .selectAll("text")
-      .style("text-anchor", "end")
-      .style("color", "#A3A3A3")
-      .style("font", "Roboto")
-      .attr("dx", "-.8em")
-      .attr("dy", ".15em")
-      // .attr("transform", "rotate(-30)");
-      .attr("transform", "rotate(-10)");
+    // g1.append("g")
+    //   .attr("class", "bar-x-axis")
+    //   .call(x_axis)
+    //   .style("color", "#A3A3A3")
+    //   .selectAll("text")
+    //   .text(function (d) {
+    //     // console.log(d.split(',')[0])
+    //    return d.split(',')[0]
+    //   })
+    //   .style("text-anchor", "end")
+    //   .style("color", "#A3A3A3")
+    //   .style("font", "Roboto")
+    //   .attr("dx", ".8em")
+    //   .attr("dy", ".15em")
+    //   // .attr("transform", "rotate(-30)");
+    //   .attr("transform", "translate(" + 10 + "," + 5 + ")");
 
     svg
       .append("g")
       .attr("class", "bar-x-axis")
-      .attr("transform", "translate(25,0)")
+      .attr("transform", "translate(0,0)")
       .call(y_axis)
-      .selectAll("text")
-      .style("text-anchor", "end")
-      .style("color", "#A3A3A3")
-      .style("font", "Roboto")
-      .attr("dx", "-.8em")
-      .attr("dy", ".15em");
+      // .selectAll("text")
+      // .style("text-anchor", "end")
+      .style("color", "#DCDCDC")
+      .attr("opacity", "0.5");
+    // .style("font", "Roboto")
+    // .attr("dx", "-.8em")
+    // .attr("dy", ".15em");
+
+    //  const tick2 =  g.append('g')
+    //   .attr("transform", "translate(0," + 0 + ")")
+    //   .call(d3.axisLeft(yScale1)
+    //     .ticks(5));
+    // tick2
+    // .selectAll('line')
+    //   .attr('stroke', `5, 5`)
+    //   .attr('stroke', '#ccc')
+    //   .attr('x2', `${svgWidth}px`)
+
+    svg.select(".domain").attr("stroke", "#ddd");
+  }
+
+
+
+
+  async createDensity3(id, datass) {
+    
+    // console.log("#density_graph" ,id);
+    // document.getElementById(id).innerHTML = ""
+    const Data2 = datass;
+    const lineChartData1 = [],
+      lineChartData2 = [],
+      lineChartData3 = [];
+
+    lineChartData1[0] = { ...Data2[0] };
+    lineChartData2[0] = { ...Data2[1] };
+    lineChartData3[0] = { ...Data2[2] };
+    // console.log("objjj", lineChartData2);
+    // console.log("11", lineChartData, "222", lineChartData2);
+
+    const margin = {
+      top: 3,
+      bottom: 3,
+      left: 3,
+      right: 3,
+    };
+
+    const svgWidth = 100;
+    const svgHeight = 55;
+
+    const width1 = svgWidth - margin.left - margin.right;
+    const height1 = svgHeight - margin.top - margin.bottom;
+
+    const svg = select(id)
+      .append("svg")
+      .attr("width", svgWidth)
+      .attr("height", svgHeight);
+    // .style("background-color", "red");
+
+    const g = svg
+      .append("g")
+      // .attr('transform', `translate(${margin.left}, ${margin.top})`);
+
+      .attr("transform", "translate(" + 0 + "," + margin.bottom + ")");
+
+    const xAxisTranslate = svgHeight - margin.bottom;
+
+    const g1 = svg
+      .append("g")
+      .attr("transform", "translate(" + 0 + "," + xAxisTranslate + ")");
+
+    const parsedData1 = lineChartData1.map((company) => ({
+      ticker: company.ticker,
+      values: company.data.map((val) => ({
+        close: val.value,
+        // date: parseTime(val.date)
+        date: val.date,
+      })),
+    }));
+
+    const parsedData2 = lineChartData2.map((company) => ({
+      ticker: company.ticker,
+      values: company.data.map((val) => ({
+        close: val.value,
+        // date: parseTime(val.date)
+        date: val.date,
+      })),
+    }));
+
+    const parsedData3 = lineChartData3.map((company) => ({
+      ticker: company.ticker,
+      values: company.data.map((val) => ({
+        close: val.value,
+        // date: parseTime(val.date)
+        date: val.date,
+      })),
+    }));
+
+    let xScaleDomain1 = parsedData1[0].values.map((d) => d.date),
+      xScaleDomain2 = parsedData2[0].values.map((d) => d.date),
+      xScaleDomain3 = parsedData3[0].values.map((d) => d.date);
+
+    // console.log("xscaledomain ",xScaleDomain1);
+    // console.log("data2", parsedData2);
+
+    const xScale = d3.scalePoint()
+      .domain(xScaleDomain1)
+      .range([0, width1]);
+
+    const xScale1 = d3.scalePoint().domain(xScaleDomain1).range([0, width1]);
+
+
+    const xScale11 = scaleLinear()
+      .domain([1, 7])
+      .range([0, width1])
+      .nice();
+
+    const xScale3 = scaleBand().domain(xScaleDomain3).range([0, svgWidth]);
+
+    const max1 = Math.max(...parsedData1[0].values.map((o) => o.close));
+    const max2 = Math.max(...parsedData2[0].values.map((o) => o.close));
+    const max3 = Math.max(...parsedData3[0].values.map((o) => o.close));
+
+    const yScale1 = d3
+      .scaleLinear()
+      .domain([0, max1])
+      .range([svgHeight - margin.bottom, 0]);
+
+    const yScale2 = d3.scaleLinear().domain([0, max2]).range([height1, 0]);
+
+    const yScale3 = d3.scaleLinear().domain([0, max3]).range([height1, 0]);
+
+    const x_axis = axisBottom(xScale1).tickSizeOuter(0)
+      .tickSizeInner(0);
+
+    const xGridLine = axisBottom(xScale11)
+      .scale(xScale11)
+      .tickSize(-svgHeight, 0, 0)
+      .ticks(7)
+      .tickFormat("");
+
+    svg
+      .append("g")
+      .classed("gridLine", true)
+      .attr("transform", "translate(" + 0 + "," + xAxisTranslate + ")")
+      .style("color", "#DCDCDC")
+      .attr("opacity", "0.5")
+      .call(xGridLine);
+
+
+
+    const y_axis = axisLeft(yScale1)
+      .tickSize(-width1)
+      // .ticks(script.max <= 10 ? script.max
+      //   : script.max <= 29 ? (script.max + 5) / 5
+      //     : script.max <= 25 || ?);
+      .ticks(7)
+      .tickFormat("");
+
+    //LINE 1 STARTS
+    const line1 = d3
+      .line()
+      .x((d) => xScale(d.date))
+      .y((d) => yScale1(d.close))
+      .curve(d3.curveCatmullRom.alpha(0.5));
+
+    g.selectAll(".line")
+      .data(parsedData1)
+      .enter()
+      .append("path")
+      .attr("d", (d) => {
+        const lineValues1 = line1(d.values).slice(1);
+        const splitedValues1 = lineValues1.split(",");
+
+        return `M0,${height1},${lineValues1},l0,${height1 - splitedValues1[splitedValues1.length - 1]
+          }`;
+      })
+      .style("fill", "none")
+      // .style("fill", "#e2f7cf")
+
+      .style("opacity", 0.2);
+
+    g.selectAll(".line")
+      .data(parsedData1)
+      .enter()
+      .append("path")
+      .attr("d", (d) => line1(d.values))
+      .attr("stroke-width", "1")
+      .style("fill", "none")
+      .style("filter", "url(#glow)")
+      .attr("stroke", "#6ED810");
+
+    //LINE 1 ENDS
+
+    //LINE 2 STARTS
+    const line2 = d3
+      .line()
+      .x((d) => xScale(d.date))
+      .y((d) => yScale2(d.close))
+      .curve(d3.curveCatmullRom.alpha(0.5));
+
+    g.selectAll(".line")
+      .data(parsedData2)
+      .enter()
+      .append("path")
+      .attr("d", (d) => {
+        const lineValues2 = line2(d.values).slice(1);
+        const splitedValues2 = lineValues2.split(",");
+
+        return `M0,${height1},${lineValues2},l0,${height1 - splitedValues2[splitedValues2.length - 1]
+          }`;
+      })
+      .style("fill", "none")
+      .style("opacity", 0.3);
+
+    g.selectAll(".line")
+      .data(parsedData2)
+      .enter()
+      .append("path")
+      .attr("d", (d) => line2(d.values))
+      .attr("stroke-width", "1")
+      .style("fill", "none")
+      // .style('filter', 'url(#glow)')
+      .attr("stroke", "#FF7F00");
+
+    //LINE2 ENDS
+
+    //LINE3 STARTS
+
+    const line3 = d3
+      .line()
+      .x((d) => xScale(d.date))
+      .y((d) => yScale3(d.close))
+      .curve(d3.curveCatmullRom.alpha(0.5));
+
+    g.selectAll(".line")
+      .data(parsedData3)
+      .enter()
+      .append("path")
+      .attr("d", (d) => {
+        const lineValues2 = line3(d.values).slice(1);
+        const splitedValues2 = lineValues2.split(",");
+
+        return `M0,${height1},${lineValues2},l0,${height1 - splitedValues2[splitedValues2.length - 1]
+          }`;
+      })
+      .style("fill", "none")
+      .style("opacity", 0.3);
+
+    g.selectAll(".line")
+      .data(parsedData3)
+      .enter()
+      .append("path")
+      .attr("d", (d) => line3(d.values))
+      .attr("stroke-width", "1")
+      .style("fill", "none")
+      .style("filter", "url(#glow)")
+      .attr("stroke", "#E31A1C");
+
+    //LINE3 ENDS
+
+    // g1.append("g")
+    //   .attr("class", "bar-x-axis")
+    //   .call(x_axis)
+    //   .style("color", "#A3A3A3")
+    //   .selectAll("text")
+    //   .text(function (d) {
+    //     // console.log(d.split(',')[0])
+    //    return d.split(',')[0]
+    //   })
+    //   .style("text-anchor", "end")
+    //   .style("color", "#A3A3A3")
+    //   .style("font", "Roboto")
+    //   .attr("dx", ".8em")
+    //   .attr("dy", ".15em")
+    //   // .attr("transform", "rotate(-30)");
+    //   .attr("transform", "translate(" + 10 + "," + 5 + ")");
+
+    svg
+      .append("g")
+      .attr("class", "bar-x-axis")
+      .attr("transform", "translate(0,0)")
+      .call(y_axis)
+      // .selectAll("text")
+      // .style("text-anchor", "end")
+      .style("color", "#DCDCDC")
+      .attr("opacity", "0.5");
+    // .style("font", "Roboto")
+    // .attr("dx", "-.8em")
+    // .attr("dy", ".15em");
 
     //  const tick2 =  g.append('g')
     //   .attr("transform", "translate(0," + 0 + ")")
