@@ -38,6 +38,7 @@ let script = {
   ],
 };
 
+
 //GRAPH 1
 class scatterplot {
   async scatterGraph(data) {
@@ -622,7 +623,8 @@ class D3BarChart {
                 .style("top", event.pageY - 10 + "px")
                 .style("left", event.pageX + 10 + "px")
                 .html(`${i}`)
-                .style("visibility", "visible");
+                .style("visibility", "visible")
+                .style("display", "inline-block");
               select(this).attr("fill", "#666666");
 
 
@@ -646,10 +648,7 @@ class D3BarChart {
                     */
               //end
             })
-            .on("mousemove", function () {
-              tooltip;
-              // tooltip.html(``).style("visibility", "hidden");
-            })
+
             .on("mouseout", function () {
               tooltip.html(``).style("visibility", "hidden");
               select(this).attr("fill", barColor);
@@ -690,7 +689,7 @@ class D3BarChart {
       .style("position", "absolute")
       .style("z-index", "10")
       .style("visibility", "hidden")
-      .style("padding", "15px")
+      .style("padding", "10px")
       .style("background", "#56ecb2")
       .style("border-radius", "5px")
       .style("color", "#fff")
@@ -3523,7 +3522,7 @@ class DensityChart {
       xScaleDomain2 = parsedData2[0].values.map((d) => d.date),
       xScaleDomain3 = parsedData3[0].values.map((d) => d.date);
 
-    // console.log("xscaledomain ",xScaleDomain1);
+    console.log("xscaledomain ",xScaleDomain1);
     // console.log("data2", parsedData2);
 
     const xScale = d3.scalePoint()
@@ -3583,13 +3582,22 @@ class DensityChart {
       .ticks(7)
       .tickFormat("");
 
-    svg
+      const xScaless = scaleBand().domain(xScaleDomain1).range([0, width1]);
+      const yScaless = scaleLinear()
+      .domain([0, max1])
+      .range([svgHeight,0]);
+      
+
+      const tt = svg
       .append("g")
       .classed("gridLine", true)
       .attr("transform", "translate(" + margin.left + "," + xAxisTranslate + ")")
       .style("color", "#DCDCDC")
       .attr("opacity", "0.5")
-      .call(xGridLine);
+      .call(xGridLine)
+    
+
+
 
     const yGridLine = axisLeft(yScale_grid)
       .scale(yScale_grid)
@@ -3627,7 +3635,7 @@ class DensityChart {
       .y((d) => yScale1(d.close))
       .curve(d3.curveCatmullRom.alpha(0.5));
 
-    g.selectAll(".line")
+      g.selectAll(".line")
       .data(parsedData1)
       .enter()
       .append("path")
@@ -3653,6 +3661,83 @@ class DensityChart {
       .style("filter", "url(#glow)")
       .attr("stroke", "#6ED810");
 
+
+        
+      var Tooltip = select("body")
+      // var Tooltip = select("#density_graph")
+      .append("div")
+      .style("opacity", 0)
+      .attr("class", "toolTip")
+      
+        .style("border-radius", "5px")
+        .style("padding", "5px")
+        .style("position", "absolute");
+      
+ 
+      tt.on("mouseover", function(d,e) {
+        // console.log(e);
+        Tooltip
+        .style("opacity", 1)
+        
+      .style("visibility", "visible")
+      .html(
+        `<div class="density-main">
+        <div class="d-flex density-header pt-2 pl-2">
+        <div style="width:80%;" >Tatal JD’s</div> 
+        <div  style="width:20%;"> 25 </div>
+        </div>
+        <hr class='density-line'></hr>
+        <div  class="density-content"> 
+        <div class="d-flex justify-content-around">
+        <div class="density-mdash-round good"></div>
+        <div class ="d-flex"> total JD</div>
+        </div>
+        <div class="density-content mt-1"> 
+        <div class="d-flex justify-content-around">
+        <div class="density-mdash-round lag "></div>
+        <div class ="d-flex"> total JD</div>
+        </div>
+        <div  class="density-content mt-1"> 
+        <div class="d-flex justify-content-around">
+        <div class="density-mdash-round risk"></div>
+        <div class ="d-flex"> total JD</div>
+        </div>
+        </div>`
+      )
+        .style("left", event.pageX + 0 + "px")
+        .style("top", event.pageY + "px");
+
+          tt
+          .append("circle")
+          .attr("cx", () => (d.offsetX - margin.left))
+          // .attr("cy", () =>(d.offsetY))
+          .attr("cy", () =>(-height1))
+
+          .attr("r", 8)
+          .attr("fill", "#89C30D")
+          .attr("stroke-width", function() {
+            return 4;
+          })
+          .attr("stroke", "white");
+      
+          Tooltip.style("display", "inline-block");    
+      });
+      // tt.on("mousemove", function(event) {
+      //   Tooltip
+      //     .html("The exact value of<br>this cell is: " + 3)
+      //     .style("left", (event.x)/2 + "px")
+      //     .style("top", (event.y)/2 + "px")
+      // })
+      
+      tt.on("mouseout", function() {
+        Tooltip.style("opacity", 0);
+        svg.select("circle").remove();
+        Tooltip.style("display", "none");
+      });
+  
+  
+     
+
     //LINE 1 ENDS
 
     //LINE 2 STARTS
@@ -3662,7 +3747,7 @@ class DensityChart {
       .y((d) => yScale2(d.close))
       .curve(d3.curveCatmullRom.alpha(0.5));
 
-    g.selectAll(".line")
+   const tt2=  g.selectAll(".line")
       .data(parsedData2)
       .enter()
       .append("path")
@@ -3686,6 +3771,29 @@ class DensityChart {
       // .style('filter', 'url(#glow)')
       .attr("stroke", "#FF7F00");
 
+      tt2.on("mouseover", function(d,e) {
+        console.log(e);
+
+          g
+          .append("circle")
+          .attr("cx", () => (d.offsetX - margin.left))
+          .attr("cy", () =>(d.offsetY))
+          .attr("r", 8)
+          .attr("fill", "#FFC145")
+          .attr("stroke-width", function() {
+            return 4;
+          })
+          .attr("stroke", "white");
+          // div.style("left", e.pageX + "px");
+          // div.style("top", e.pageY - 87 + "px");
+        div.style("display", "inline-block");          
+      });
+      tt2.on("mouseout", function() {
+      
+        svg.select("circle").remove();
+        div.style("display", "none");
+      });
+
     //LINE2 ENDS
 
     //LINE3 STARTS
@@ -3696,7 +3804,7 @@ class DensityChart {
       .y((d) => yScale3(d.close))
       .curve(d3.curveCatmullRom.alpha(0.5));
 
-    g.selectAll(".line")
+    const tt3 = g.selectAll(".line")
       .data(parsedData3)
       .enter()
       .append("path")
@@ -3719,6 +3827,29 @@ class DensityChart {
       .style("fill", "none")
       .style("filter", "url(#glow)")
       .attr("stroke", "#E31A1C");
+
+      tt3.on("mouseover", function(d,e) {
+        console.log(e);
+
+          g
+          .append("circle")
+          .attr("cx", () => (d.offsetX - margin.left))
+          .attr("cy", () =>(d.offsetY))
+          .attr("r", 8)
+          .attr("fill", "#D34C15")
+          .attr("stroke-width", function() {
+            return 4;
+          })
+          .attr("stroke", "white");
+          // div.style("left", e.pageX + "px");
+          // div.style("top", e.pageY - 87 + "px");
+        div.style("display", "inline-block");          
+      });
+      tt3.on("mouseout", function() {
+      
+        svg.select("circle").remove();
+        div.style("display", "none");
+      });
 
     //LINE3 ENDS
 
