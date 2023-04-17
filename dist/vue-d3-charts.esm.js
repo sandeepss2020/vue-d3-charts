@@ -3473,6 +3473,9 @@ class DensityChart {
       var svgWidth = window.innerWidth - 950
 
     }
+    else if (window.screen.availWidth <= 2000) {
+      var svgWidth = window.innerWidth - 1000
+    }
     else if (window.screen.availWidth >= 2000) {
       var svgWidth = window.innerWidth - 1100;
     }
@@ -3703,7 +3706,7 @@ class DensityChart {
     // comment out end
     // */
 
-   g.selectAll(".line")
+    g.selectAll(".line")
       .data(parsedData1)
       .enter()
       .append("path")
@@ -3715,7 +3718,7 @@ class DensityChart {
 
 
 
-    
+
 
 
 
@@ -3757,7 +3760,7 @@ class DensityChart {
       // .style('filter', 'url(#glow)')
       .attr("stroke", "#FF7F00");
 
-   
+
     //LINE2 ENDS
 
     //LINE3 STARTS
@@ -3864,7 +3867,7 @@ class DensityChart {
 
     svg.select(".domain").attr("stroke", "#ddd");
 
-     
+
     this.densityCircle(svg, g, datass, largest, count);
   }
 
@@ -3903,7 +3906,7 @@ class DensityChart {
       .append("g")
       // .attr('transform', `translate(${margin.left}, ${margin.top})`);
 
-      .attr("transform", "translate(" +  margin.left  + "," + margin.bottom + ")");
+      .attr("transform", "translate(" + margin.left + "," + margin.bottom + ")");
 
     const xAxisTranslate = svgHeight - margin.bottom;
 
@@ -3960,26 +3963,26 @@ class DensityChart {
     const max2 = Math.max(...parsedData2[0].values.map((o) => o.close));
     const max3 = Math.max(...parsedData3[0].values.map((o) => o.close));
 
-    
+
     var largest = Math.max(max1, max2, max3);
     if (largest % 5 !== 0) {
       largest = largest + (5 - (largest % 5));
     }
 
     const yScale_grid = d3
-    .scaleLinear()
-    .domain(largest <= 10 ?
-      [0, 5] : largest <= 15 ? [0, 3] : largest <= 20 ? [0, 4] : [0, 5]
-    )
-    .range([height1, 0])
-    .nice();
+      .scaleLinear()
+      .domain(largest <= 10 ?
+        [0, 5] : largest <= 15 ? [0, 3] : largest <= 20 ? [0, 4] : [0, 5]
+      )
+      .range([height1, 0])
+      .nice();
 
     const yScale = d3
-    .scaleLinear()
-    .domain([0, largest])
-    .range([height1, 0]);
+      .scaleLinear()
+      .domain([0, largest])
+      .range([height1, 0]);
 
-    
+
     const yScale1 = d3
       .scaleLinear()
       .domain([0, largest])
@@ -3999,7 +4002,7 @@ class DensityChart {
       .ticks(7)
       .tickFormat("");
 
-      svg
+    svg
       .append("g")
       .classed("gridLine", true)
       .attr("transform", "translate(" + margin.left + "," + xAxisTranslate + ")")
@@ -4008,13 +4011,13 @@ class DensityChart {
       .call(xGridLine)
 
 
-      const yGridLine = axisLeft(yScale_grid)
+    const yGridLine = axisLeft(yScale_grid)
       .scale(yScale_grid)
       .tickSize(-width1, 0, 0)
       .ticks(largest <= 10 ? 5 : largest <= 15 ? 3 : largest <= 20 ? 4 : 5)
       .tickFormat("");
 
-      g
+    g
       .append("g")
       .classed("gridLine", true)
       // .attr("transform", "translate(25,0)")
@@ -4086,284 +4089,285 @@ class DensityChart {
   }
 
   async createDensity3(id, datass, largest) {
-/*
-    // console.log("#density_graph" ,id);
-    // document.getElementById(id).innerHTML = ""
-    const Data2 = datass;
-    const lineChartData1 = [],
-      lineChartData2 = [],
-      lineChartData3 = [];
+    /*
+        // console.log("#density_graph" ,id);
+        // document.getElementById(id).innerHTML = ""
+        const Data2 = datass;
+        const lineChartData1 = [],
+          lineChartData2 = [],
+          lineChartData3 = [];
+    
+        lineChartData1[0] = { ...Data2[0] };
+        lineChartData2[0] = { ...Data2[1] };
+        lineChartData3[0] = { ...Data2[2] };
+        // console.log("objjj", lineChartData2);
+        // console.log("11", lineChartData, "222", lineChartData2);
+    
+        const margin = {
+          top: 3,
+          bottom: 3,
+          left: 3,
+          right: 3,
+        };
+    
+        const svgWidth = 100;
+        const svgHeight = 55;
+    
+        const width1 = svgWidth - margin.left - margin.right;
+        const height1 = svgHeight - margin.top - margin.bottom;
+    
+        const svg = select(id)
+          .append("svg")
+          .attr("width", svgWidth)
+          .attr("height", svgHeight);
+        // .style("background-color", "red");
+    
+        const g = svg
+          .append("g")
+          // .attr('transform', `translate(${margin.left}, ${margin.top})`);
+    
+          .attr("transform", "translate(" + 0 + "," + margin.bottom + ")");
+    
+        const xAxisTranslate = svgHeight - margin.bottom;
+    
+        const g1 = svg
+          .append("g")
+          .attr("transform", "translate(" + 0 + "," + xAxisTranslate + ")");
+    
+        const parsedData1 = lineChartData1.map((company) => ({
+          ticker: company.ticker,
+          values: company.data.map((val) => ({
+            close: val.value,
+            // date: parseTime(val.date)
+            date: val.date,
+          })),
+        }));
+    
+        const parsedData2 = lineChartData2.map((company) => ({
+          ticker: company.ticker,
+          values: company.data.map((val) => ({
+            close: val.value,
+            // date: parseTime(val.date)
+            date: val.date,
+          })),
+        }));
+    
+        const parsedData3 = lineChartData3.map((company) => ({
+          ticker: company.ticker,
+          values: company.data.map((val) => ({
+            close: val.value,
+            // date: parseTime(val.date)
+            date: val.date,
+          })),
+        }));
+    
+        let xScaleDomain1 = parsedData1[0].values.map((d) => d.date),
+          xScaleDomain2 = parsedData2[0].values.map((d) => d.date),
+          xScaleDomain3 = parsedData3[0].values.map((d) => d.date);
+    
+        // console.log("xscaledomain ",xScaleDomain1);
+        // console.log("data2", parsedData2);
+    
+        const xScale = d3.scalePoint()
+          .domain(xScaleDomain1)
+          .range([0, width1]);
+    
+        const xScale1 = d3.scalePoint().domain(xScaleDomain1).range([0, width1]);
+    
+    
+        const xScale11 = scaleLinear()
+          .domain([1, 7])
+          .range([0, width1])
+          .nice();
+    
+        const xScale3 = scaleBand().domain(xScaleDomain3).range([0, svgWidth]);
+    
+        const max1 = Math.max(...parsedData1[0].values.map((o) => o.close));
+        const max2 = Math.max(...parsedData2[0].values.map((o) => o.close));
+        const max3 = Math.max(...parsedData3[0].values.map((o) => o.close));
+    
+        const yScale1 = d3
+          .scaleLinear()
+          .domain([0, max1])
+          .range([svgHeight - margin.bottom, 0]);
+    
+        const yScale2 = d3.scaleLinear().domain([0, max2]).range([height1, 0]);
+    
+        const yScale3 = d3.scaleLinear().domain([0, max3]).range([height1, 0]);
+    
+        const x_axis = axisBottom(xScale1).tickSizeOuter(0)
+          .tickSizeInner(0);
+    
+        const xGridLine = axisBottom(xScale11)
+          .scale(xScale11)
+          .tickSize(-svgHeight, 0, 0)
+          .ticks(7)
+          .tickFormat("");
+    
+        svg
+          .append("g")
+          .classed("gridLine", true)
+          .attr("transform", "translate(" + 0 + "," + xAxisTranslate + ")")
+          .style("color", "#DCDCDC")
+          .attr("opacity", "0.5")
+          .call(xGridLine);
+    
+    
+    
+        const y_axis = axisLeft(yScale1)
+          .tickSize(-width1)
+          // .ticks(script.max <= 10 ? script.max
+          //   : script.max <= 29 ? (script.max + 5) / 5
+          //     : script.max <= 25 || ?);
+          .ticks(7)
+          .tickFormat("");
+    
+        //LINE 1 STARTS
+        const line1 = d3
+          .line()
+          .x((d) => xScale(d.date))
+          .y((d) => yScale1(d.close))
+          .curve(d3.curveCatmullRom.alpha(0.5));
+    
+        g.selectAll(".line")
+          .data(parsedData1)
+          .enter()
+          .append("path")
+          .attr("d", (d) => {
+            const lineValues1 = line1(d.values).slice(1);
+            const splitedValues1 = lineValues1.split(",");
+    
+            return `M0,${height1},${lineValues1},l0,${height1 - splitedValues1[splitedValues1.length - 1]
+              }`;
+          })
+          .style("fill", "none")
+          // .style("fill", "#e2f7cf")
+    
+          .style("opacity", 0.2);
+    
+        g.selectAll(".line")
+          .data(parsedData1)
+          .enter()
+          .append("path")
+          .attr("d", (d) => line1(d.values))
+          .attr("stroke-width", "1")
+          .style("fill", "none")
+          .style("filter", "url(#glow)")
+          .attr("stroke", "#6ED810");
+    
+        //LINE 1 ENDS
+    
+        //LINE 2 STARTS
+        const line2 = d3
+          .line()
+          .x((d) => xScale(d.date))
+          .y((d) => yScale2(d.close))
+          .curve(d3.curveCatmullRom.alpha(0.5));
+    
+        g.selectAll(".line")
+          .data(parsedData2)
+          .enter()
+          .append("path")
+          .attr("d", (d) => {
+            const lineValues2 = line2(d.values).slice(1);
+            const splitedValues2 = lineValues2.split(",");
+    
+            return `M0,${height1},${lineValues2},l0,${height1 - splitedValues2[splitedValues2.length - 1]
+              }`;
+          })
+          .style("fill", "none")
+          .style("opacity", 0.3);
+    
+        g.selectAll(".line")
+          .data(parsedData2)
+          .enter()
+          .append("path")
+          .attr("d", (d) => line2(d.values))
+          .attr("stroke-width", "1")
+          .style("fill", "none")
+          // .style('filter', 'url(#glow)')
+          .attr("stroke", "#FF7F00");
+    
+        //LINE2 ENDS
+    
+        //LINE3 STARTS
+    
+        const line3 = d3
+          .line()
+          .x((d) => xScale(d.date))
+          .y((d) => yScale3(d.close))
+          .curve(d3.curveCatmullRom.alpha(0.5));
+    
+        g.selectAll(".line")
+          .data(parsedData3)
+          .enter()
+          .append("path")
+          .attr("d", (d) => {
+            const lineValues2 = line3(d.values).slice(1);
+            const splitedValues2 = lineValues2.split(",");
+    
+            return `M0,${height1},${lineValues2},l0,${height1 - splitedValues2[splitedValues2.length - 1]
+              }`;
+          })
+          .style("fill", "none")
+          .style("opacity", 0.3);
+    
+        g.selectAll(".line")
+          .data(parsedData3)
+          .enter()
+          .append("path")
+          .attr("d", (d) => line3(d.values))
+          .attr("stroke-width", "1")
+          .style("fill", "none")
+          .style("filter", "url(#glow)")
+          .attr("stroke", "#E31A1C");
+    
+        //LINE3 ENDS
+    
+        // g1.append("g")
+        //   .attr("class", "bar-x-axis")
+        //   .call(x_axis)
+        //   .style("color", "#A3A3A3")
+        //   .selectAll("text")
+        //   .text(function (d) {
+        //     // console.log(d.split(',')[0])
+        //    return d.split(',')[0]
+        //   })
+        //   .style("text-anchor", "end")
+        //   .style("color", "#A3A3A3")
+        //   .style("font", "Roboto")
+        //   .attr("dx", ".8em")
+        //   .attr("dy", ".15em")
+        //   // .attr("transform", "rotate(-30)");
+        //   .attr("transform", "translate(" + 10 + "," + 5 + ")");
+    
+        svg
+          .append("g")
+          .attr("class", "bar-x-axis")
+          .attr("transform", "translate(0,0)")
+          .call(y_axis)
+          // .selectAll("text")
+          // .style("text-anchor", "end")
+          .style("color", "#DCDCDC")
+          .attr("opacity", "0.5");
+        // .style("font", "Roboto")
+        // .attr("dx", "-.8em")
+        // .attr("dy", ".15em");
+    
+        //  const tick2 =  g.append('g')
+        //   .attr("transform", "translate(0," + 0 + ")")
+        //   .call(d3.axisLeft(yScale1)
+        //     .ticks(5));
+        // tick2
+        // .selectAll('line')
+        //   .attr('stroke', `5, 5`)
+        //   .attr('stroke', '#ccc')
+        //   .attr('x2', `${svgWidth}px`)
+    
+        svg.select(".domain").attr("stroke", "#ddd");
+    
+        */
 
-    lineChartData1[0] = { ...Data2[0] };
-    lineChartData2[0] = { ...Data2[1] };
-    lineChartData3[0] = { ...Data2[2] };
-    // console.log("objjj", lineChartData2);
-    // console.log("11", lineChartData, "222", lineChartData2);
-
-    const margin = {
-      top: 3,
-      bottom: 3,
-      left: 3,
-      right: 3,
-    };
-
-    const svgWidth = 100;
-    const svgHeight = 55;
-
-    const width1 = svgWidth - margin.left - margin.right;
-    const height1 = svgHeight - margin.top - margin.bottom;
-
-    const svg = select(id)
-      .append("svg")
-      .attr("width", svgWidth)
-      .attr("height", svgHeight);
-    // .style("background-color", "red");
-
-    const g = svg
-      .append("g")
-      // .attr('transform', `translate(${margin.left}, ${margin.top})`);
-
-      .attr("transform", "translate(" + 0 + "," + margin.bottom + ")");
-
-    const xAxisTranslate = svgHeight - margin.bottom;
-
-    const g1 = svg
-      .append("g")
-      .attr("transform", "translate(" + 0 + "," + xAxisTranslate + ")");
-
-    const parsedData1 = lineChartData1.map((company) => ({
-      ticker: company.ticker,
-      values: company.data.map((val) => ({
-        close: val.value,
-        // date: parseTime(val.date)
-        date: val.date,
-      })),
-    }));
-
-    const parsedData2 = lineChartData2.map((company) => ({
-      ticker: company.ticker,
-      values: company.data.map((val) => ({
-        close: val.value,
-        // date: parseTime(val.date)
-        date: val.date,
-      })),
-    }));
-
-    const parsedData3 = lineChartData3.map((company) => ({
-      ticker: company.ticker,
-      values: company.data.map((val) => ({
-        close: val.value,
-        // date: parseTime(val.date)
-        date: val.date,
-      })),
-    }));
-
-    let xScaleDomain1 = parsedData1[0].values.map((d) => d.date),
-      xScaleDomain2 = parsedData2[0].values.map((d) => d.date),
-      xScaleDomain3 = parsedData3[0].values.map((d) => d.date);
-
-    // console.log("xscaledomain ",xScaleDomain1);
-    // console.log("data2", parsedData2);
-
-    const xScale = d3.scalePoint()
-      .domain(xScaleDomain1)
-      .range([0, width1]);
-
-    const xScale1 = d3.scalePoint().domain(xScaleDomain1).range([0, width1]);
-
-
-    const xScale11 = scaleLinear()
-      .domain([1, 7])
-      .range([0, width1])
-      .nice();
-
-    const xScale3 = scaleBand().domain(xScaleDomain3).range([0, svgWidth]);
-
-    const max1 = Math.max(...parsedData1[0].values.map((o) => o.close));
-    const max2 = Math.max(...parsedData2[0].values.map((o) => o.close));
-    const max3 = Math.max(...parsedData3[0].values.map((o) => o.close));
-
-    const yScale1 = d3
-      .scaleLinear()
-      .domain([0, max1])
-      .range([svgHeight - margin.bottom, 0]);
-
-    const yScale2 = d3.scaleLinear().domain([0, max2]).range([height1, 0]);
-
-    const yScale3 = d3.scaleLinear().domain([0, max3]).range([height1, 0]);
-
-    const x_axis = axisBottom(xScale1).tickSizeOuter(0)
-      .tickSizeInner(0);
-
-    const xGridLine = axisBottom(xScale11)
-      .scale(xScale11)
-      .tickSize(-svgHeight, 0, 0)
-      .ticks(7)
-      .tickFormat("");
-
-    svg
-      .append("g")
-      .classed("gridLine", true)
-      .attr("transform", "translate(" + 0 + "," + xAxisTranslate + ")")
-      .style("color", "#DCDCDC")
-      .attr("opacity", "0.5")
-      .call(xGridLine);
-
-
-
-    const y_axis = axisLeft(yScale1)
-      .tickSize(-width1)
-      // .ticks(script.max <= 10 ? script.max
-      //   : script.max <= 29 ? (script.max + 5) / 5
-      //     : script.max <= 25 || ?);
-      .ticks(7)
-      .tickFormat("");
-
-    //LINE 1 STARTS
-    const line1 = d3
-      .line()
-      .x((d) => xScale(d.date))
-      .y((d) => yScale1(d.close))
-      .curve(d3.curveCatmullRom.alpha(0.5));
-
-    g.selectAll(".line")
-      .data(parsedData1)
-      .enter()
-      .append("path")
-      .attr("d", (d) => {
-        const lineValues1 = line1(d.values).slice(1);
-        const splitedValues1 = lineValues1.split(",");
-
-        return `M0,${height1},${lineValues1},l0,${height1 - splitedValues1[splitedValues1.length - 1]
-          }`;
-      })
-      .style("fill", "none")
-      // .style("fill", "#e2f7cf")
-
-      .style("opacity", 0.2);
-
-    g.selectAll(".line")
-      .data(parsedData1)
-      .enter()
-      .append("path")
-      .attr("d", (d) => line1(d.values))
-      .attr("stroke-width", "1")
-      .style("fill", "none")
-      .style("filter", "url(#glow)")
-      .attr("stroke", "#6ED810");
-
-    //LINE 1 ENDS
-
-    //LINE 2 STARTS
-    const line2 = d3
-      .line()
-      .x((d) => xScale(d.date))
-      .y((d) => yScale2(d.close))
-      .curve(d3.curveCatmullRom.alpha(0.5));
-
-    g.selectAll(".line")
-      .data(parsedData2)
-      .enter()
-      .append("path")
-      .attr("d", (d) => {
-        const lineValues2 = line2(d.values).slice(1);
-        const splitedValues2 = lineValues2.split(",");
-
-        return `M0,${height1},${lineValues2},l0,${height1 - splitedValues2[splitedValues2.length - 1]
-          }`;
-      })
-      .style("fill", "none")
-      .style("opacity", 0.3);
-
-    g.selectAll(".line")
-      .data(parsedData2)
-      .enter()
-      .append("path")
-      .attr("d", (d) => line2(d.values))
-      .attr("stroke-width", "1")
-      .style("fill", "none")
-      // .style('filter', 'url(#glow)')
-      .attr("stroke", "#FF7F00");
-
-    //LINE2 ENDS
-
-    //LINE3 STARTS
-
-    const line3 = d3
-      .line()
-      .x((d) => xScale(d.date))
-      .y((d) => yScale3(d.close))
-      .curve(d3.curveCatmullRom.alpha(0.5));
-
-    g.selectAll(".line")
-      .data(parsedData3)
-      .enter()
-      .append("path")
-      .attr("d", (d) => {
-        const lineValues2 = line3(d.values).slice(1);
-        const splitedValues2 = lineValues2.split(",");
-
-        return `M0,${height1},${lineValues2},l0,${height1 - splitedValues2[splitedValues2.length - 1]
-          }`;
-      })
-      .style("fill", "none")
-      .style("opacity", 0.3);
-
-    g.selectAll(".line")
-      .data(parsedData3)
-      .enter()
-      .append("path")
-      .attr("d", (d) => line3(d.values))
-      .attr("stroke-width", "1")
-      .style("fill", "none")
-      .style("filter", "url(#glow)")
-      .attr("stroke", "#E31A1C");
-
-    //LINE3 ENDS
-
-    // g1.append("g")
-    //   .attr("class", "bar-x-axis")
-    //   .call(x_axis)
-    //   .style("color", "#A3A3A3")
-    //   .selectAll("text")
-    //   .text(function (d) {
-    //     // console.log(d.split(',')[0])
-    //    return d.split(',')[0]
-    //   })
-    //   .style("text-anchor", "end")
-    //   .style("color", "#A3A3A3")
-    //   .style("font", "Roboto")
-    //   .attr("dx", ".8em")
-    //   .attr("dy", ".15em")
-    //   // .attr("transform", "rotate(-30)");
-    //   .attr("transform", "translate(" + 10 + "," + 5 + ")");
-
-    svg
-      .append("g")
-      .attr("class", "bar-x-axis")
-      .attr("transform", "translate(0,0)")
-      .call(y_axis)
-      // .selectAll("text")
-      // .style("text-anchor", "end")
-      .style("color", "#DCDCDC")
-      .attr("opacity", "0.5");
-    // .style("font", "Roboto")
-    // .attr("dx", "-.8em")
-    // .attr("dy", ".15em");
-
-    //  const tick2 =  g.append('g')
-    //   .attr("transform", "translate(0," + 0 + ")")
-    //   .call(d3.axisLeft(yScale1)
-    //     .ticks(5));
-    // tick2
-    // .selectAll('line')
-    //   .attr('stroke', `5, 5`)
-    //   .attr('stroke', '#ccc')
-    //   .attr('x2', `${svgWidth}px`)
-
-    svg.select(".domain").attr("stroke", "#ddd");
-
-    */
 
     const Data2 = datass;
     let lineChartData1 = [],
@@ -4399,7 +4403,7 @@ class DensityChart {
       .append("g")
       // .attr('transform', `translate(${margin.left}, ${margin.top})`);
 
-      .attr("transform", "translate(" +  margin.left  + "," + margin.bottom + ")");
+      .attr("transform", "translate(" + margin.left + "," + margin.bottom + ")");
 
     const xAxisTranslate = svgHeight - margin.bottom;
 
@@ -4456,26 +4460,26 @@ class DensityChart {
     const max2 = Math.max(...parsedData2[0].values.map((o) => o.close));
     const max3 = Math.max(...parsedData3[0].values.map((o) => o.close));
 
-    
+
     var largest = Math.max(max1, max2, max3);
     if (largest % 5 !== 0) {
       largest = largest + (5 - (largest % 5));
     }
 
     const yScale_grid = d3
-    .scaleLinear()
-    .domain(largest <= 10 ?
-      [0, 5] : largest <= 15 ? [0, 3] : largest <= 20 ? [0, 4] : [0, 5]
-    )
-    .range([height1, 0])
-    .nice();
+      .scaleLinear()
+      .domain(largest <= 10 ?
+        [0, 5] : largest <= 15 ? [0, 3] : largest <= 20 ? [0, 4] : [0, 5]
+      )
+      .range([height1, 0])
+      .nice();
 
     const yScale = d3
-    .scaleLinear()
-    .domain([0, largest])
-    .range([height1, 0]);
+      .scaleLinear()
+      .domain([0, largest])
+      .range([height1, 0]);
 
-    
+
     const yScale1 = d3
       .scaleLinear()
       .domain([0, largest])
@@ -4495,7 +4499,7 @@ class DensityChart {
       .ticks(7)
       .tickFormat("");
 
-      svg
+    svg
       .append("g")
       .classed("gridLine", true)
       .attr("transform", "translate(" + margin.left + "," + xAxisTranslate + ")")
@@ -4504,13 +4508,13 @@ class DensityChart {
       .call(xGridLine)
 
 
-      const yGridLine = axisLeft(yScale_grid)
+    const yGridLine = axisLeft(yScale_grid)
       .scale(yScale_grid)
       .tickSize(-width1, 0, 0)
       .ticks(largest <= 10 ? 5 : largest <= 15 ? 3 : largest <= 20 ? 4 : 5)
       .tickFormat("");
 
-      g
+    g
       .append("g")
       .classed("gridLine", true)
       // .attr("transform", "translate(25,0)")
@@ -4582,13 +4586,13 @@ class DensityChart {
   }
 
   densityCircle(svg, g, datass, largest, count) {
-    
+
     // console.log("counttt", count);
-   const datas = datass;
+    const datas = datass;
     const len = datas.length;
-    const data33 = datas[len-1].data;
-    const data22 = datas[len-2].data;
-    const data11 = datas[len-3].data;
+    const data33 = datas[len - 1].data;
+    const data22 = datas[len - 2].data;
+    const data11 = datas[len - 3].data;
 
     // console.log("new log", data11);
 
@@ -4602,18 +4606,21 @@ class DensityChart {
       var svgWidth = window.innerWidth - 950
 
     }
+    else if (window.screen.availWidth <= 2000) {
+      var svgWidth = window.innerWidth - 1000
+    }
     else if (window.screen.availWidth >= 2000) {
       var svgWidth = window.innerWidth - 1100;
     }
     const svgHeight = 300;
     const width = svgWidth - margin.left - margin.right;
     const height = svgHeight - margin.top - margin.bottom;
-    
+
 
 
     const gs = svg
-    .append("g")
-    .attr("transform", "translate(" + margin.left + "," + margin.bottom + ")");
+      .append("g")
+      .attr("transform", "translate(" + margin.left + "," + margin.bottom + ")");
 
 
     const xDomain = data33.map((d) => d.date);
@@ -4623,7 +4630,7 @@ class DensityChart {
 
     var y = scaleLinear().domain([0, largest]).range([(height - 8), 8]);
 
-     var tt = g.selectAll()
+    var tt = g.selectAll()
       .data(data33)
       .enter()
       .append("ellipse")
@@ -4633,17 +4640,17 @@ class DensityChart {
       .attr("cx", function (d, i) {
         return x(d.date)
       })
-   
+
       .attr("cy", function (d) {
- 
+
         return y(d.value)
       })
       .attr("rx", 8)
       .attr("ry", height);
-      
 
 
-      var Tooltip = select("body")
+
+    var Tooltip = select("body")
       // var Tooltip = select("#density_graph")
       .append("div")
       .style("opacity", 0)
@@ -4656,17 +4663,17 @@ class DensityChart {
     const reverseData = data33.map((d) => d.values);
     const xScaless = scaleBand().domain(reverseData).range([0, width]);
 
-   
-    tt.on("mouseover", function (e, d,i) {
+
+    tt.on("mouseover", function (e, d, i) {
       // console.log("ccc",d);
       var indexCount = count.findIndex(p => p.date === d.date);
       var indexGood = data11.findIndex(p => p.date === d.date);
       var indexLagging = data22.findIndex(p => p.date === d.date);
       var indexRisk = data33.findIndex(p => p.date === d.date);
 
-      var redData =[];
-      var yellowData =[];
-      var greenData =[];
+      var redData = [];
+      var yellowData = [];
+      var greenData = [];
       redData.push(data33[indexRisk]);
       yellowData.push(data22[indexLagging]);
       greenData.push(data11[indexGood]);
@@ -4674,62 +4681,63 @@ class DensityChart {
       // console.log("myyy risj=k", redData);
 
 
-// /*circles making Start
+      // /*circles making Start
       // console.log(data11[ind].value)
       gs
-      .selectAll()
-      .data(redData)
-      .enter()
-      .append("circle")
-      .attr("fill", "#D34C15")
-      // .style("opacity", 2)
-      .attr("stroke", "white")
-      .style("stroke-width", 2)
-      .attr("cx", function (d, i) {
-        // console.log("mouse", d)
-        return x(d.date)
-      })
-      .attr("cy", function (d) {
-        return y(d.value)
-      })
-      .attr("r", 4);
+        .selectAll()
+        .data(redData)
+        .enter()
+        .append("circle")
+        .attr("fill", "#D34C15")
+        // .style("opacity", 2)
+        .attr("stroke", "white")
+        .style("stroke-width", 2)
+        .attr("cx", function (d, i) {
+          // console.log("mouse", d)
+          return x(d.date)
+        })
+        .attr("cy", function (d) {
+          return y(d.value)
+        })
+        .attr("r", 4);
 
       gs.selectAll()
-      .data(yellowData)
-      .enter()
-      .append("circle")
-      .attr("fill", "#FFC145")
-      .style("opacity", 2)
-      .attr("stroke", "white")
-      .style("stroke-width", 2)
-      .attr("cx", function (d, i) {
-        return x(d.date)
-      })
-      .attr("cy", function (d) {
-        return y(d.value)
-      })
-      .attr("r", 4);
+        .data(yellowData)
+        .enter()
+        .append("circle")
+        .attr("fill", (yellowData[0].value === redData[0].value) ? "#72738E" : "#FFC145")
+        .style("opacity", 2)
+        .attr("stroke", "white")
+        .style("stroke-width", 2)
+        .attr("cx", function (d, i) {
+          return x(d.date)
+        })
+        .attr("cy", function (d) {
+          return y(d.value)
+        })
+        .attr("r", 4);
 
+      // console.log("red and yellow and green ", yellowData[0].value, greenData[0].value);
       gs.selectAll()
-      .data(greenData)
-      .enter()
-      .append("circle")
-      .attr("fill", "#89C30D")
-      .style("opacity", 2)
-      .attr("stroke", "white")
-      .style("stroke-width", 2)
-      .attr("cx", function (d, i) {
-        return x(d.date)
-      })
-      .attr("cy", function (d) {
-        return y(d.value)
-      })
-      .attr("r", 4);
+        .data(greenData)
+        .enter()
+        .append("circle")
+        .attr("fill", (greenData[0].value === yellowData[0].value) ? "#72738E" : (greenData[0].value === redData[0].value) ? "#72738E" : "#89C30D")
+        .style("opacity", 2)
+        .attr("stroke", "white")
+        .style("stroke-width", 2)
+        .attr("cx", function (d, i) {
+          return x(d.date)
+        })
+        .attr("cy", function (d) {
+          return y(d.value)
+        })
+        .attr("r", 4);
 
-    // Circles End  */
+      // Circles End  */
 
       Tooltip
-       
+
         .html(
           `<div class="density-main">
         <div class="d-flex density-header mb-1">
@@ -5074,7 +5082,7 @@ class funnelChart {
       // .attr("height", 15)
       .attr("x", function (d, i) {
         // return (x1 * (i) + 10)
-        return (x1 * (i) + (x1/2 ))
+        return (x1 * (i) + (x1 / 2))
       })
       .attr("y", function (d, i) {
 
@@ -5096,7 +5104,7 @@ class funnelChart {
       // .attr("width", 50)
       // .attr("height", 15)
       .attr("x", function (d, i) {
-        return (x1 * (i) + (x1/2 -30))
+        return (x1 * (i) + (x1 / 2 - 30))
 
         // return (x1 * (i) + 10)
       })
