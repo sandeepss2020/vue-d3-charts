@@ -4646,7 +4646,7 @@ class DensityChart {
         return y(d.value)
       })
       .attr("rx", 8)
-      .attr("ry", height);
+      .attr("ry", height).raise();
 
 
 
@@ -4688,6 +4688,7 @@ class DensityChart {
         .data(redData)
         .enter()
         .append("circle")
+        .attr("class","circle")
         .attr("fill", "#D34C15")
         // .style("opacity", 2)
         .attr("stroke", "white")
@@ -4700,11 +4701,18 @@ class DensityChart {
           return y(d.value)
         })
         .attr("r", 4);
+        // .on("mouseover",function () {
+        //   g.selectAll("ellipse").style("display","none");
+        // })
+        // .on("mouseout",function () {
+        //   g.selectAll("ellipse").style("display","initial");
+        // });
 
       gs.selectAll()
         .data(yellowData)
         .enter()
         .append("circle")
+        .attr("class","circle")
         .attr("fill", (yellowData[0].value === redData[0].value) ? "#72738E" : "#FFC145")
         .style("opacity", 2)
         .attr("stroke", "white")
@@ -4722,6 +4730,7 @@ class DensityChart {
         .data(greenData)
         .enter()
         .append("circle")
+        .attr("class","circle")
         .attr("fill", (greenData[0].value === yellowData[0].value) ? "#72738E" : (greenData[0].value === redData[0].value) ? "#72738E" : "#89C30D")
         .style("opacity", 2)
         .attr("stroke", "white")
@@ -4764,21 +4773,30 @@ class DensityChart {
         </div>
         </div>`
         )
-        .style("left", event.pageX + 0 + "px")
-        .style("top", event.pageY + "px")
+        .style("left", event.pageX + 5 + "px")
+        .style("top", event.pageY + 5 + "px")
         .style("opacity", 1)
 
         .style("visibility", "visible");
 
       Tooltip.style("display", "inline-block");
     });
+    // tt.on("mousemove", function(){
+    //   Tooltip.style("left", event.pageX + 0 + "px")
+    //   .style("top", event.pageY + "px")
+    // });
 
 
     tt.on("mouseout", function () {
       Tooltip.style("opacity", 0);
-      gs.selectAll("circle").remove();
+      gs.selectAll("circle")
+      // .attr("opacity", 0)
+      .remove();
+      // g.selectAll("ellipse").remove();
       Tooltip.style("display", "none");
     });
+
+
 
 
 
