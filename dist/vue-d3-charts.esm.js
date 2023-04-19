@@ -3544,7 +3544,7 @@ class DensityChart {
       .domain(xScaleDomain1)
       .range([0, width1]);
 
-    const xScale1 = d3.scalePoint().domain(xScaleDomain1).range([0, width1 - 10]);
+    const xScale1 = d3.scalePoint().domain(xScaleDomain1).range([0, width1 - 15]);
 
 
     const xScale11 = scaleLinear()
