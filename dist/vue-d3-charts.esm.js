@@ -652,7 +652,8 @@ class D3BarChart {
             .on("mouseout", function () {
               tooltip.html(``).style("visibility", "hidden");
               select(this).attr("fill", barColor);
-              tooltip.style("display", "none");
+              tooltip.style("display", "none")
+              d3.selectAll(".d3-tooltip").style("display", "none");;
             });
 
           // .attr("transform", "translate(25," + 0 + ")");
@@ -1740,6 +1741,1426 @@ class treeGraph {
     }
   }
 }
+
+
+
+class proctBarChart {
+  /*
+  async getGraph(type, roles) {
+    const heightOfScreen =
+      window.innerHeight ||
+      document.documentElement.clientHeight ||
+      document.body.clientHeight;
+    let res;
+    if (
+      roles.includes("GET_EVALUATOR_TEST") == true &&
+      roles.includes("GET_PROCTORING") == false
+    ) {
+      res = await postEvalTestGroups(payload);
+    } else {
+      res = await getProctorGroups(payload);
+    }
+    if (res.status == 200) {
+      this.totalGroups = res.data.data.total;
+      this.totalCandidates = res.data.data.totalCandidatesTakenTest;
+      let data = res.data.data.data;
+      const chartContainer = this.$refs.chartContainer;
+      const chartWidth = data.length * 90;
+      const chartHeight =
+        heightOfScreen <= 800 ? (heightOfScreen <= 700 ? 160 : 240) : 300;
+      const margin = { top: 20, right: 20, bottom: 50, left: 50 };
+      const width = chartWidth - margin.left - margin.right;
+      const height = chartHeight - margin.top - margin.bottom;
+      let x = d3
+        .scaleBand()
+        .range([0, width])
+        .padding(0.55)
+        .domain(data.map(d => d.groupName));
+      let y = d3
+        .scaleLinear()
+        .range([height, 0])
+        .domain([
+          0,
+          d3.max(
+            type === "CAN"
+              ? res.data.data.candCount
+              : type === "TEST"
+              ? res.data.data.testCount
+              : res.data.data.topicCount
+          ) + 5
+        ]);
+      let xAxis = d3
+        .axisBottom(x)
+        .tickSize(-height)
+        .tickFormat(function(d) {
+          // Replace long names with shortened versions
+          if (d.length > 10) {
+            return d.substring(0, 10) + "...";
+          } else {
+            return d;
+          }
+        });
+
+      let yAxis = d3
+        .axisLeft(y)
+        .tickSize(-width)
+        .ticks(5);
+
+      if (this.barGraphCreated === true) {
+        d3.select("#proctBarChart")
+          .selectAll("g")
+          .remove();
+      }
+
+      const svg = d3
+        .select("#proctBarChart")
+        .attr("width", chartWidth)
+        .attr("height", chartHeight)
+        .append("g")
+        .attr("transform", `translate(${margin.left},${margin.top})`);
+      svg
+        .append("g")
+        .attr("transform", `translate(0,${height})`)
+        .call(xAxis)
+        .selectAll("text");
+      // .style("text-anchor", "miidle")
+      // .attr("transform", "rotate(-10)");
+      svg.append("g").call(yAxis);
+      const rects = svg
+        .selectAll("rect")
+        .data(data)
+        .enter()
+        .append("rect")
+        .attr("x", d => x(d.groupName))
+        .attr("y", data =>
+          y(
+            type === "CAN"
+              ? data.candidateCount
+              : type === "TEST"
+              ? data.testCount
+              : data.topicCount
+          )
+        )
+        .attr("width", 40)
+        .attr(
+          "height",
+          data =>
+            height -
+            y(
+              type === "CAN"
+                ? data.candidateCount
+                : type === "TEST"
+                ? data.testCount
+                : data.topicCount
+            )
+        )
+        .attr("fill", "#3379B3");
+      var div = d3
+        .select("body")
+        .append("div")
+        .attr("class", "toolTip")
+        .classed("toolTipForBarGraph", true);
+
+      rects.on("mouseover", function(e, d) {
+        svg
+          .append("circle")
+          .attr("cx", () => x(d.groupName) + 20)
+          .attr("cy", () =>
+            y(
+              type === "CAN"
+                ? d.candidateCount
+                : type === "TEST"
+                ? d.testCount
+                : d.topicCount
+            )
+          )
+          .attr("r", 4)
+          .attr("fill", "#3379B3")
+          .attr("stroke-width", function() {
+            return 2;
+          })
+          .attr("stroke", "white");
+        div.style("left", e.pageX + "px");
+        div.style("top", e.pageY - 87 + "px");
+        div.style("display", "inline-block");
+        div.html(
+          `<div class="groupName">${d.groupName}
+          </div>
+          <div class="countDiv">
+          <div class="colorline"></div>
+          <div class="countDivOne">
+          
+           ${
+             type === "CAN"
+               ? "Total Candidates"
+               : type === "TEST"
+               ? "Total Tests"
+               : "Total Topics"
+           }
+          </div>
+          <div class="countDivTwo">
+
+          ${
+            type === "CAN"
+              ? d.candidateCount
+              : type === "TEST"
+              ? d.testCount
+              : d.topicCount
+          }
+          </div>
+          </div>
+          `
+        );
+      });
+
+      rects.on("mouseout", function() {
+        d3.select(this).attr("fill", "#3379B3");
+        svg.select("circle").remove();
+        div.style("display", "none");
+      });
+      this.barGraphCreated = true;
+      // chartContainer.scrollLeft ;
+      // document.querySelector('.linechartContainer').scrollLeft;
+      chartContainer.scrollLeft;
+      //  = (chartWidth - chartContainer.clientWidth) / 2;
+    }
+  }
+  */
+
+  async proctBarData(id,types, user, max_val, allBarData, xScaleDomain, barColor) {
+    // console.log("usserr typee", types);
+    script.barData = [];
+    script.allData = user;
+    // script.marks_data = user.count;
+    script.max = max_val;
+    allBarData.forEach((element) => {
+      script.barData.push(element);
+    });
+
+    // console.log(document.getElementById(id).innerHTML);
+
+
+    //1) d.x_axis  2) HIghest marks of BAR ; 3) Bar Color ; 4)bardata ; 5)y_axis
+    this.makeProctBarGraph(id, types,xScaleDomain, barColor);
+  }
+
+  makeProctBarGraph(id,types, xScaleDomain, barColor) {
+    let heightOfScreen =
+      window.innerHeight 
+      ||document.documentElement.clientHeight ||
+      document.body.clientHeight;
+
+    const rectWidth = 50;
+    // const svgHeight = 280;
+    const svgHeight = (heightOfScreen >= 1800)?800 :(heightOfScreen >= 1400)? 600 :(heightOfScreen >= 1000)?380
+     :(heightOfScreen >= 900)? 270: (heightOfScreen >= 800)? 250:(heightOfScreen >= 700)? 220 : 200;
+
+    const barWidth = 30;
+    let len = script.allData.length * rectWidth;
+    let margin = { top: 10, right: 35, bottom: 45, left: 40 },
+      height = svgHeight - margin.bottom,
+      width = len + (2 * rectWidth);
+
+    // For making the svg
+    const svg1 = select(id)
+      .append("svg")
+      .attr("height", svgHeight)
+      .attr("width", width);
+
+    const req_g = svg1
+      .append("g")
+      .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+
+    //SCALES START
+    if (script.max % 5 !== 0) {
+      script.max = script.max + (5 - (script.max % 5));
+    }
+
+    let xScale = d3.scalePoint()
+      .domain(xScaleDomain) //variable1??
+      .range([0, len]);
+
+    const yScale = scaleLinear()
+      .domain([0, script.max])
+      .range([0, svgHeight - margin.bottom - margin.top]);
+
+    const yScale1 = scaleLinear()
+      .domain([0, script.max])
+      .range([height, 0])
+      .nice();
+
+
+     
+    const x_axis = axisBottom(xScale)
+      .tickSize(-height)
+      .tickFormat(function (d) {
+        // Replace long names with shortened versions
+        if (d.length > 5) {
+          return d.slice(0, 5) + "..";
+        } else {
+          return d;
+        }
+      })
+      ,
+
+      xAxisTranslate = svgHeight - margin.bottom + margin.top;
+
+    // console.log("maxxx", script.max);
+    const y_axis = axisLeft(yScale1)
+      .tickSize(-(len + margin.right))
+      // .ticks(script.max <= 10 ? script.max
+      //   : script.max <= 29 ? (script.max + 5) / 5
+      //     : script.max <= 25 || ?);
+      .ticks(script.max < 5 ? script.max : 5);
+
+
+    const g = svg1
+      .append("g")
+      .attr("transform", "translate(" + (margin.left + margin.right) + "," + xAxisTranslate + ")");
+    // .attr("transform","translate(150,150)");
+    g.append("g")
+      .attr("class", "bar-x-axis")
+      .call(x_axis)
+      .selectAll("text")
+      .style("text-anchor", "end")
+      .style("color", "#A3A3A3")
+      .style("font", "Roboto")
+      .attr("dx", "-.8em")
+      .attr("dy", ".15em")
+      .attr("transform", function(d){
+        return d.length<4 ?
+       ( "translate(" + 12 + "," + 5 + ")") : d.length<7? ( "translate(" + 17 + "," + 5 + ")") : ( "translate(" + 25 + "," + 5 + ")") 
+      })
+      ;
+    // .attr("transform", "rotate(-30)");
+    // .attr("transform", "rotate()");
+
+    req_g
+      .append("g")
+      .attr("class", "bar-x-axis")
+      .call(y_axis)
+      .selectAll("text")
+      .style("text-anchor", "end")
+      .style("color", "#A3A3A3")
+      .style("font", "Roboto")
+      .attr("dx", "-.8em")
+      .attr("dy", ".15em")
+      .attr("transform", "translate(" + 0 + "," + 2 + ")")
+      ;
+
+
+      
+      //FOR Y axis Title
+
+      const yScaleText = scaleLinear()
+      .domain([0, script.max])
+      .range([height, 0])
+    
+    const y_axis_title = axisLeft(yScaleText)
+    .tickFormat("")
+    .tickSizeOuter(0)
+    .tickSizeInner(0);
+      const y_title = svg1
+      .append("g")
+      .attr("transform", "translate(" + 7 + "," + (-height/2) + ")");
+     const y_tittle_txt = y_title
+      .append("g")
+      .call(y_axis_title);
+      y_tittle_txt.select('.domain').attr('stroke-width', 0);
+      y_tittle_txt.select("text")
+      .style("text-anchor", "middle")
+      .style("color", "#5D5D5D")
+      .style("font-family", "poppins")
+      .style("font-size", "12px")
+      .style("font-weight", "500")
+
+      .attr("dx", "-.8em")
+      .attr("dy", ".15em")
+      .attr("transform", "rotate(-90)")
+      .text(function(){
+        return (types === "CAN") ? `Candidate Count`: (types === "TEST") ? "Test Count":  "Topic Count"
+      });
+
+
+ 
+      const xScaleText = d3.scalePoint()
+      .domain(xScaleDomain)
+      .range([0,len])
+      const x_axis_title = axisBottom(xScaleText)
+      .tickFormat("")
+      .tickSizeOuter(0)
+      .tickSizeInner(0);
+
+        const x_title = svg1
+        .append("g")
+        .attr("transform", "translate(" + (margin.left+margin.right) + "," + (height + 30) + ")");
+       
+        const x_tittle_txt = x_title
+        .append("g")
+        .call(x_axis_title)
+        .attr("position","-webkit-sticky")
+        .attr("position","sticky");
+
+        x_tittle_txt.select('.domain').attr('stroke-width', 0);
+        x_tittle_txt.select("text")
+        
+        .style("text-anchor", "middle")
+        .style("color", "#5D5D5D")
+        .style("font-family", "poppins")
+        .style("font-size", "12px")
+        .style("font-weight", "500")
+        .attr("dx", "-.8em")
+        .attr("dy", ".15em")
+        .text("Groups");
+
+
+    //SCALES END
+    const t = select("svg1").transition().duration(2000);
+
+    const g1 = svg1
+      .append("g")
+      .attr("transform", "translate(" + 25 + "," + margin.top + ")");
+
+    //  /*
+
+    
+    var div = d3
+          .select("body")
+          .append("div")
+          .attr("class", "toolTip")
+          .style("position", "absolute")
+          .style("visibility", "hidden")
+          .classed("toolTipForBarGraph", true);
+          
+    const rect = g1
+      .selectAll("rect")
+      .data(script.allData, (d) => d)
+      .join(
+        (enter) => {
+          const rect = enter
+            .append("rect")
+            .attr("width", rectWidth - barWidth)
+            .attr("fill", barColor)
+            .attr("x", (d, i) => i * rectWidth)
+            .attr("y", function (p) {
+              return height;
+            })
+            .attr("height", function (d) {
+              return 0;
+            })
+            .attr("transform", "translate(" + margin.left + "," + 0 + ")")
+            .on("mouseover", function(e, d) {
+              g1
+                .append("circle")
+                .attr("transform", "translate(" + margin.left + "," + 0 + ")")
+                .attr("cx", () => xScale(d.groupName)+ ((rectWidth - barWidth)/2))
+                .attr("cy", () => {
+                return (types === "CAN") ? height - yScale(d.candidateCount): (types === "TEST") ? height - yScale(d.testCount) :  height - yScale(d.topicCount)
+                }
+   
+                )
+                .attr("r", 4)
+                .attr("fill", "#3379B3")
+                .attr("stroke-width", function() {
+                  return 2;
+                })
+                .attr("stroke", "white");
+              div.style("left", e.pageX + 10 + "px");
+              div.style("top", e.pageY - 87 + "px");
+              
+              div.style("display", "inline-block")
+              .style("visibility", "visible")
+              .html(
+                `<div class="groupName">${d.groupName}
+                </div>
+                <div class="countDiv">
+                <div class="colorline"></div>
+                <div class="countDivOne">
+                
+                 ${
+                   types === "CAN"
+                     ? "Total Candidates"
+                     : types === "TEST"
+                     ? "Total Tests"
+                     : "Total Topics"
+                 }
+                </div>
+                <div class="countDivTwo">
+    
+                ${
+                  types === "CAN"
+                    ? d.candidateCount
+                    : types === "TEST"
+                    ? d.testCount
+                    : d.topicCount
+                }
+                </div>
+                </div>
+                `
+              )
+            })     
+            .on("mouseout", function() {
+              d3.select(this).attr("fill", "#3379B3");
+              div.html(``).style("visibility", "hidden");
+              div.html(``).style("display", "none");
+              g1.select("circle").remove();
+              div.style("display", "none");
+              d3.selectAll(".toolTip").style("display", "none");             
+            });
+
+
+          return rect;
+        },
+        (update) => update,
+        (exit) => {
+          exit
+            .transition(t)
+            .attr("y", function (p) {
+              return svgHeight - margin.bottom - yScale(p);
+            })
+            .attr("height", 0)
+            .remove();
+        }
+      )
+      // animate enter + update selection
+      .transition()
+      .duration(2000)
+      .delay((d, i) => i * 10)
+      .attr("x", function(d, i) {
+        // console.log(d)
+        return xScale(d.groupName)
+      } )
+      .attr("y", function (d) {
+        return  (types === "TOPIC") ?
+        height -  yScale(d.topicCount): (types === "TEST") ? height - yScale(d.testCount): height - yScale(d.candidateCount);
+      })
+      .attr("height", function (d) {
+        return  (types === "TOPIC") ?
+        yScale(d.topicCount): (types === "TEST") ? yScale(d.testCount):yScale(d.candidateCount);        
+      })
+      .attr("width", rectWidth - barWidth)
+
+
+
+  }
+}
+
+class proctLineChart{
+  async makeProcLineChart(id,data){
+    const margin = { top: 20, right: 20, bottom: 50, left: 50 };
+    // const chartWidth = 950 ;
+    if (window.innerWidth >= 3000) {
+      var chartWidth = window.innerWidth - 1700
+      var chartHeight = 700;
+    }
+    else if (window.innerWidth >= 2500) {
+      var chartWidth = window.innerWidth - 1250
+      var chartHeight = 550;
+
+    }
+    else if (window.innerWidth >= 2000) {
+      var chartWidth = window.innerWidth - 1100
+      var chartHeight = 450;
+
+    }
+    else if (window.innerWidth >= 1900) {
+      var chartWidth = window.innerWidth - 950
+      var chartHeight = 290;
+    }
+    else if (window.innerWidth >= 1600) {
+      var chartWidth = window.innerWidth - 800
+      var chartHeight = 220;
+    }
+    else if (window.innerWidth >= 1200) {
+      var chartWidth = window.innerWidth - 650
+      var chartHeight = 185;
+
+    }
+    // else if (window.screen.availWidth >= 2000) {
+    //   var chartWidth = window.innerWidth - 1100;
+    // }
+
+    // var chartHeight = 200;
+    const width = chartWidth - margin.left - margin.right;
+    const height = chartHeight - margin.top - margin.bottom;
+
+
+    const svg = d3
+        .select(id)
+        .append("svg")
+        .attr("width", chartWidth)
+        .attr("height", chartHeight)
+        // .attr("viewBox", `0 0 ${chartWidth} ${chartHeight}`)
+
+        // .style("background-color","yellow");
+
+        const graph = svg
+        .append("g")
+        .attr("width", width)
+        .attr("height", height)
+        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+        let reverseData = data.map(d => d.key);
+        // console.log("reversedata",reverseData);
+
+        const xScale = d3
+        .scalePoint()
+        .domain(reverseData)
+        .range([0, width])
+        .padding(0.55);
+
+
+        let maxi = d3.max(data, d => d.totalCandidates);
+        if (maxi % 4 !== 0) {
+          maxi = maxi + (4 - (maxi % 4));
+        }
+
+        // console.log("maxxx ", maxi);
+        const yScale = d3.scaleLinear().domain([0, maxi]).range([height, 0]);
+        const xAxisGroup = graph
+        .append("g")
+        .attr("transform", "translate(" + 0 + "," + height + ")");
+
+
+
+      
+      const xAxis = axisBottom(xScale).tickSize(-height);
+      const yAxis = d3
+        .axisLeft(yScale)
+        .ticks(maxi<4 ? maxi : 4)
+        .tickSize(-width);
+
+      xAxisGroup
+      // .append("g")
+      // .attr("class", "bar-x-axis")
+        .call(xAxis)
+        .selectAll("text")
+        .attr("transform", "translate(0,10)");
+        const yAxisGroup = graph.append("g").call(yAxis);
+
+        const circles = graph.selectAll("circle").data(data);
+
+        const gradient = svg
+          .append("defs")
+          .append("linearGradient")
+          .attr("id", "bar-gradient")
+          .attr("x1", "0%")
+          .attr("y1", "0%")
+          .attr("x2", "0%")
+          .attr("y2", "100%");
+  
+        gradient
+          .append("stop")
+          .attr("offset", "0%")
+          .attr("stop-color", "#ffffff");
+  
+        gradient
+          .append("stop")
+          .attr("offset", "100%")
+          .attr("stop-color", "#97d9e1");
+
+
+          var div = d3
+          .select("body")
+          .append("div")
+          .attr("class", "toolTip")
+          .classed("toolTipForBarGraph", true);
+        circles
+          .enter()
+          .append("circle")
+          .attr("r", 6)
+          .attr("cx", data => xScale(data.key))
+          .attr("cy", data => yScale(data.totalCandidates))
+          .attr("fill", "#6C9F9B")
+          .attr("stroke-width", function() {
+            return 1;
+          })
+          .attr("stroke", "#3379B3")
+          .on("mouseover", function(e, d) {
+            graph
+              .append("rect")
+              .attr("x", () => xScale(d.key) - margin.right)
+              .attr("y", () => yScale(d.totalCandidates) + margin.right)
+              .attr("width", 40)
+              .attr("height", () =>{
+                return (height - yScale(d.totalCandidates) - margin.right)>0 ?
+                ( height - yScale(d.totalCandidates) - margin.right) : 0
+                })
+              .attr("fill", "url(#bar-gradient)");
+  
+            div.style("left", e.pageX - 90 + "px");
+            div.style("top", e.pageY - 130 + "px");
+            div.style("display", "inline-block");
+            div.html(
+              `<div class="groupNameLine">
+              <div class="mr-3">
+             Total Evaluated Candidates 
+  </div>
+  <div>${d.totalEvaluated}</div>
+              </div>
+              <div class="countDivLine">
+             <div class="countDivData">
+              <div class="colorlineLine"></div>
+             <div class="graphFonts" >
+              <div class="d-flex align-items-center justify-content-between p-2">
+            <div>  Total Candidates</div>
+  <div>
+  ${d.totalCandidates}
+              </div>
+             </div>
+  
+              <div class="d-flex align-items-center justify-content-between p-2">
+            <div>  Total Tests</div>
+  
+             <div> ${d.totalTests}</div>
+              </div>
+             </div>
+             </div>
+              </div>
+              `
+            );
+          })
+          .on("mouseout", function() {
+            graph.select("rect").remove();
+            div.style("display", "none");
+          });
+        const line = d3
+          .line()
+          .x(d => xScale(d.key))
+          .y(d => yScale(d.totalCandidates))
+          .curve(d3.curveMonotoneX);
+        // .curve(d3.curveStep);
+  
+        graph
+          .append("path")
+          .data([data])
+          .attr("fill", "none")
+          .attr("stroke", "#A9A9A9")
+          .attr("d", line);
+  
+  }
+
+}
+
+
+
+/*
+// class reclinechart {
+//   //   async mygraph1(data) {
+
+//   //     // console.log("data is" , data)
+
+//   //     // this.dataForLineGraph = Object.keys(res.data.data);
+//   //     const margin = { top: 20, right: 20, bottom: 30, left: 50 };
+//   //     // const chartContainer = this.$refs.linechartContainer;
+//   //     const chartWidth = 400;
+//   //     const chartHeight = 150;
+//   //     const width = chartWidth - margin.left - margin.right;
+//   //     const height = chartHeight - margin.top - margin.bottom;
+//   //     if (this.lineGraphCreated === true) {
+//   //       d3.select("#recgraph1")
+//   //         .selectAll("g")
+//   //         .remove();
+//   //     }
+//   //     const svg = d3
+//   //       .select("#recgraph1")
+//   //       .append("svg")
+//   //       .attr("width", chartWidth)
+//   //       .attr("height", chartHeight)
+//   //       // .style("background-color", "black");
+
+//   //     const graph = svg
+//   //       .append("g")
+//   //       .attr("width", width)
+//   //       .attr("height", height)
+//   //       .attr("transform", `translate(${margin.left},${margin.top})`);
+
+//   //     // for y data
+//   //     const reverseData = data.map((d) => d.testName);
+//   //      const max = Math.max(...data.map((o) => o.totalCandidates));
+//   //     const xScale = d3
+//   //       .scaleLinear()
+//   //       // .padding(0.25)
+//   //       .domain([0, max])
+//   //       .range([0, width]);
+
+//   //     const xScale1 = d3
+//   //       .scaleLinear()
+//   //       // .padding(0.25)
+//   //       .domain([0, max])
+//   //       .range([width,0]);
+
+//   //     const yScale = d3.scaleBand().domain(reverseData).range([height,0]);
+//   //         // const yScale1 = d3.scaleBand().domain(reverseData).range([height,0]);
+
+//   //     const xAxisGroup = graph
+//   //       .append("g")
+//   //       .attr("transform", `translate(0,${height})`);
+//   //     const yAxisGroup = graph.append("g");
+
+//   //     const xAxis = d3.axisBottom(xScale).tickSize(-height);
+//   //     const yAxis = d3
+//   //       .axisLeft(yScale)
+//   //       .ticks(4)
+//   //       .tickSize(-width);
+//   //     xAxisGroup
+//   //       .call(xAxis)
+//   //       .style("color", "#A3A3A3")
+//   //       .selectAll("text")
+//   //       .attr("transform", "translate(0,10)");
+//   //     yAxisGroup.call(yAxis) .style("color", "#A3A3A3");
+
+//   //     const circles = graph.selectAll("circle").data(data);
+
+//   //     const gradient = svg
+//   //       .append("defs")
+//   //       .append("linearGradient")
+//   //       .attr("id", "bar-gradient")
+//   //       .attr("x1", "0%")
+//   //       .attr("y1", "0%")
+//   //       .attr("x2", "0%")
+//   //       .attr("y2", "100%");
+
+//   //     gradient
+//   //       .append("stop")
+//   //       .attr("offset", "0%")
+//   //       .attr("stop-color", "#ffffff");
+
+//   //     gradient
+//   //       .append("stop")
+//   //       .attr("offset", "100%")
+//   //       .attr("stop-color", "#97d9e1");
+
+//   //     var div = d3
+//   //       .select("body")
+//   //       .append("div")
+//   //       .attr("class", "toolTip")
+//   //       .classed("toolTipForBarGraph", true);
+//   //     circles
+//   //       .enter()
+//   //       .append("circle")
+//   //       .attr("r", 5)
+//   //       .attr("cx", (data) => xScale(data.totalCandidates))
+//   //       .attr("cy", (data) => yScale(data.testName)+10)
+//   //       .attr("fill", "#265B86")
+//   //       .attr("stroke-width", function () {
+//   //         return 2;
+//   //       })
+//   //       // .attr("stroke", "#3379B3")
+//   //       .attr("stroke", "white")
+//   //       .style("filter", "url(#drop-shadow)")
+//   //       .on("click", function (e, d) {
+//   //         // console.log(e,d)
+//   //         // graph
+//   //         //   .append("rect")
+//   //         //   .attr("x", () => xScale(d.totalCandidates)-20)
+//   //         //   .attr("y", () => yScale(d.testName) + 20)
+//   //         //   .attr("width", 40)
+//   //         //   .attr("height", () => height - yScale(d.testName) - 20)
+//   //         //   .attr("fill", "url(#bar-gradient)");
+
+//   //         // div.style("left", e.pageX - 90 + "px");
+//   //         // div.style("top", e.pageY - 130 + "px");
+//   //         // div.style("display", "inline-block");
+//   // //         div.html(
+//   // //           `<div class="groupNameLine">
+//   // //             <div class="mr-3">
+//   // //            Total Evaluated Candidates
+//   // // </div>
+//   // // <div>${d.totalEvaluated}</div>
+//   // //             </div>
+//   // //             <div class="countDivLine">
+//   // //            <div class="countDivData">
+//   // //             <div class="colorlineLine"></div>
+//   // //            <div class="graphFonts" >
+//   // //             <div class="d-flex align-items-center justify-content-between p-2">
+//   // //           <div>  Total Candidates</div>
+//   // // <div>
+//   // // ${d.totalCandidates}
+//   // //             </div>
+//   // //            </div>
+
+//   // //             <div class="d-flex align-items-center justify-content-between p-2">
+//   // //           <div>  Total Tests</div>
+
+//   // //            <div> ${d.totalTests}</div>
+//   // //             </div>
+//   // //            </div>
+//   // //            </div>
+//   // //             </div>
+//   // //             `
+//   // //         );
+//   //       })
+//   //       .on("mouseout", function () {
+
+//   //         // graph.select("rect").remove();
+//   //         // div.style("display", "none");
+//   //       });
+
+//   //     var defs = svg.append("defs");
+//   //      var filter = defs
+//   //       .append("filter")
+//   //       .attr("id", "drop-shadow")
+//   //       .attr("height", "130%");
+
+//   //      filter
+//   //       .append("feGaussianBlur")
+//   //       .attr("in", "SourceAlpha")
+//   //       .attr("stdDeviation", 0)
+//   //       .attr("result", "blur");
+//   //      filter
+//   //       .append("feOffset")
+//   //       .attr("in", "blur")
+//   //       .attr("dx", 0)
+//   //       .attr("dy", 0)
+//   //       .attr("result", "offsetBlur");
+//   //      var feMerge = filter.append("feMerge");
+
+//   //     feMerge.append("feMergeNode").attr("in", "offsetBlur");
+//   //     feMerge.append("feMergeNode").attr("in", "SourceGraphic");
+
+//   //     //end
+//   //     const line = d3
+//   //       .line()
+//   //       .x((d) => xScale(d.totalCandidates))
+//   //       .y((d) => yScale(d.testName));
+//   //         // .curve(d3.curveCardinal);
+//   //    const g4 = svg
+//   //         .append("g")
+//   //         .attr("transform", "translate(" + 50 + "," + 30 + ")");
+//   //       g4
+//   //         .append("path")
+//   //         .datum(data)
+//   //         .attr("fill", "none")
+//   //         .attr("stroke", "#3379B3")
+//   //         .attr("d", line);
+
+//   //     this.lineGraphCreated = true;
+//   //   }
+
+//   async mygraph1(data) {
+//     data = data[3];
+//     console.log("data is", data);
+//     //  console.log("chhhk dddd",typeof(data))
+
+//     // this.dataForLineGraph = Object.keys(res.data.data);
+//     const margin = { top: 20, right: 20, bottom: 30, left: 50 };
+//     // const chartContainer = this.$refs.linechartContainer;
+//     const chartWidth = 400;
+//     const chartHeight = 150;
+//     const width = chartWidth - margin.left - margin.right;
+//     const height = chartHeight - margin.top - margin.bottom;
+//     if (this.lineGraphCreated === true) {
+//       d3.select("#recgraph1").selectAll("g").remove();
+//     }
+//     const svg = d3
+//       .select("#recgraph1")
+//       .append("svg")
+//       .attr("width", chartWidth)
+//       .attr("height", chartHeight);
+//     // .style("background-color", "black");
+
+//     const graph = svg
+//       .append("g")
+//       .attr("width", width)
+//       .attr("height", height)
+//       .attr("transform", `translate(${margin.left},${margin.top})`);
+
+//     // for y data
+//     //  const reverseData = data.map((d) => d.testName);
+//     const reverseData = data.progress;
+//     const name = reverseData.map((d) => d.level);
+//     //  let reverseData = []
+//     //  for (let i = 0; i < chk.length; i++)
+//     //  {
+//     //    for (let j = 0; j < chk[i].length;j++)
+//     //         reverseData.push(chk[i][j].Level)
+//     //    }
+//     // const chks = chk.map((d)=>d)
+
+//     console.log("reverse", reverseData);
+//     console.log("nameee", name);
+
+//     //  const max = Math.max(...data.map((o) => o.progress.length));
+//     const max = reverseData.length;
+//     console.log("chhhk", max);
+//     const xScale = d3
+//       .scaleLinear()
+//       // .padding(0.25)
+//       .domain([0, max])
+//       .range([0, width]);
+//     const xScale1 = d3
+//       .scaleLinear()
+//       // .padding(0.25)
+//       .domain([0, max])
+//       .range([width, 0]);
+
+//     const yScale = d3.scaleBand().domain(name).range([height, 0]);
+//     const xAxisGroup = graph
+//       .append("g")
+//       .attr("transform", `translate(0,${height})`);
+//     const yAxisGroup = graph.append("g");
+
+//     const xAxis = d3.axisBottom(xScale).tickSize(-height).ticks(max);
+//     const yAxis = d3.axisLeft(yScale).ticks(4).tickSize(-width);
+//     xAxisGroup
+//       .call(xAxis)
+//       .style("color", "#A3A3A3")
+//       .selectAll("text")
+//       .attr("transform", "translate(0,10)");
+//     yAxisGroup.call(yAxis).style("color", "#A3A3A3");
+
+//     const circles = graph.selectAll("circle").data(reverseData);
+
+//     circles
+//       .enter()
+//       .append("circle")
+//       .attr("r", 5)
+//       .attr("cx", (data, i) => xScale(i))
+//       .attr("cy", (reverseData) => yScale(reverseData.level) + 10)
+//       .attr("fill", "#265B86")
+//       .attr("stroke-width", function () {
+//         return 2;
+//       })
+//       // .attr("stroke", "#3379B3")
+//       .attr("stroke", "white")
+//       .style("filter", "url(#drop-shadow)")
+//       .on("mouseover", function (e, d) {})
+//       .on("mouseout", function () {});
+
+//     var defs = svg.append("defs");
+//     var filter = defs
+//       .append("filter")
+//       .attr("id", "drop-shadow")
+//       .attr("height", "130%");
+
+//     filter
+//       .append("feGaussianBlur")
+//       .attr("in", "SourceAlpha")
+//       .attr("stdDeviation", 0)
+//       .attr("result", "blur");
+//     filter
+//       .append("feOffset")
+//       .attr("in", "blur")
+//       .attr("dx", 0)
+//       .attr("dy", 0)
+//       .attr("result", "offsetBlur");
+//     var feMerge = filter.append("feMerge");
+
+//     feMerge.append("feMergeNode").attr("in", "offsetBlur");
+//     feMerge.append("feMergeNode").attr("in", "SourceGraphic");
+
+//     //end
+//     const line = d3
+//       .line()
+//       .x((data, i) => xScale(i))
+//       .y((reverseData) => yScale(reverseData.level) + 10);
+//     // .curve(d3.curveCardinal);
+
+//     graph
+//       .append("path")
+//       .data([reverseData])
+//       .attr("fill", "none")
+//       .attr("stroke", "#3379B3")
+//       .attr("d", line);
+
+//     this.lineGraphCreated = true;
+//   }
+
+//   async mygraph2(data) {
+//     data = data[0];
+//     console.log("data is", data);
+//     //  console.log("chhhk dddd",typeof(data))
+
+//     // this.dataForLineGraph = Object.keys(res.data.data);
+//     const margin = { top: 20, right: 20, bottom: 30, left: 50 };
+//     // const chartContainer = this.$refs.linechartContainer;
+//     const chartWidth = 400;
+//     const chartHeight = 150;
+//     const width = chartWidth - margin.left - margin.right;
+//     const height = chartHeight - margin.top - margin.bottom;
+//     if (this.lineGraphCreated === true) {
+//       d3.select("#recgraph2").selectAll("g").remove();
+//     }
+//     const svg = d3
+//       .select("#recgraph2")
+//       .append("svg")
+//       .attr("width", chartWidth)
+//       .attr("height", chartHeight);
+//     // .style("background-color", "black");
+
+//     const graph = svg
+//       .append("g")
+//       .attr("width", width)
+//       .attr("height", height)
+//       .attr("transform", `translate(${margin.left},${margin.top})`);
+
+//     // for y data
+//     //  const reverseData = data.map((d) => d.testName);
+//     const reverseData = data.progress;
+//     const name = reverseData.map((d) => d.level);
+//     //  let reverseData = []
+//     //  for (let i = 0; i < chk.length; i++)
+//     //  {
+//     //    for (let j = 0; j < chk[i].length;j++)
+//     //         reverseData.push(chk[i][j].Level)
+//     //    }
+//     // const chks = chk.map((d)=>d)
+
+//     console.log("reverse", reverseData);
+//     console.log("nameee", name);
+
+//     //  const max = Math.max(...data.map((o) => o.progress.length));
+//     const max = reverseData.length;
+//     console.log("chhhk", max);
+//     const xScale = d3
+//       .scaleLinear()
+//       // .padding(0.25)
+//       .domain([0, max])
+//       .range([0, width]);
+//     const xScale1 = d3
+//       .scaleLinear()
+//       // .padding(0.25)
+//       .domain([0, max])
+//       .range([width, 0]);
+
+//     const yScale = d3.scaleBand().domain(name).range([height, 0]);
+//     const xAxisGroup = graph
+//       .append("g")
+//       .attr("transform", `translate(0,${height})`);
+//     const yAxisGroup = graph.append("g");
+
+//     const xAxis = d3.axisBottom(xScale).tickSize(-height).ticks(max);
+//     const yAxis = d3.axisLeft(yScale).ticks(4).tickSize(-width);
+//     xAxisGroup
+//       .call(xAxis)
+//       .style("color", "#A3A3A3")
+//       .selectAll("text")
+//       .attr("transform", "translate(0,10)");
+//     yAxisGroup.call(yAxis).style("color", "#A3A3A3");
+
+//     const circles = graph.selectAll("circle").data(reverseData);
+
+//     circles
+//       .enter()
+//       .append("circle")
+//       .attr("r", 5)
+//       .attr("cx", (data, i) => xScale(i))
+//       .attr("cy", (reverseData) => yScale(reverseData.level) + 50)
+//       .attr("fill", "#265B86")
+//       .attr("stroke-width", function () {
+//         return 2;
+//       })
+//       // .attr("stroke", "#3379B3")
+//       .attr("stroke", "white")
+//       .style("filter", "url(#drop-shadow)")
+//       .on("mouseover", function (e, d) {})
+//       .on("mouseout", function () {});
+
+//     var defs = svg.append("defs");
+//     var filter = defs
+//       .append("filter")
+//       .attr("id", "drop-shadow")
+//       .attr("height", "130%");
+
+//     filter
+//       .append("feGaussianBlur")
+//       .attr("in", "SourceAlpha")
+//       .attr("stdDeviation", 0)
+//       .attr("result", "blur");
+//     filter
+//       .append("feOffset")
+//       .attr("in", "blur")
+//       .attr("dx", 0)
+//       .attr("dy", 0)
+//       .attr("result", "offsetBlur");
+//     var feMerge = filter.append("feMerge");
+
+//     feMerge.append("feMergeNode").attr("in", "offsetBlur");
+//     feMerge.append("feMergeNode").attr("in", "SourceGraphic");
+
+//     //end
+//     const line = d3
+//       .line()
+//       .x((data, i) => xScale(i))
+//       .y((reverseData) => yScale(reverseData.level) + 10);
+//     // .curve(d3.curveCardinal);
+
+//     graph
+//       .append("path")
+//       .data([reverseData])
+//       .attr("fill", "none")
+//       .attr("stroke", "#3379B3")
+//       .attr("d", line);
+
+//     this.lineGraphCreated = true;
+//   }
+
+//   async mygraph3(data) {
+//     data = data[1];
+//     console.log("data is", data);
+//     //  console.log("chhhk dddd",typeof(data))
+
+//     // this.dataForLineGraph = Object.keys(res.data.data);
+//     const margin = { top: 20, right: 20, bottom: 30, left: 50 };
+//     // const chartContainer = this.$refs.linechartContainer;
+//     const chartWidth = 400;
+//     const chartHeight = 150;
+//     const width = chartWidth - margin.left - margin.right;
+//     const height = chartHeight - margin.top - margin.bottom;
+//     if (this.lineGraphCreated === true) {
+//       d3.select("#recgraph3").selectAll("g").remove();
+//     }
+//     const svg = d3
+//       .select("#recgraph3")
+//       .append("svg")
+//       .attr("width", chartWidth)
+//       .attr("height", chartHeight);
+//     // .style("background-color", "black");
+
+//     const graph = svg
+//       .append("g")
+//       .attr("width", width)
+//       .attr("height", height)
+//       .attr("transform", `translate(${margin.left},${margin.top})`);
+
+//     // for y data
+//     //  const reverseData = data.map((d) => d.testName);
+//     const reverseData = data.progress;
+//     const name = reverseData.map((d) => d.level);
+//     //  let reverseData = []
+//     //  for (let i = 0; i < chk.length; i++)
+//     //  {
+//     //    for (let j = 0; j < chk[i].length;j++)
+//     //         reverseData.push(chk[i][j].Level)
+//     //    }
+//     // const chks = chk.map((d)=>d)
+
+//     console.log("reverse", reverseData);
+//     console.log("nameee", name);
+
+//     //  const max = Math.max(...data.map((o) => o.progress.length));
+//     const max = reverseData.length;
+//     console.log("chhhk", max);
+//     const xScale = d3
+//       .scaleLinear()
+//       // .padding(0.25)
+//       .domain([0, max])
+//       .range([0, width]);
+//     const xScale1 = d3
+//       .scaleLinear()
+//       // .padding(0.25)
+//       .domain([0, max])
+//       .range([width, 0]);
+
+//     const yScale = d3.scaleBand().domain(name).range([height, 0]);
+//     const xAxisGroup = graph
+//       .append("g")
+//       .attr("transform", `translate(0,${height})`);
+//     const yAxisGroup = graph.append("g");
+
+//     const xAxis = d3.axisBottom(xScale).tickSize(-height).ticks(max);
+//     const yAxis = d3.axisLeft(yScale).ticks(4).tickSize(-width);
+//     xAxisGroup
+//       .call(xAxis)
+//       .style("color", "#A3A3A3")
+//       .selectAll("text")
+//       .attr("transform", "translate(0,10)");
+//     yAxisGroup.call(yAxis).style("color", "#A3A3A3");
+
+//     const circles = graph.selectAll("circle").data(reverseData);
+
+//     circles
+//       .enter()
+//       .append("circle")
+//       .attr("r", 5)
+//       .attr("cx", (data, i) => xScale(i))
+//       .attr("cy", (reverseData) => yScale(reverseData.level) + 10)
+//       .attr("fill", "#265B86")
+//       .attr("stroke-width", function () {
+//         return 2;
+//       })
+//       // .attr("stroke", "#3379B3")
+//       .attr("stroke", "white")
+//       .style("filter", "url(#drop-shadow)")
+//       .on("mouseover", function (e, d) {})
+//       .on("mouseout", function () {});
+
+//     var defs = svg.append("defs");
+//     var filter = defs
+//       .append("filter")
+//       .attr("id", "drop-shadow")
+//       .attr("height", "130%");
+
+//     filter
+//       .append("feGaussianBlur")
+//       .attr("in", "SourceAlpha")
+//       .attr("stdDeviation", 0)
+//       .attr("result", "blur");
+//     filter
+//       .append("feOffset")
+//       .attr("in", "blur")
+//       .attr("dx", 0)
+//       .attr("dy", 0)
+//       .attr("result", "offsetBlur");
+//     var feMerge = filter.append("feMerge");
+
+//     feMerge.append("feMergeNode").attr("in", "offsetBlur");
+//     feMerge.append("feMergeNode").attr("in", "SourceGraphic");
+
+//     //end
+//     const line = d3
+//       .line()
+//       .x((data, i) => xScale(i))
+//       .y((reverseData) => yScale(reverseData.level) + 10);
+//     // .curve(d3.curveCardinal);
+
+//     graph
+//       .append("path")
+//       .data([reverseData])
+//       .attr("fill", "none")
+//       .attr("stroke", "#3379B3")
+//       .attr("d", line);
+
+//     this.lineGraphCreated = true;
+//   }
+
+//   async mygraph4(data) {
+//     data = data[2];
+//     console.log("data is", data);
+//     //  console.log("chhhk dddd",typeof(data))
+
+//     // this.dataForLineGraph = Object.keys(res.data.data);
+//     const margin = { top: 20, right: 20, bottom: 30, left: 50 };
+//     // const chartContainer = this.$refs.linechartContainer;
+//     const chartWidth = 400;
+//     const chartHeight = 150;
+//     const width = chartWidth - margin.left - margin.right;
+//     const height = chartHeight - margin.top - margin.bottom;
+//     if (this.lineGraphCreated === true) {
+//       d3.select("#recgraph4").selectAll("g").remove();
+//     }
+//     const svg = d3
+//       .select("#recgraph4")
+//       .append("svg")
+//       .attr("width", chartWidth)
+//       .attr("height", chartHeight);
+//     // .style("background-color", "black");
+
+//     const graph = svg
+//       .append("g")
+//       .attr("width", width)
+//       .attr("height", height)
+//       .attr("transform", `translate(${margin.left},${margin.top})`);
+
+//     // for y data
+//     //  const reverseData = data.map((d) => d.testName);
+//     const reverseData = data.progress;
+//     const name = reverseData.map((d) => d.level);
+//     //  let reverseData = []
+//     //  for (let i = 0; i < chk.length; i++)
+//     //  {
+//     //    for (let j = 0; j < chk[i].length;j++)
+//     //         reverseData.push(chk[i][j].Level)
+//     //    }
+//     // const chks = chk.map((d)=>d)
+
+//     console.log("reverse", reverseData);
+//     console.log("nameee", name);
+
+//     //  const max = Math.max(...data.map((o) => o.progress.length));
+//     const max = reverseData.length;
+//     console.log("chhhk", max);
+//     const xScale = d3
+//       .scaleLinear()
+//       // .padding(0.25)
+//       .domain([0, max])
+//       .range([0, width]);
+
+//     const xScale1 = d3
+//       .scaleLinear()
+//       // .padding(0.25)
+//       .domain([0, max])
+//       .range([width, 0]);
+
+//     const yScale = d3.scaleBand().domain(name).range([height, 0]);
+//     const xAxisGroup = graph
+//       .append("g")
+//       .attr("transform", `translate(0,${height})`);
+//     const yAxisGroup = graph.append("g");
+
+//     const xAxis = d3.axisBottom(xScale).tickSize(-height);
+//     const yAxis = d3.axisLeft(yScale).ticks(4).tickSize(-width);
+//     xAxisGroup
+//       .call(xAxis)
+//       .style("color", "#A3A3A3")
+//       .selectAll("text")
+//       .attr("transform", "translate(0,10)");
+//     yAxisGroup.call(yAxis).style("color", "#A3A3A3");
+
+//     const circles = graph.selectAll("circle").data(reverseData);
+
+//     circles
+//       .enter()
+//       .append("circle")
+//       .attr("r", 5)
+//       .attr("cx", (data, i) => xScale(i))
+//       .attr("cy", (reverseData) => yScale(reverseData.level) + 10)
+//       .attr("fill", "#265B86")
+//       .attr("stroke-width", function () {
+//         return 2;
+//       })
+//       // .attr("stroke", "#3379B3")
+//       .attr("stroke", "white")
+//       .style("filter", "url(#drop-shadow)")
+//       .on("mouseover", function (e, d) {})
+//       .on("mouseout", function () {});
+
+//     var defs = svg.append("defs");
+//     var filter = defs
+//       .append("filter")
+//       .attr("id", "drop-shadow")
+//       .attr("height", "130%");
+
+//     filter
+//       .append("feGaussianBlur")
+//       .attr("in", "SourceAlpha")
+//       .attr("stdDeviation", 0)
+//       .attr("result", "blur");
+//     filter
+//       .append("feOffset")
+//       .attr("in", "blur")
+//       .attr("dx", 0)
+//       .attr("dy", 0)
+//       .attr("result", "offsetBlur");
+//     var feMerge = filter.append("feMerge");
+
+//     feMerge.append("feMergeNode").attr("in", "offsetBlur");
+//     feMerge.append("feMergeNode").attr("in", "SourceGraphic");
+
+//     //end
+//     const line = d3
+//       .line()
+//       .x((data, i) => xScale(i))
+//       .y((reverseData) => yScale(reverseData.level) + 10);
+//     // .curve(d3.curveCardinal);
+
+//     graph
+//       .append("path")
+//       .data([reverseData])
+//       .attr("fill", "none")
+//       .attr("stroke", "#3379B3")
+//       .attr("d", line);
+
+//     this.lineGraphCreated = true;
+//   }
+// }
+//Recruitment Graphsssss
+//Recruitment Graphsssss
+*/
+
+// #Recruitment Graphss
 
 class reclinechart {
   //   async mygraph1(data) {
@@ -5174,6 +6595,7 @@ class funnelChart {
 
   }
 }
+
 // eslint-disable-next-line no-redeclare
 export {
   D3BarChart,
@@ -5181,8 +6603,11 @@ export {
   scatterplot_rect,
   piePlot,
   treeGraph,
+  proctBarChart,
+
   reclinechart,
   DensityChart,
-  funnelChart
+  funnelChart,
+  proctLineChart
 };
 // treeGraph1
