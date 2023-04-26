@@ -31,17 +31,21 @@ let script = {
   svgWidth: window.innerWidth,
   max: 0,
   count: 0,
-  pie_data: [
-    { platform: "Android", percentage: 40.11 },
-    { platform: "Windows", percentage: 36.69 },
-    { platform: "iOS", percentage: 13.06 },
-  ],
+  // pie_data: [
+  //   { platform: "Android", percentage: 40.11 },
+  //   { platform: "Windows", percentage: 36.69 },
+  //   { platform: "iOS", percentage: 13.06 },
+  // ],
 };
 
 
 //GRAPH 1
 class scatterplot {
   async scatterGraph(data) {
+    if (document.getElementById("graph1").innerHTML != "") {
+      document.getElementById("graph1").innerHTML = "";
+}
+   
     // console.log("jss", data.topicData.length)
     let datapoints = data.topicData;
     var width = 670;
@@ -145,6 +149,8 @@ class scatterplot {
         .append("circle")
         .attr("class", "artist")
         .attr("r", function (d) {
+          // console.log( d.uniqueTotalCandidates)
+
           // console.log("ddd", d.uniqueTotalCandidates, "and" , (radiusScale(d.uniqueTotalCandidates)%100) )
           return radiusScale(d.uniqueTotalCandidates);
           // add mpg
@@ -211,7 +217,8 @@ class scatterplot {
           .style("top", event.pageY + "px");
         select(this)
           .attr("r", function (d) {
-            return radiusScale(d.uniqueTotalCandidates + 5);
+            // console.log( radiusScale((d.uniqueTotalCandidates) + 5));
+            return (radiusScale(d.uniqueTotalCandidates) + 5);
             // add mpg
           })
           .style("stroke", function (d) {
@@ -773,7 +780,8 @@ class D3BarChart {
 
 //GRAPH 3
 class piePlot {
-  pieGraph(id) {
+  pieGraph(id,data) {
+    let pie_data = data.pie_data
     // console.log("pieee", id);
     const svgHeight = 250,
       radius = Math.min(script.svgWidth / 4, svgHeight) / 2;
@@ -798,11 +806,16 @@ class piePlot {
     // console.log("widthhh", script.svgWidth)
     // var color = scaleOrdinal(d3.schemeCategory10);
     let colorScale = scaleOrdinal()
-      .domain(script.pie_data.map((d) => d.platform))
-      .range(["#FFC145", "#33A02C", "#3379B3"]);
+      // .domain(script.pie_data.map((d) => d.platform))
+      .domain(pie_data.map((d) => d.testStatus))
+      // .range(["#FFC145", "#33A02C", "#3379B3"]);
+      // #FFC145 // yellow
+      // #33A02C // Green
+      .range(["#3379B3", "#FFC145", "#33A02C"]);
+
 
     const pies = d3Line.pie().value(function (d) {
-      // console.log(d.percentage);
+      // console.log(d.testStatus);
 
       return d.percentage;
     });
@@ -816,9 +829,7 @@ class piePlot {
       .attr("id", "drop-shadow")
       .attr("height", "130%");
 
-    // SourceAlpha refers to opacity of graphic that this filter will be applied to
-    // convolve that with a Gaussian with standard deviation 3 and store result
-    // in blur
+ 
     filter
       .append("feGaussianBlur")
       .attr("in", "SourceAlpha")
@@ -849,7 +860,7 @@ class piePlot {
 
     const arc = g
       .selectAll("arc")
-      .data(pies(script.pie_data))
+      .data(pies(pie_data))
       .enter()
       .append("g")
       .style("filter", "url(#drop-shadow)");
@@ -858,7 +869,7 @@ class piePlot {
       .attr("d", path)
 
       .attr("fill", function (d) {
-        return colorScale(d.data.percentage);
+        return colorScale(d.data.testStatus);
       });
     // .on("mouseover", function (d, i) {
     //   // console.log("doneeee");
@@ -881,10 +892,10 @@ class piePlot {
     //   });
     // });
 
-    let sum = 0;
-    script.pie_data.forEach((x) => {
-      sum += x.percentage;
-    });
+    // let sum = 0;
+    // pie_data.forEach((x) => {
+    //   sum += x.percentage;
+    // });
 
     // console.log("summis", sum);
     // console.log(total);
@@ -911,7 +922,7 @@ class piePlot {
       .attr("font-size", "20")
       .attr("fill", "#696969")
       .attr("transform", "translate(" + start_point + "," + (radius + 15) + ")")
-      .text(` ${sum} `);
+      .text(` ${data.totalNumberOfTest} `);
 
     const tooltip = select("body")
       .append("div")
@@ -930,6 +941,10 @@ class piePlot {
 //GRAPH 4
 class scatterplot_rect {
   async scatterGraph(data) {
+    console.log("recttt daatta", data)
+    if (document.getElementById("rect_scatter").innerHTML != "") {
+      document.getElementById("rect_scatter").innerHTML = "";
+}
     const scatterPlots = (selection, props) => {
       const { xValue, yValue, margin, width, height, data, widthvalue } = props;
       const innerWidth = script.svgWidth - margin.left - margin.right;
@@ -1020,14 +1035,21 @@ class scatterplot_rect {
         .attr("x", innerWidth)
         .attr("y", innerHeight)
         .attr("width", function (d) {
+        
           if (d.repeatingPercentage === 0) {
             return;
-          } else if (d.repeatingPercentage < 0.2) {
-            return 8 * Math.exp(d.repeatingPercentage);
-          } else if (d.repeatingPercentage < 0.5) {
-            return 10 * Math.exp(d.repeatingPercentage);
+          } else if (d.repeatingPercentage>0 && d.repeatingPercentage <= 20) {
+            return 25 * Math.log10(d.repeatingPercentage);
+          } else if (d.repeatingPercentage>20 && d.repeatingPercentage <= 40) {
+            return 40 * Math.log10(d.repeatingPercentage);
+          }
+          else if (d.repeatingPercentage>40 && d.repeatingPercentage <= 60) {
+            return 50 * Math.log10(d.repeatingPercentage);
+          }
+          else if (d.repeatingPercentage>60 && d.repeatingPercentage <= 80) {
+            return 60 * Math.log10(d.repeatingPercentage);
           } else {
-            return d.repeatingPercentage * 15;
+            return 70 * Math.log10(d.repeatingPercentage);
           }
 
           // return 15 * d.repeatingPercentage;
@@ -1036,12 +1058,18 @@ class scatterplot_rect {
         .attr("height", function (d) {
           if (d.repeatingPercentage === 0) {
             return;
-          } else if (d.repeatingPercentage < 0.2) {
-            return 5 * Math.exp(d.repeatingPercentage);
-          } else if (d.repeatingPercentage < 0.5) {
-            return 7 * Math.exp(d.repeatingPercentage);
+          } else if (d.repeatingPercentage>0 && d.repeatingPercentage <= 20) {
+            return 15 * Math.log10(d.repeatingPercentage);
+          } else if (d.repeatingPercentage>20 && d.repeatingPercentage <= 40) {
+            return 30 * Math.log10(d.repeatingPercentage);
+          }
+          else if (d.repeatingPercentage>40 && d.repeatingPercentage <= 60) {
+            return 40 * Math.log10(d.repeatingPercentage);
+          }
+          else if (d.repeatingPercentage>60 && d.repeatingPercentage <= 80) {
+            return 50 * Math.log10(d.repeatingPercentage);
           } else {
-            return d.repeatingPercentage * 10;
+            return 60 * Math.log10(d.repeatingPercentage);
           }
         })
         .attr("fill", function (d) {
@@ -1151,28 +1179,44 @@ class scatterplot_rect {
     let mouseleave = function (d) {
       Tooltip.style("opacity", 0);
       select(this)
-        .attr("width", function (d) {
-          if (d.repeatingPercentage === 0) {
-            return;
-          } else if (d.repeatingPercentage < 0.2) {
-            return 8 * Math.exp(d.repeatingPercentage);
-          } else if (d.repeatingPercentage < 0.5) {
-            return 10 * Math.exp(d.repeatingPercentage);
-          } else {
-            return d.repeatingPercentage * 15;
-          }
-        })
-        .attr("height", function (d) {
-          if (d.repeatingPercentage === 0) {
-            return;
-          } else if (d.repeatingPercentage < 0.2) {
-            return 5 * Math.exp(d.repeatingPercentage);
-          } else if (d.repeatingPercentage < 0.5) {
-            return 7 * Math.exp(d.repeatingPercentage);
-          } else {
-            return d.repeatingPercentage * 10;
-          }
-        })
+      .attr("width", function (d) {
+        
+        if (d.repeatingPercentage === 0) {
+          return;
+        } else if (d.repeatingPercentage>0 && d.repeatingPercentage <= 20) {
+          return 25 * Math.log10(d.repeatingPercentage);
+        } else if (d.repeatingPercentage>20 && d.repeatingPercentage <= 40) {
+          return 40 * Math.log10(d.repeatingPercentage);
+        }
+        else if (d.repeatingPercentage>40 && d.repeatingPercentage <= 60) {
+          return 50 * Math.log10(d.repeatingPercentage);
+        }
+        else if (d.repeatingPercentage>60 && d.repeatingPercentage <= 80) {
+          return 60 * Math.log10(d.repeatingPercentage);
+        } else {
+          return 70 * Math.log10(d.repeatingPercentage);
+        }
+
+        // return 15 * d.repeatingPercentage;
+        // return xScale3(x(d));
+      })
+      .attr("height", function (d) {
+        if (d.repeatingPercentage === 0) {
+          return;
+        } else if (d.repeatingPercentage>0 && d.repeatingPercentage <= 20) {
+          return 15 * Math.log10(d.repeatingPercentage);
+        } else if (d.repeatingPercentage>20 && d.repeatingPercentage <= 40) {
+          return 30 * Math.log10(d.repeatingPercentage);
+        }
+        else if (d.repeatingPercentage>40 && d.repeatingPercentage <= 60) {
+          return 40 * Math.log10(d.repeatingPercentage);
+        }
+        else if (d.repeatingPercentage>60 && d.repeatingPercentage <= 80) {
+          return 50 * Math.log10(d.repeatingPercentage);
+        } else {
+          return 60 * Math.log10(d.repeatingPercentage);
+        }
+      })
         .style("stroke", "none")
         .style("opacity", 0.8);
       Tooltip.style("display", "none");
