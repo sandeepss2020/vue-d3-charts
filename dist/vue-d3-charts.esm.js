@@ -39,6 +39,8 @@ let script = {
 };
 
 
+
+//ASSESSMENTS
 //GRAPH 1
 class scatterplot {
   async scatterGraph(data) {
@@ -46,44 +48,112 @@ class scatterplot {
       document.getElementById("graph1").innerHTML = "";
 }
    
+// let data = data.slice(50)
+
     // console.log("jss", data.topicData.length)
+ 
     let datapoints = data.topicData;
-    var width = 670;
-    let count = 0,
-      countneg = 0;
-    for (let i = 0; i < data.topicData.length; i++) {
-      if (data.topicData[i].uniqueTotalCandidates > 0) {
-        count++;
-      } else {
-        countneg++;
+    // console.log("chk", datapoints)
+    let aboveZero = 0;
+    for(let i in datapoints){
+      if(datapoints[i].uniqueTotalCandidates > 0){
+        // console.log("total",datapoints[i].uniqueTotalCandidates)
+        aboveZero++
       }
     }
+    // console.log("above Zero", aboveZero)
+    let width = 300;
+    // let count = 0,
+    //   countneg = 0;
+    // for (let i = 0; i < data.topicData.length; i++) {
+    //   if (data.topicData[i].uniqueTotalCandidates > 0) {
+    //     count++;
+    //   } else {
+    //     countneg++;
+    //   }
+    // }
     // console.log("count is", count, "and", countneg)
-    if (count <= 80) {
-      let height = 280;
-      makescattergraph(height);
-    } else if (count <= 160) {
-      let height = 450;
-      makescattergraph(height);
-    } else if (count <= 250) {
-      let height = 650;
-      makescattergraph(height);
-    } else {
-      let height = 900;
-      makescattergraph(height);
-    }
+    // if (aboveZero <= 15) {
+    //   let height = 180;
+    //   makescattergraph(height);
+    // }
+    // else if (aboveZero <= 80) {
+    //   let height = 280;
+    //   makescattergraph(height);
+    // } else if (aboveZero <= 160) {
+    //   let height = 450;
+    //   makescattergraph(height);
+    // } else if (aboveZero <= 250) {
+    //   let height = 650;
+    //   makescattergraph(height);
+    // }
+    //  else {
+    //   let height = 250;
+    //   makescattergraph(height)
+    // }
 
     //  var width = 650,
-    //   height = 500;
+
+
+//For Widthhhh...
+// console.log("widtghhh", window.innerWidth)
+if (window.innerWidth >= 3000) {
+  width = window.innerWidth - 1700
+
+}
+else if (window.innerWidth >= 2500) {
+  width = window.innerWidth - 1250
+
+
+}
+else if (window.innerWidth >= 2000) {
+  width = window.innerWidth - 1100
+
+
+}
+else if (window.innerWidth >= 1900) {
+  width = window.innerWidth - 950
+
+}
+else if (window.innerWidth >= 1600) {
+  width = window.innerWidth - 820
+
+}
+else if (window.innerWidth >= 1500) {
+  width = window.innerWidth - 750
+
+}
+else if (window.innerWidth >= 1200) {
+  width = window.innerWidth - 580
+
+}
+else{
+  width = window.innerWidth - 200
+
+}
+
+
+
+    // console.log("maxxx",Math.max(...datapoints.map(o => o.uniqueTotalCandidates)))
+    // let height = (Math.max(...datapoints.map(o => o.uniqueTotalCandidates))) * 3.5;
+    let height = 250  
+    makescattergraph(height)
+
 
     function makescattergraph(height) {
+      // console.log("heighhhtt", height)
       var svg = d3
         .select("#graph1")
+        .classed("svg-container", true)
         .append("svg")
         // .attr("height", height)
         // .attr("width", width)
         .attr("preserveAspectRatio", "xMinYMin meet")
         .attr("viewBox", `0 0 ${width} ${height}`)
+        .classed("svg-content-responsive", true)
+        // .attr("height",height)
+        // .attr("width",width)
+
         // .style("background-color", "black")
         .append("g")
         .attr("transform", "translate(0 , 0)");
@@ -102,19 +172,22 @@ class scatterplot {
       // var radiusScale = (d3.scaleSqrt().domain([1, 300]).range([0, 50]));
       var radiusScale = d3
         .scaleSqrt()
+        // .scaleSequentialSqrt()        
         .domain(
           extent(datapoints, function (d) {
             return d.uniqueTotalCandidates;
           })
         )
-        .range([0, 35]);
-      const xScale = scaleLinear().domain([0, 500]).range([50, width]);
+        .range([0, 30]);
 
-      var forceXCombine = d3.forceX(width / 3).strength(0.05);
+
+
+      var forceXCombine = d3.forceX(width/2.1).strength(0.01);
       var forceCollide = d3.forceCollide(function (d) {
         return radiusScale(d.uniqueTotalCandidates) + 2;
         // add mpg
       });
+      // console.log("force xx", forceXCombine)
       var simulation = d3
         .forceSimulation()
         .force("x", forceXCombine)
@@ -149,10 +222,11 @@ class scatterplot {
         .append("circle")
         .attr("class", "artist")
         .attr("r", function (d) {
-          // console.log( d.uniqueTotalCandidates)
+          // console.log( radiusScale(d.uniqueTotalCandidates))
 
           // console.log("ddd", d.uniqueTotalCandidates, "and" , (radiusScale(d.uniqueTotalCandidates)%100) )
-          return radiusScale(d.uniqueTotalCandidates);
+          return  d.uniqueTotalCandidates > 0 ? radiusScale(d.uniqueTotalCandidates) : radiusScale(d.uniqueTotalCandidates+1) ;
+          // return radiusScale(d.uniqueTotalCandidates);
           // add mpg
         })
         .attr("fill", function (d) {
@@ -161,10 +235,17 @@ class scatterplot {
       //
       simulation.nodes(datapoints).on("tick", ticked);
 
+      // let maxScale = Math.max(...datapoints.map((t) => t.x));
+      // // console.log("dataa1", datapoints)
+
+      // console.log("dataa", maxScale)
+
+      const xScale = scaleLinear().domain([0, 300]).range([10,width/1.4]);
+
       function ticked() {
         circles
-          .attr("cx", function (d) {
-            // console.log(d)
+          .attr("cx", function (d,i) {
+            // console.log(d.x)
             return xScale(d.x);
             // return(d.x);
           })
@@ -200,11 +281,11 @@ class scatterplot {
           .html(
 
             `<div class="scatter-main">
-          <div class="scatter-header">Topic name</div> 
+          <div class="scatter-header">${datapoints.topicName}</div> 
           <div id='tipDiv'></div>
      <div class="scatterbody-content"> 
      <div class="d-flex ">
-     <div style="width:5%"><img src='https://raw.githubusercontent.com/sandeepss2020/vue-d3-charts/master/Group%2056415.svg'></img></div>
+     <div style="width:5%"></div>
      <div  style="width:85%">
      <div class="scatter-texthead">Tests</div>
      <div class="scatter-textbody">  Lorem ipsum dolor sit amet consectetur adipisicing </div>
@@ -218,7 +299,9 @@ class scatterplot {
         select(this)
           .attr("r", function (d) {
             // console.log( radiusScale((d.uniqueTotalCandidates) + 5));
-            return (radiusScale(d.uniqueTotalCandidates) + 5);
+            return  d.uniqueTotalCandidates > 0 ? radiusScale(d.uniqueTotalCandidates) : radiusScale(d.uniqueTotalCandidates+1) ;
+
+            // return (radiusScale(d.uniqueTotalCandidates) + 5);
             // add mpg
           })
           .style("stroke", function (d) {
@@ -239,7 +322,9 @@ class scatterplot {
         Tooltip.style("opacity", 0);
         select(this)
           .attr("r", function (d) {
-            return radiusScale(d.uniqueTotalCandidates);
+            return  d.uniqueTotalCandidates > 0 ? radiusScale(d.uniqueTotalCandidates) : radiusScale(d.uniqueTotalCandidates+1) ;
+
+            // return radiusScale(d.uniqueTotalCandidates);
             // add mpg
           })
           .style("stroke", "none")
@@ -250,6 +335,171 @@ class scatterplot {
   }
 }
 
+
+class scatterplotZoom{
+
+  theZoom(newData){
+    var data = newData ;
+    // async function thedata(){
+    // const response3 = await fetch(
+    //     "https://run.mocky.io/v3/ca3afa37-0f36-4c9f-ac20-8002c9dd50aa"
+    // );
+    // data = await response3.json();
+   
+    // }
+
+    // thedata();
+
+    let width;
+    setTimeout(() => {
+        
+      // console.log(data,"sepalll")
+
+        
+      if (window.innerWidth >= 3000) {
+        width = window.innerWidth - 1700
+      
+      }
+      else if (window.innerWidth >= 2500) {
+        width = window.innerWidth - 1250
+      
+      
+      }
+      else if (window.innerWidth >= 2000) {
+        width = window.innerWidth - 1100
+      
+      
+      }
+      else if (window.innerWidth >= 1900) {
+        width = window.innerWidth - 950
+      
+      }
+      else if (window.innerWidth >= 1600) {
+        width = window.innerWidth - 820
+      
+      }
+      else if (window.innerWidth >= 1500) {
+        width = window.innerWidth - 750
+      
+      }
+      else if (window.innerWidth >= 1200) {
+        width = window.innerWidth - 580
+      
+      }
+      else{
+        width = window.innerWidth - 200
+      
+      }
+    // set the dimensions and margins of the graph
+    var margin = { top: 10, right: 30, bottom: 30, left: 60 },
+        width = width - margin.left - margin.right,
+        height = 300 - margin.top - margin.bottom;
+
+    // append the SVG object to the body of the page
+    var SVG = d3.select("#graph1")
+        .append("svg")
+        .attr("width", width + margin.left + margin.right)
+        .attr("height", height + margin.top + margin.bottom)
+        // .style("background-color", "black")
+        .append("g")
+        .attr("transform",
+            "translate(" + margin.left + "," + margin.top + ")")
+           
+
+            
+            const max1 = Math.max(...data.map((o) => o.numberOfActiveTest));
+            const max2 = Math.max(...data.map((o) => o.totalNumberOfTopics));
+
+            // console.log(max2,"maxx1")
+    // Add X axis
+    var x = d3.scaleLinear()
+        .domain([0, 25])
+        .range([0, (width - 50)]);
+
+    // console.log("what",data.map((d) => d.topicName))
+
+    // var x = d3.scaleBand()
+    // .domain(data.map((d) => d.topicName))
+    // .range([0, width]);
+  
+    // Add Y axis
+    var y = d3.scaleLinear()
+        .domain([0, max1])
+        .range([(height -50) , 5]);
+   
+
+    // Add a clipPath: everything out of this area won't be drawn.
+    var clip = SVG.append("defs").append("SVG:clipPath")
+        .attr("id", "clip")
+        .append("SVG:rect")
+        .attr("width", width)
+        .attr("height", height)
+        .attr("x", 0)
+        .attr("y", 0);
+
+    // Create the scatter variable: where both the circles and the brush take place
+    var scatter = SVG.append('g')
+        // .attr("clip-path", "url(#clip)");
+       
+    // Add circles
+    scatter
+        .selectAll("circle")
+        .data(data)
+        .enter()
+        .append("circle")
+        .attr("cx", function (d) {
+            // console.log(d)
+             return x(d.totalNumberOfTopics); 
+            })
+        .attr("cy", function (d) { return y(d.numberOfActiveTest); })
+        .attr("r", 8)
+        .style("fill", "#61a3a9")
+        .style("opacity", 0.5)
+
+    // Set the zoom and Pan features: how much you can zoom, on which part, and what to do when there is a zoom
+    var zoom = d3.zoom()
+        .scaleExtent([.5, 20])  // This control how much you can unzoom (x0.5) and zoom (x20)
+        .extent([[0, 0], [width, height]])
+        .on("zoom", updateChart);
+
+    // This add an invisible rect on top of the chart area. This rect can recover pointer events: necessary to understand when the user zoom
+    SVG.append("rect")
+        .attr("width", width)
+        .attr("height", height)
+        .style("fill", "none")
+        .style("pointer-events", "all")
+        .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')')
+        .call(zoom);
+    // now the user can zoom and it will trigger the function called updateChart
+
+    // A function that updates the chart when the user zoom and thus new boundaries are available
+    function updateChart(e) {
+
+        // recover the new scale
+        var newX = e.transform.rescaleX(x);
+        var newY = e.transform.rescaleY(y);
+
+     
+
+        // update circle position
+        scatter
+            .selectAll("circle")
+            .attr('cx', function (d) { return newX(d.totalNumberOfTopics) })
+            .attr('cy', function (d) { return newY(d.numberOfActiveTest) });
+    }
+
+    // })
+
+
+
+
+    }, 1000);
+    
+
+
+  }
+  
+}
 // #Changed Code
 // class D3BarChart {
 //   async myData(user) {
@@ -507,54 +757,75 @@ class D3BarChart {
   }
 
   makegraph(xScaleDomain, barColor) {
-    // console.log("users",script.max)
 
-    // console.log("lennn", len)
+    let heightOfScreen =
+    window.innerHeight 
+    ||document.documentElement.clientHeight ||
+    document.body.clientHeight;
+
+
     const rectWidth = 50;
-    const svgHeight = 250,
-      barWidth = 20;
+    const svgHeight = (heightOfScreen >= 1800)?800 :(heightOfScreen >= 1400)? 600 :(heightOfScreen >= 1000)?380
+     :(heightOfScreen >= 900)? 270: (heightOfScreen >= 800)? 250:(heightOfScreen >= 700)? 220 : (heightOfScreen >= 600)? 150:(heightOfScreen >= 500)? 110 :200;
+
+    const barWidth = 30;
 
     let len = script.allData.length * rectWidth;
-    let margin = { top: 5, right: 10, bottom: 35, left: 15 },
+    let margin = { top: 10, right: 35, bottom: 45, left: 40 },
       height = svgHeight - margin.bottom,
-      width = len;
+      width = len + (2 * rectWidth);
     // For making the svg
     const svg1 = select("#barchartGraph")
       .append("svg")
       .attr("height", svgHeight)
-      .attr("width", len + 50);
+      .attr("width", width);
     // .style("background-color", "red");
 
     //SCALES START
 
     // let var1 = script.allData.map((d) => d.x_axis)
     // console.log("vaaarrr1",var1)
-    let xScale = scaleBand()
+
+    const req_g = svg1
+    .append("g")
+    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+    if (script.max % 5 !== 0) {
+      script.max = script.max + (5 - (script.max % 5));
+    }
+
+    let xScale = d3.scalePoint()
       .domain(xScaleDomain) //variable1??
       .range([0, len]);
-    // .padding(0),
 
-    // variable2??
     const yScale = scaleLinear()
       .domain([0, script.max])
       .range([0, svgHeight - margin.bottom - margin.top]);
     const yScale1 = scaleLinear()
       .domain([0, script.max])
-      .range([svgHeight - margin.bottom, 5]);
+      .range([height, 0])
+      .nice();
 
-    const x_axis = axisBottom(xScale).tickSize(-height),
-      xAxisTranslate = svgHeight - margin.bottom + 5;
+    const x_axis = axisBottom(xScale).tickSize(-height) .tickFormat(function (d) {
+      // Replace long names with shortened versions
+      if (d.length > 5) {
+        return d.slice(0, 5) + "..";
+      } else {
+        return d;
+      }
+    }),
+      xAxisTranslate = svgHeight - margin.bottom + margin.top;
 
     const y_axis = axisLeft(yScale1)
-      .tickSize(-width)
+      .tickSize(-(len + margin.right))
       // .ticks(script.max <= 10 ? script.max
       //   : script.max <= 29 ? (script.max + 5) / 5
       //     : script.max <= 25 || ?);
-      .ticks(script.max >= 350 ? script.max / 70 : 5);
+      .ticks(script.max < 5 ? script.max : 5);
 
     const g = svg1
       .append("g")
-      .attr("transform", "translate(" + 30 + "," + xAxisTranslate + ")");
+      .attr("transform", "translate(" + (margin.left + margin.right) + "," + xAxisTranslate + ")");
     // .attr("transform","translate(150,150)");
     g.append("g")
       .attr("class", "bar-x-axis")
@@ -566,9 +837,12 @@ class D3BarChart {
       .attr("dx", "-.8em")
       .attr("dy", ".15em")
       // .attr("transform", "rotate(-30)");
-      .attr("transform", "rotate(-15)");
-
-    svg1
+      .attr("transform", function(d){
+        return d.length<4 ?
+       ( "translate(" + 12 + "," + 5 + ")") : d.length<7? ( "translate(" + 17 + "," + 5 + ")") : ( "translate(" + 25 + "," + 5 + ")") 
+      })
+      ;
+      req_g
       .append("g")
       .attr("class", "bar-x-axis")
       .attr("transform", "translate(30,0)")
@@ -578,7 +852,9 @@ class D3BarChart {
       .style("color", "#A3A3A3")
       .style("font", "Roboto")
       .attr("dx", "-.8em")
-      .attr("dy", ".15em");
+      .attr("dy", ".15em")
+      .attr("transform", "translate(" + 0 + "," + 2 + ")")
+      ;
 
     //  const xGridLine = axisBottom()
     //   .scale(xScale)
@@ -594,23 +870,25 @@ class D3BarChart {
     //   .call(xGridLine);
 
     //SCALES END
+    
+    
     const t = select("svg1").transition().duration(2000);
 
     const g1 = svg1
       .append("g")
-      .attr("transform", "translate(" + 25 + "," + 0 + ")");
+      .attr("transform", "translate(" + 25 + "," + margin.top + ")");
 
     const rect = g1
       .selectAll("rect")
-      .data(script.barData, (d) => d)
+      .data(script.allData, (d) => d)
       .join(
         (enter) => {
           const rect = enter
             .append("rect")
             .attr("width", rectWidth - barWidth)
-            .attr("stroke-width", 2)
+            // .attr("stroke-width", 2)
             // .attr("stroke", "#7E857E")
-            .attr("stroke", "#88888E")
+            // .attr("stroke", "#88888E")
 
             .attr("fill", barColor)
             // overwrite the default so the animation looks better:
@@ -682,12 +960,15 @@ class D3BarChart {
       .transition()
       .duration(2000)
       .delay((d, i) => i * 10)
-      .attr("x", (d, i) => i * rectWidth)
+      .attr("x",function(d, i) {
+        // console.log("dd",d)
+        return xScale(d.x_axis)
+      })
       .attr("y", function (p) {
-        return height - yScale(p);
+        return height - yScale(p.count);
       })
       .attr("height", function (d) {
-        return yScale(d);
+        return yScale(d.count);
       })
       .attr("width", rectWidth - barWidth);
 
@@ -725,7 +1006,7 @@ class D3BarChart {
 
       const g2 = svg1
         .append("g")
-        .attr("transform", "translate(" + 55 + "," + 0 + ")");
+        .attr("transform", "translate(" + (margin.left+margin.right) + "," + margin.top + ")");
       const path = g2
         .append("path")
         .datum(script.allData)
@@ -761,7 +1042,7 @@ class D3BarChart {
 
       const g3 = svg1
         .append("g")
-        .attr("transform", "translate(" + 55 + "," + 0 + ")");
+        .attr("transform", "translate(" + (margin.left+margin.right) + "," + margin.top + ")");
       const path = g3
         .append("path")
         .datum(script.allData)
@@ -941,7 +1222,7 @@ class piePlot {
 //GRAPH 4
 class scatterplot_rect {
   async scatterGraph(data) {
-    console.log("recttt daatta", data)
+    // console.log("recttt daatta", data)
     if (document.getElementById("rect_scatter").innerHTML != "") {
       document.getElementById("rect_scatter").innerHTML = "";
 }
@@ -1152,7 +1433,7 @@ class scatterplot_rect {
           <div id='tipDiv'></div>
      <div class="scatterbody2-content"> 
      <div class="d-flex ">
-     <div style="width:5%"><img src='https://raw.githubusercontent.com/sandeepss2020/vue-d3-charts/master/Group%2056416.svg'></img></div>
+     <div style="width:5%"></div>
      <div  style="width:85%">
      <div class="scatter-texthead">Tagged Tests</div>
      <div class="scatter-textbody">  Lorem ipsum dolor sit amet consectetur adipisicing </div>
@@ -1994,10 +2275,11 @@ class proctBarChart {
       ||document.documentElement.clientHeight ||
       document.body.clientHeight;
 
+      // console.log("height of screewn", heightOfScreen)
     const rectWidth = 50;
     // const svgHeight = 280;
-    const svgHeight = (heightOfScreen >= 1800)?800 :(heightOfScreen >= 1400)? 600 :(heightOfScreen >= 1000)?380
-     :(heightOfScreen >= 900)? 270: (heightOfScreen >= 800)? 250:(heightOfScreen >= 700)? 220 : 200;
+    const svgHeight = (heightOfScreen >= 1800)?800 :(heightOfScreen >= 1400)? 600 :(heightOfScreen >= 1000)?250
+     :(heightOfScreen >= 900)? 270: (heightOfScreen >= 800)? 250:(heightOfScreen >= 700)? 220 : (heightOfScreen >= 600)? 150:(heightOfScreen >= 500)? 110 :200;
 
     const barWidth = 30;
     let len = script.allData.length * rectWidth;
@@ -2005,11 +2287,14 @@ class proctBarChart {
       height = svgHeight - margin.bottom,
       width = len + (2 * rectWidth);
 
+      // console.log("heeeight", heightOfScreen)
     // For making the svg
     const svg1 = select(id)
       .append("svg")
       .attr("height", svgHeight)
       .attr("width", width);
+      // .attr("preserveAspectRatio", "xMinYMin meet")
+      //   .attr("viewBox", `0 0 ${width} ${svgHeight}`)
 
     const req_g = svg1
       .append("g")
@@ -2281,7 +2566,7 @@ class proctBarChart {
       })
       .attr("height", function (d) {
         return  (types === "TOPIC") ?
-        yScale(d.topicCount): (types === "TEST") ? yScale(d.testCount):yScale(d.candidateCount);        
+        yScale(d.topicCount): (types === "TEST") ? yScale(d.testCount):yScale(d.candidateCount );        
       })
       .attr("width", rectWidth - barWidth)
 
@@ -2294,6 +2579,8 @@ class proctLineChart{
   async makeProcLineChart(id,data){
     const margin = { top: 20, right: 20, bottom: 50, left: 50 };
     // const chartWidth = 950 ;
+    // console.log("Chartwidth", window.innerWidth)
+
     if (window.innerWidth >= 3000) {
       var chartWidth = window.innerWidth - 1700
       var chartHeight = 700;
@@ -2316,10 +2603,17 @@ class proctLineChart{
       var chartWidth = window.innerWidth - 800
       var chartHeight = 220;
     }
+    else if (window.innerWidth >= 1500) {
+      var chartWidth = window.innerWidth - 750
+      var chartHeight = 175;
+    }
     else if (window.innerWidth >= 1200) {
       var chartWidth = window.innerWidth - 650
-      var chartHeight = 185;
-
+      var chartHeight = 175;
+    }
+    else{
+      var chartWidth = window.innerWidth - 650
+      var chartHeight = 110;
     }
     // else if (window.screen.availWidth >= 2000) {
     //   var chartWidth = window.innerWidth - 1100;
@@ -2486,7 +2780,6 @@ class proctLineChart{
   }
 
 }
-
 
 
 /*
@@ -4912,7 +5205,11 @@ class DensityChart {
 
   //   }
 
-  async createDensity(datass, count) {
+  async createDensity(id,datass, count) {
+    if (document.getElementById(id).innerHTML != "") {
+      document.getElementById(id).innerHTML = "";
+      // console.log("graph there");
+    }
     const Data2 = datass;
     let lineChartData1 = [],
       lineChartData2 = [],
@@ -5100,7 +5397,7 @@ class DensityChart {
 
 
     const yGridLine = axisLeft(yScale_grid)
-      .scale(yScale_grid)
+      .scale(yScale)
       .tickSize(-width1, 0, 0)
       .ticks(largest <= 10 ? 5 : largest <= 15 ? 3 : largest <= 20 ? 4 : 5)
       .tickFormat("");
@@ -5117,7 +5414,7 @@ class DensityChart {
     const y_axis = axisLeft(yScale)
       // .tickSize(-width1)
       .scale(yScale)
-      .ticks(largest <= 20 ? 4 : 5)
+      .ticks(largest <= 10 ? 5 : largest <= 15 ? 3 : largest <= 20 ? 4 : 5)
       .tickSizeOuter(0)
       .tickSizeInner(0);
 
@@ -5235,7 +5532,7 @@ class DensityChart {
       .line()
       .x((d) => xScale(d.date))
       .y((d) => yScale3(d.close))
-      .curve(d3.curveCatmullRom.alpha(0.5));
+      .curve(d3.curveCatmullRom.alpha(0.8));
     // .curve(curveBasis);
 
     g.selectAll(".line")
@@ -5307,6 +5604,9 @@ class DensityChart {
       // .attr("transform", "rotate(-5)")
       .attr("transform", "translate(" + 0 + "," + 5 + ")")
       ;
+      g1.select('.domain').attr('stroke-width', 0)
+
+
 
     // svg
     //   .append("g")
@@ -5330,7 +5630,8 @@ class DensityChart {
     //   .attr('stroke', '#ccc')
     //   .attr('x2', `${svgWidth}px`)
 
-    svg.select(".domain").attr("stroke", "#ddd");
+    // svg.select(".domain").attr("stroke", "#ddd");
+
 
 
     this.densityCircle(svg, g, datass, largest, count);
@@ -5495,7 +5796,7 @@ class DensityChart {
       .line()
       .x((d) => xScale(d.date))
       .y((d) => yScale1(d.close))
-      .curve(d3.curveCatmullRom.alpha(0.5));
+      .curve(d3.curveCatmullRom.alpha(0.8));
 
     g.selectAll(".line")
       .data(parsedData1)
@@ -5514,7 +5815,7 @@ class DensityChart {
       .line()
       .x((d) => xScale(d.date))
       .y((d) => yScale2(d.close))
-      .curve(d3.curveCatmullRom.alpha(0.5));
+      .curve(d3.curveCatmullRom.alpha(0.8));
 
 
 
@@ -5536,7 +5837,7 @@ class DensityChart {
       .line()
       .x((d) => xScale(d.date))
       .y((d) => yScale3(d.close))
-      .curve(d3.curveCatmullRom.alpha(0.5));
+      .curve(d3.curveCatmullRom.alpha(0.8));
 
 
     g.selectAll(".line")
@@ -5992,7 +6293,7 @@ class DensityChart {
       .line()
       .x((d) => xScale(d.date))
       .y((d) => yScale1(d.close))
-      .curve(d3.curveCatmullRom.alpha(0.5));
+      .curve(d3.curveCatmullRom.alpha(0.8));
 
     g.selectAll(".line")
       .data(parsedData1)
@@ -6011,7 +6312,7 @@ class DensityChart {
       .line()
       .x((d) => xScale(d.date))
       .y((d) => yScale2(d.close))
-      .curve(d3.curveCatmullRom.alpha(0.5));
+      .curve(d3.curveCatmullRom.alpha(0.8));
 
 
 
@@ -6033,7 +6334,7 @@ class DensityChart {
       .line()
       .x((d) => xScale(d.date))
       .y((d) => yScale3(d.close))
-      .curve(d3.curveCatmullRom.alpha(0.5));
+      .curve(d3.curveCatmullRom.alpha(0.8));
 
 
     g.selectAll(".line")
@@ -6644,6 +6945,7 @@ class funnelChart {
 export {
   D3BarChart,
   scatterplot,
+  scatterplotZoom,
   scatterplot_rect,
   piePlot,
   treeGraph,
