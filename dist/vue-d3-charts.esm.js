@@ -5205,7 +5205,9 @@ class DensityChart {
 
   //   }
 
-  async createDensity(id,datass, count) {
+  async createDensity(id, datass, count) {
+    var svgWidth;
+    var svgHeight = 300;
     if (document.getElementById(id).innerHTML != "") {
       document.getElementById(id).innerHTML = "";
       // console.log("graph there");
@@ -5231,30 +5233,112 @@ class DensityChart {
 
     // var widthss = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
     // console.log("width is",widthss)
-    if (window.screen.availWidth <= 1800) {
-      var svgWidth = window.innerWidth - 950
-
+    if (window.innerWidth >= 1700) {
+      svgWidth = window.innerWidth - 900
+      // svgHeight = 250
     }
-    else if (window.screen.availWidth <= 2000) {
-      var svgWidth = window.innerWidth - 1000
+    else if (window.innerWidth >= 1500) {
+      svgWidth = window.innerWidth - 800
     }
-    else if (window.screen.availWidth >= 2000) {
-      var svgWidth = window.innerWidth - 1100;
+    else if (window.innerWidth >= 1300) {
+      svgWidth = window.innerWidth - 700;
+    }
+    else if (window.innerWidth >= 1100) {
+      svgWidth = window.innerWidth - 400;
     }
 
 
-    const svgHeight = 300;
+    // console.log("width", window.innerWidth, window.innerHeight);
+
 
     const width1 = svgWidth - margin.left - margin.right;
     const height1 = svgHeight - margin.top - margin.bottom;
 
+
+    // /*original
     const svg = d3
       .select("#density_graph")
+      .classed("svg-container", true)
       .append("svg")
-      // .attr("viewBox", `0 0 ${svgWidth} ${svgHeight}`)
-      .attr("width", svgWidth)
-      .attr("height", svgHeight)
+      .attr("viewBox", `0 0 ${svgWidth} ${svgHeight}`)
+      .attr("preserveAspectRatio", "xMinYMin meet")
+      // .attr('viewBox', '0 0 ' + svgWidth + ' ' + svgHeight)
+      .classed("svg-content-responsive", true)
+
+    // .attr("width", svgWidth)
+    // .attr("height", svgHeight)
     // .style("background-color", "red");
+
+    var ctrl,key;
+    
+    // Attach the resize event listener
+    document.body.addEventListener("keydown", function (ev) {
+      ev = ev || window.event;
+      key = ev.which || ev.code;
+      ctrl = ev.ctrlKey ? ev.ctrlKey : ((key === 17) ? true : false)
+        window.addEventListener("resize", resize);
+
+      // }
+    }, false);
+
+    function resize() {
+      if (ctrl && key === 109  &&  window.innerWidth > 1900) {
+
+      var containerWidth = parseInt(d3.select("#density_graph").style("width"));
+      var containerHeight = parseInt(d3.select("#density_graph").style("height"));
+
+      svg.attr("viewBox", "0 0 " + svgWidth * containerWidth / (svgWidth - 100) + " " + svgHeight * containerHeight / svgHeight);
+      }
+      else if(window.innerWidth > 1700){
+        svg.attr("viewBox", `0 0 ${svgWidth +80 } ${svgHeight}`);
+        if(window.innerHeight > 950){
+          // console.log("chk")
+          svg.attr("viewBox", `0 0 ${svgWidth + 200 } ${svgHeight + 50}`);
+        }
+
+      }
+      else{
+        svg.attr("viewBox", `0 0 ${svgWidth + 20} ${svgHeight + 50}`)
+
+      }
+    }
+
+
+
+    // */
+
+
+    /* Tried One
+    
+    // var svg = d3
+    //   .select("#density_graph")
+      
+    //   .append("svg")
+    //   .attr("width", "100%")
+    //   .attr("height", "100%")
+    //   // .classed("svg-content-responsive", true);
+
+    //   svg.attr("viewBox", "0 0 " + svgWidth + " " + svgHeight)
+    
+    //   ;
+
+      function resize() {
+        var containerWidth = parseInt(d3.select("#density_graph").style("width"));
+        var containerHeight = parseInt(d3.select("#density_graph").style("height"));
+      
+        // Update the viewBox based on the container size
+        svg.attr("viewBox", "0 0 " + svgWidth * containerWidth / svgWidth + " " + svgHeight * containerHeight / svgHeight);
+      }
+      
+      // Attach the resize event listener
+      window.addEventListener("resize", resize);
+      
+      // Call resize initially to set the SVG size based on the container
+      resize();
+      
+      
+      */
+
 
     const g = svg
       .append("g")
@@ -5604,7 +5688,7 @@ class DensityChart {
       // .attr("transform", "rotate(-5)")
       .attr("transform", "translate(" + 0 + "," + 5 + ")")
       ;
-      g1.select('.domain').attr('stroke-width', 0)
+    g1.select('.domain').attr('stroke-width', 0)
 
 
 
@@ -6362,23 +6446,28 @@ class DensityChart {
 
     // console.log("new log", data11);
 
+    var svgWidth;
+    var svgHeight = 300;
     const margin = {
       top: 20,
       bottom: 20,
       left: 25,
       right: 20,
     };
-    if (window.screen.availWidth <= 1800) {
-      var svgWidth = window.innerWidth - 950
+       if (window.innerWidth >= 1700) {
+      svgWidth = window.innerWidth - 900
+      // svgHeight = 250
+    }
+    else if (window.innerWidth >= 1500) {
+      svgWidth = window.innerWidth - 800
+    }
+    else if (window.innerWidth >= 1300) {
+      svgWidth = window.innerWidth - 700;
+    }
+    else if (window.innerWidth >= 1100) {
+      svgWidth = window.innerWidth - 400;
+    }
 
-    }
-    else if (window.screen.availWidth <= 2000) {
-      var svgWidth = window.innerWidth - 1000
-    }
-    else if (window.screen.availWidth >= 2000) {
-      var svgWidth = window.innerWidth - 1100;
-    }
-    const svgHeight = 300;
     const width = svgWidth - margin.left - margin.right;
     const height = svgHeight - margin.top - margin.bottom;
 
@@ -6454,7 +6543,7 @@ class DensityChart {
         .data(redData)
         .enter()
         .append("circle")
-        .attr("class","circle")
+        .attr("class", "circle")
         .attr("fill", "#D34C15")
         // .style("opacity", 2)
         .attr("stroke", "white")
@@ -6467,18 +6556,18 @@ class DensityChart {
           return y(d.value)
         })
         .attr("r", 4);
-        // .on("mouseover",function () {
-        //   g.selectAll("ellipse").style("display","none");
-        // })
-        // .on("mouseout",function () {
-        //   g.selectAll("ellipse").style("display","initial");
-        // });
+      // .on("mouseover",function () {
+      //   g.selectAll("ellipse").style("display","none");
+      // })
+      // .on("mouseout",function () {
+      //   g.selectAll("ellipse").style("display","initial");
+      // });
 
       gs.selectAll()
         .data(yellowData)
         .enter()
         .append("circle")
-        .attr("class","circle")
+        .attr("class", "circle")
         .attr("fill", (yellowData[0].value === redData[0].value) ? "#72738E" : "#FFC145")
         .style("opacity", 2)
         .attr("stroke", "white")
@@ -6496,7 +6585,7 @@ class DensityChart {
         .data(greenData)
         .enter()
         .append("circle")
-        .attr("class","circle")
+        .attr("class", "circle")
         .attr("fill", (greenData[0].value === yellowData[0].value) ? "#72738E" : (greenData[0].value === redData[0].value) ? "#72738E" : "#89C30D")
         .style("opacity", 2)
         .attr("stroke", "white")
@@ -6556,8 +6645,8 @@ class DensityChart {
     tt.on("mouseout", function () {
       Tooltip.style("opacity", 0);
       gs.selectAll("circle")
-      // .attr("opacity", 0)
-      .remove();
+        // .attr("opacity", 0)
+        .remove();
       // g.selectAll("ellipse").remove();
       Tooltip.style("display", "none");
     });
@@ -6568,7 +6657,6 @@ class DensityChart {
 
   }
 }
-
 
 class funnelChart {
   async createFunnel(originalData) {
