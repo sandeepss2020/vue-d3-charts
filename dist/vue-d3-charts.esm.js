@@ -718,21 +718,21 @@ class scatterplotZoom {
         SVG.selectAll("g.brush").remove();
       }
 
-      checkbox.addEventListener("change", function () {
-        if (this.checked) {
-          start_brush_tool(); // Checkbox is checked..
-        } else {
-          end_brush_tool(); // Checkbox is not checked..
-        }
-      });
+      // checkbox.addEventListener("change", function () {
+      //   if (this.checked) {
+      //     start_brush_tool(); // Checkbox is checked..
+      //   } else {
+      //     end_brush_tool(); // Checkbox is not checked..
+      //   }
+      // });
 
-      clickbox.addEventListener("click", function () {
-        console.log("working")
-        newX = x.domain(x0);
-        newY = y.domain(y0);
+      // clickbox.addEventListener("click", function () {
+      //   console.log("working")
+      //   newX = x.domain(x0);
+      //   newY = y.domain(y0);
 
-        updateChart(newX, newY);
-      })
+      //   updateChart(newX, newY);
+      // })
       var tooltip = d3
         .select("#graph1")
         .append("div")
@@ -769,12 +769,12 @@ class scatterplotZoom {
           .style("opacity", 0); // don't care about position!
       };
 
-      function reset_zoom() {
-        newX = x.domain(x0);
-        newY = y.domain(y0);
+      // function reset_zoom() {
+      //   newX = x.domain(x0);
+      //   newY = y.domain(y0);
 
-        updateChart(newX, newY);
-      }
+      //   updateChart(newX, newY);
+      // }
 
       scatter
         .selectAll("circle")
