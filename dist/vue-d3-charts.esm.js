@@ -5501,7 +5501,7 @@ class DensityChart {
 
   async createDensity(id, datass, count) {
     var svgWidth;
-    var svgHeight = 300;
+    var svgHeight = 270;
     if (document.getElementById(id).innerHTML != "") {
       document.getElementById(id).innerHTML = "";
       // console.log("graph there");
@@ -5518,8 +5518,8 @@ class DensityChart {
     // console.log("11", lineChartData, "222", lineChartData2);
 
     const margin = {
-      top: 20,
-      bottom: 20,
+      top: 25,
+      bottom: 25,
       left: 25,
       right: 20,
     };
@@ -5557,7 +5557,7 @@ class DensityChart {
       .attr("viewBox", `0 0 ${svgWidth} ${svgHeight}`)
       .attr("preserveAspectRatio", "xMinYMin meet")
       // .attr('viewBox', '0 0 ' + svgWidth + ' ' + svgHeight)
-      .classed("svg-content-responsive", true)
+      .classed("svg-content-responsive", true);
 
     // .attr("width", svgWidth)
     // .attr("height", svgHeight)
@@ -5577,13 +5577,14 @@ class DensityChart {
 
     function resize() {
       if (ctrl && key === 109 && window.innerWidth > 1900) {
-
+        console.log("okkk here");
         var containerWidth = parseInt(d3.select("#density_graph").style("width"));
         var containerHeight = parseInt(d3.select("#density_graph").style("height"));
 
         svg.attr("viewBox", "0 0 " + svgWidth * containerWidth / (svgWidth - 100) + " " + svgHeight * containerHeight / svgHeight);
       }
       else if (window.innerWidth > 1700) {
+        console.log("maybe here");
         svg.attr("viewBox", `0 0 ${svgWidth + 80} ${svgHeight}`);
         if (window.innerHeight > 950) {
           // console.log("chk")
@@ -5592,6 +5593,7 @@ class DensityChart {
 
       }
       else {
+        console.log("restt here");
         svg.attr("viewBox", `0 0 ${svgWidth + 20} ${svgHeight + 50}`)
 
       }
@@ -6741,10 +6743,10 @@ class DensityChart {
     // console.log("new log", data11);
 
     var svgWidth;
-    var svgHeight = 300;
+    var svgHeight = 270;
     const margin = {
-      top: 20,
-      bottom: 20,
+      top: 25,
+      bottom: 25,
       left: 25,
       right: 20,
     };
