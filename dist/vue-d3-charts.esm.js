@@ -5331,8 +5331,7 @@ class DensityChart {
   //     const Data2 = datass;
   //     let lineChartData2=[]
   //     lineChartData2[0] = { ...Data2[0] };
-  //     console.log("objjj", lineChartData2);
-  //     console.log("11", lineChartData, "222", lineChartData2);
+
   //   const margin = {
   //     top: 20,
   //     bottom: 20,
@@ -5389,8 +5388,7 @@ class DensityChart {
   //     let xScaleDomain2 = parsedData[0].values.map((d) => d.date);
   //     let xScaleDomain3 = parsedData2[0].values.map((d) => d.date);
 
-  //     console.log("dataaa1 ",parsedData);
-  //     console.log("data2", parsedData2);
+
 
   //   const xScale = scaleBand()
   //     .domain(xScaleDomain2)
@@ -5504,7 +5502,6 @@ class DensityChart {
     var svgHeight = 270;
     if (document.getElementById(id).innerHTML != "") {
       document.getElementById(id).innerHTML = "";
-      // console.log("graph there");
     }
     const Data2 = datass;
     let lineChartData1 = [],
@@ -5514,8 +5511,7 @@ class DensityChart {
     lineChartData1[0] = { ...Data2[0] };
     lineChartData2[0] = { ...Data2[1] };
     lineChartData3[0] = { ...Data2[2] };
-    // console.log("objjj", lineChartData2);
-    // console.log("11", lineChartData, "222", lineChartData2);
+
 
     const margin = {
       top: 25,
@@ -5526,7 +5522,6 @@ class DensityChart {
 
 
     // var widthss = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
-    // console.log("width is",widthss)
     if (window.innerWidth >= 1700) {
       svgWidth = window.innerWidth - 900
       // svgHeight = 250
@@ -5542,7 +5537,6 @@ class DensityChart {
     }
 
 
-    // console.log("width", window.innerWidth, window.innerHeight);
 
 
     const width1 = svgWidth - margin.left - margin.right;
@@ -5555,6 +5549,7 @@ class DensityChart {
       .classed("svg-container", true)
       .append("svg")
       .attr("viewBox", `0 0 ${svgWidth} ${svgHeight}`)
+
       .attr("preserveAspectRatio", "xMinYMin meet")
       // .attr('viewBox', '0 0 ' + svgWidth + ' ' + svgHeight)
       .classed("svg-content-responsive", true);
@@ -5576,31 +5571,28 @@ class DensityChart {
     }, false);
 
     function resize() {
+
       if (ctrl && key === 109 && window.innerWidth > 1900) {
-        console.log("okkk here");
+
         var containerWidth = parseInt(d3.select("#density_graph").style("width"));
         var containerHeight = parseInt(d3.select("#density_graph").style("height"));
 
         svg.attr("viewBox", "0 0 " + svgWidth * containerWidth / (svgWidth - 100) + " " + svgHeight * containerHeight / svgHeight);
       }
       else if (window.innerWidth > 1700) {
-        console.log("maybe here");
+
         svg.attr("viewBox", `0 0 ${svgWidth + 80} ${svgHeight}`);
         if (window.innerHeight > 950) {
-          // console.log("chk")
           svg.attr("viewBox", `0 0 ${svgWidth + 200} ${svgHeight + 50}`);
         }
 
       }
       else {
-        console.log("restt here");
+
         svg.attr("viewBox", `0 0 ${svgWidth + 20} ${svgHeight + 50}`)
 
       }
     }
-
-
-
     // */
 
 
@@ -5679,8 +5671,7 @@ class DensityChart {
       xScaleDomain2 = parsedData2[0].values.map((d) => d.date),
       xScaleDomain3 = parsedData3[0].values.map((d) => d.date);
 
-    // console.log("xscaledomain ",xScaleDomain1);
-    // console.log("data1", parsedData1, parsedData2, parsedData3);
+
 
     const xScale = d3.scalePoint()
       .domain(xScaleDomain1)
@@ -5707,18 +5698,15 @@ class DensityChart {
 
 
     let largest = Math.max(max1, max2, max3);
-    // console.log("ll", largest);
     if (largest % 5 !== 0) {
 
       largest = largest + (5 - (largest % 5));
-      //  console.log(largest);
     }
     // else{
     //   largest = largest + (5 - (largest % 5));
 
     // }
 
-    // console.log("max", largest);
 
 
     const yScale_grid = d3
@@ -5749,7 +5737,6 @@ class DensityChart {
 
 
     const yScale3 = scaleLinear().domain([0, largest]).range([(height1 - 8), 8]);
-    // console.log("max3", max3)
     const x_axis = axisBottom(xScale1).tickSizeOuter(0)
       .tickSizeInner(0);
 
@@ -5805,10 +5792,13 @@ class DensityChart {
       .style("color", "#A3A3A3")
       .call(y_axis);
 
+
+
     g.selectAll(".tick")
       .filter(function (d) { return d === 0; })
       .remove();
 
+    g.selectAll('.domain').attr('stroke-width', 0);
 
 
     var x = xScale,
@@ -5882,7 +5872,6 @@ class DensityChart {
       .enter()
       .append("path")
       .attr("d", (d) => {
-        // console.log("format", d);
         const lineValues2 = line2(d.values).slice(1);
         const splitedValues2 = lineValues2.split(",");
 
@@ -5943,7 +5932,6 @@ class DensityChart {
     // */
 
     // tt3.on("mouseover", function (d, e) {
-    //   console.log(e);
 
     //   g
     //     .append("circle")
@@ -5973,7 +5961,6 @@ class DensityChart {
       .style("color", "#A3A3A3")
       .selectAll("text")
       .text(function (d) {
-        // console.log(d.split(',')[0])
         return d.split(',')[0]
       })
       // .style("text-anchor", "end")
@@ -6088,8 +6075,6 @@ class DensityChart {
       xScaleDomain2 = parsedData2[0].values.map((d) => d.date),
       xScaleDomain3 = parsedData3[0].values.map((d) => d.date);
 
-    // console.log("xscaledomain ",xScaleDomain1);
-    // console.log("data2", parsedData2);
 
     const xScale = d3.scalePoint()
       .domain(xScaleDomain1)
@@ -6236,7 +6221,6 @@ class DensityChart {
 
   async createDensity3(id, datass, largest) {
     /*
-        // console.log("#density_graph" ,id);
         // document.getElementById(id).innerHTML = ""
         const Data2 = datass;
         const lineChartData1 = [],
@@ -6246,8 +6230,7 @@ class DensityChart {
         lineChartData1[0] = { ...Data2[0] };
         lineChartData2[0] = { ...Data2[1] };
         lineChartData3[0] = { ...Data2[2] };
-        // console.log("objjj", lineChartData2);
-        // console.log("11", lineChartData, "222", lineChartData2);
+
     
         const margin = {
           top: 3,
@@ -6311,8 +6294,6 @@ class DensityChart {
           xScaleDomain2 = parsedData2[0].values.map((d) => d.date),
           xScaleDomain3 = parsedData3[0].values.map((d) => d.date);
     
-        // console.log("xscaledomain ",xScaleDomain1);
-        // console.log("data2", parsedData2);
     
         const xScale = d3.scalePoint()
           .domain(xScaleDomain1)
@@ -6476,7 +6457,6 @@ class DensityChart {
         //   .style("color", "#A3A3A3")
         //   .selectAll("text")
         //   .text(function (d) {
-        //     // console.log(d.split(',')[0])
         //    return d.split(',')[0]
         //   })
         //   .style("text-anchor", "end")
@@ -6584,9 +6564,6 @@ class DensityChart {
     let xScaleDomain1 = parsedData1[0].values.map((d) => d.date),
       xScaleDomain2 = parsedData2[0].values.map((d) => d.date),
       xScaleDomain3 = parsedData3[0].values.map((d) => d.date);
-
-    // console.log("xscaledomain ",xScaleDomain1);
-    // console.log("data2", parsedData2);
 
     const xScale = d3.scalePoint()
       .domain(xScaleDomain1)
@@ -6733,14 +6710,12 @@ class DensityChart {
 
   densityCircle(svg, g, datass, largest, count) {
 
-    // console.log("counttt", count);
     const datas = datass;
     const len = datas.length;
     const data33 = datas[len - 1].data;
     const data22 = datas[len - 2].data;
     const data11 = datas[len - 3].data;
 
-    // console.log("new log", data11);
 
     var svgWidth;
     var svgHeight = 270;
@@ -6801,7 +6776,7 @@ class DensityChart {
 
 
 
-    var Tooltip = select("body")
+    var Tooltip = select("#tooltipDashboard")
       // var Tooltip = select("#density_graph")
       .append("div")
       .style("opacity", 0)
@@ -6816,7 +6791,7 @@ class DensityChart {
 
 
     tt.on("mouseover", function (e, d, i) {
-      // console.log("ccc",d);
+
       var indexCount = count.findIndex(p => p.date === d.date);
       var indexGood = data11.findIndex(p => p.date === d.date);
       var indexLagging = data22.findIndex(p => p.date === d.date);
@@ -6829,11 +6804,9 @@ class DensityChart {
       yellowData.push(data22[indexLagging]);
       greenData.push(data11[indexGood]);
 
-      // console.log("myyy risj=k", redData);
 
 
       // /*circles making Start
-      // console.log(data11[ind].value)
       gs
         .selectAll()
         .data(redData)
@@ -6845,7 +6818,6 @@ class DensityChart {
         .attr("stroke", "white")
         .style("stroke-width", 2)
         .attr("cx", function (d, i) {
-          // console.log("mouse", d)
           return x(d.date)
         })
         .attr("cy", function (d) {
@@ -6876,7 +6848,6 @@ class DensityChart {
         })
         .attr("r", 4);
 
-      // console.log("red and yellow and green ", yellowData[0].value, greenData[0].value);
       gs.selectAll()
         .data(greenData)
         .enter()
@@ -6896,10 +6867,8 @@ class DensityChart {
 
       // Circles End  */
 
-      Tooltip
-
-        .html(
-          `<div class="density-main">
+      Tooltip.html(
+        `<div class="density-main">
         <div class="d-flex density-header mb-1">
         <div style="width:80%;" >Tatal JD’s</div> 
         <div  style="width:20%;"> ${count[indexCount].count} </div>
@@ -6923,19 +6892,25 @@ class DensityChart {
         </div
         </div>
         </div>`
-        )
-        .style("left", event.pageX + 5 + "px")
-        .style("top", event.pageY + 5 + "px")
+      )
+        .style("left", e.pageX - 70 + "px")
+        .style("top", e.pageY - 170 + "px")
+        //     .style('left', `${e.pageX}px`)
+        // .style('top', `${e.pageY}px`)
         .style("opacity", 1)
 
         .style("visibility", "visible");
 
-      Tooltip.style("display", "inline-block");
+      Tooltip.style("display", "block");
     });
-    // tt.on("mousemove", function(){
-    //   Tooltip.style("left", event.pageX + 0 + "px")
-    //   .style("top", event.pageY + "px")
-    // });
+    tt.on("mousemove", function (event) {
+      Tooltip
+        // .style('left', `${event.pageX}px`)
+        // .style('top', `${event.pageY}px`);
+        .style("left", event.pageX - 70 + "px")
+        .style("top", event.pageY - 170 + "px")
+
+    });
 
 
     tt.on("mouseout", function () {
@@ -6959,7 +6934,7 @@ class funnelChart {
   async createFunnel(originalData) {
     var width;
     var height = 200;
-    console.log("window width", window.innerWidth)
+
     if (window.innerWidth >= 1700) {
       width = window.innerWidth - 200
       // svgHeight = 250
@@ -7069,9 +7044,6 @@ class funnelChart {
     datass2.push({ x: (x1 / 2) * k2, y: (y1 * y_val) + 40 })
 
 
-    // console.log("dataaa2", data2)
-    // console.log("datasss22",datass2)
-
     // create svg element:
     var svg = d3.select("#funnel")
       .classed("svg-container", true)
@@ -7101,29 +7073,28 @@ class funnelChart {
     }, false);
 
     function resize() {
-      console.log(document.querySelector('#funnel').offsetHeight, "the div height", height);
-      console.log(document.querySelector('#funnel').offsetWidth, "the div width", width);
+
       // width = document.querySelector('#funnel').offsetWidth + 400
 
       if (ctrl && key === 109 && window.innerWidth > 1900) {
 
-
         var containerWidth = parseInt(d3.select("#funnel").style("width"));
         var containerHeight = parseInt(d3.select("#funnel").style("height"));
         if (document.querySelector('#funnel').offsetWidth > 1300) {
-          console.log("chk11");
-          svg.attr("viewBox", "0 0 " + (width * 1.2) * containerWidth / width + " " + height * containerHeight / height);
+
+          svg.attr("viewBox", "0 0 " + (width * 1.2) * containerWidth / (width - width / 7) + " " + height * containerHeight / (height - height / 3.7));
         }
         else {
+
           svg.attr("viewBox", "0 0 " + width * containerWidth / (width) + " " + height * containerHeight / height);
         }
       }
       else if (window.innerWidth > 1700) {
-        console.log("chk2222");
+
 
 
         if (document.querySelector('#funnel').offsetHeight > 1200) {
-          console.log("chk")
+
           svg.attr("viewBox", `0 0 ${width + 250} ${height}`);
         }
         else {
@@ -7132,7 +7103,7 @@ class funnelChart {
 
       }
       else {
-        console.log("chk333");
+
         if (document.querySelector('#funnel').offsetHeight > 1100) {
           svg.attr("viewBox", `0 0 ${width + 100} ${height}`)
         }
@@ -7201,7 +7172,7 @@ class funnelChart {
       .attr('stroke', '#d6d1eb')
       // .style("stroke-width", 4)
       .attr("stroke-width", function (d, i) {
-        // console.log("d stroke",i)
+
         return (3)
       })
 
@@ -7234,7 +7205,7 @@ class funnelChart {
       .classed("gridLine", true)
       .attr("transform", "translate(" + 0 + "," + 0 + ")")
       // .attr("transform", function(d,i){
-      //   console.log("dtransform",d);
+
       //    return "translate(" + 0 + "," + d.y + ")"
       //   }
       // )
@@ -7330,7 +7301,7 @@ class funnelChart {
         // return height - 40
       })
       .text(function (d, i) {
-        // console.log("d",d)
+
         return (originalData[i].count)
       })
       .attr("font-size", "14px")
@@ -7354,7 +7325,6 @@ class funnelChart {
         // return height - 40
       })
       .text(function () {
-        // console.log("d",d)
         return (`Candidates`)
       })
       .attr("font-size", "12px")
@@ -7372,22 +7342,19 @@ class funnelChart {
     xGroup_text
       .selectAll("text")
       .text(function (d, i) {
-        // console.log("d",i)
-        // console.log(len);
+
         return i < (len - 1) ?
           (` Level ` + originalData[i].level) : ("Final")
       })
       .style("color", "#696969")
       .attr("font-weight", function (d, i) {
-        // console.log("d",i)
-        // console.log(len);
+
         return i < (len - 1) ? "500" : "600"
 
       })
       .attr("font-family", "Poppins")
       .attr("font-size", function (d, i) {
-        // console.log("d",i)
-        // console.log(len);
+
         return i < (len - 1) ? "12px" : "14px"
 
       })
