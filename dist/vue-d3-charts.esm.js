@@ -40,6 +40,7 @@ let script = {
 
 
 
+
 //ASSESSMENTS
 //GRAPH 1
 class scatterplot {
@@ -518,19 +519,462 @@ class scatterplot {
 
 // }
 
+
+
+// class scatterplotZoom {
+
+
+
+//   theZoom(newData) {
+
+//     console.log("classs", newData);
+
+//     if (document.getElementById("graph1").innerHTML != "") {
+//       document.getElementById("graph1").innerHTML = "";
+//     }
+
+//     var data = newData;
+//     let width;
+
+
+//     setTimeout(() => {
+
+//       if (window.innerWidth >= 3000) {
+//         width = window.innerWidth - 1700
+
+//       }
+//       else if (window.innerWidth >= 2500) {
+//         width = window.innerWidth - 1250
+
+
+//       }
+//       else if (window.innerWidth >= 2000) {
+//         width = window.innerWidth - 1100
+
+
+//       }
+//       else if (window.innerWidth >= 1900) {
+//         width = window.innerWidth - 950
+
+//       }
+//       else if (window.innerWidth >= 1600) {
+//         width = window.innerWidth - 820
+
+//       }
+//       else if (window.innerWidth >= 1500) {
+//         width = window.innerWidth - 750
+
+//       }
+//       else if (window.innerWidth >= 1200) {
+//         width = window.innerWidth - 580
+
+//       }
+//       else {
+//         width = window.innerWidth - 200
+
+//       }
+//       // set the dimensions and margins of the graph
+//       var margin = { top: 10, right: 0, bottom: 30, left: 30 },
+//         width = width - margin.left - margin.right,
+//         height = 300 - margin.top - margin.bottom;
+//       const startPoint = 50;
+//       const svgWidth = width + 100;
+//       const svgHeight = height + margin.top + margin.bottom;
+
+//       var zoom = d3
+//         .zoom()
+//         .on("zoom", zoomed);
+
+//       var SVG = d3
+//         .select("#graph1")
+//         .classed("svg-container", true)
+//         .append("svg")
+//         // .attr("width", width + margin.left + margin.right)
+//         // .attr("height", height + margin.top + margin.bottom)
+//         .attr("viewBox", `0 0 ${svgWidth} ${svgHeight}`)
+//         .attr("preserveAspectRatio", "xMinYMin meet")
+//         .classed("svg-content-responsive", true)
+//         .call(zoom);
+//       // .style("background-color", "red");
+
+//       SVG = SVG.append("g")
+//         .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
+
+
+//       var ctrl, key;
+
+//       // Attach the resize event listener
+//       document.body.addEventListener("keydown", function (ev) {
+//         ev = ev || window.event;
+//         key = ev.which || ev.code;
+//         ctrl = ev.ctrlKey ? ev.ctrlKey : ((key === 17) ? true : false)
+//         window.addEventListener("resize", resize);
+
+//         // }
+//       }, false);
+
+//       function resize() {
+
+//         if (ctrl && key === 109 && window.innerWidth > 1900) {
+
+//           var containerWidth = parseInt(d3.select("#graph1").style("width"));
+//           var containerHeight = parseInt(d3.select("#graph1").style("height"));
+
+//           SVG.attr("viewBox", "0 0 " + svgWidth * containerWidth / (svgWidth) + " " + svgHeight * containerHeight / svgHeight);
+//         }
+//         else if (window.innerWidth > 1700) {
+
+//           SVG.attr("viewBox", `0 0 ${svgWidth + 80} ${svgHeight}`);
+//           if (window.innerHeight > 950) {
+//             SVG.attr("viewBox", `0 0 ${svgWidth} ${svgHeight + 50}`);
+//           }
+
+//         }
+//         else {
+
+//           SVG.attr("viewBox", `0 0 ${svgWidth + 20} ${svgHeight + 50}`)
+
+//         }
+//       }
+
+
+
+
+//       const max1 = Math.max(...data.map((o) => o.valueTemp));
+//       const max2 = Math.max(...data.map((o) => o.totalNumberOfTest));
+//       // const max2 = Math.max(...data.map((o) => o.valueTempSecond));
+//       var x0 = [0, max1];
+//       var y0 = [0, max2];
+
+//       // console.log(max2,"maxx1")
+//       // Add X axis
+
+//       var x = d3
+//         .scaleLinear()
+//         .domain(x0)
+//         // .range([startPoint, (width - (margin.left + margin.right))]);
+//         .range([startPoint, (width - (margin.left + margin.right))]);
+
+//       var y = d3
+//         .scaleLinear()
+//         .domain([0, max2])
+//         .range([(height - (margin.top + margin.bottom)), startPoint]);
+
+
+//       var newX = x;
+//       var newY = y;
+
+//       var brush = d3
+//         .brush()
+//         .extent([[0, 0], [width, height]])
+//         .on("end", brushended),
+//         idleTimeout,
+//         idleDelay = 350;
+
+//       // Add X axis
+//       var xAxis = SVG.append("g")
+//         .attr("class", "x axis")
+//         .attr("id", "axis--x")
+//         .attr("transform", "translate(0," + height + ")")
+//       // .call(d3.axisBottom(x));
+
+//       // Add Y axis
+//       var yAxis = SVG.append("g")
+//         .attr("class", "y axis")
+//         .attr("id", "axis--y")
+//       // .call(d3.axisLeft(y));
+
+
+//       // Add a clipPath: everything out of this area won't be drawn.
+//       var clip = SVG.append("defs")
+//         .append("SVG:clipPath")
+//         .attr("id", "clip")
+//         .append("SVG:rect")
+//         .attr("width", (width + startPoint))
+//         .attr("height", height)
+//         .attr("x", 0)
+//         .attr("y", 0);
+
+//       // Create the scatter variable: where both the circles and the brush take place
+//       var scatter = SVG.append("g").attr("clip-path", "url(#clip)");
+//       // .attr("clip-path", "url(#clip)");
+
+
+
+//       function updateChart(newX, newY) {
+//         var t = SVG.transition().duration(750);
+
+//         // update axes with these new boundaries
+//         xAxis.transition(t).call(d3.axisBottom(newX));
+//         yAxis.transition(t).call(d3.axisLeft(newY));
+
+//         // update circle position
+//         scatter
+//           .selectAll("circle")
+//           .transition(t)
+//           .attr("cx", function (d) {
+
+//             return newX(d.valueTemp);
+//           })
+//           .attr("cy", function (d) {
+//             return newY(d.totalNumberOfTest);
+//             // return newY(d.valueTempSecond);
+//           });
+//       }
+
+//       // now the user can zoom and it will trigger the function called updateChart
+//       // A function that updates the chart when the user zoom and thus new boundaries are available
+//       function zoomed(e) {
+//         // recover the new scale
+//         newX = e.transform.rescaleX(x);
+//         newY = e.transform.rescaleY(y);
+
+//         // update circle position
+//         scatter
+//           .selectAll("circle")
+//           .attr("cx", function (d) {
+
+//             return newX(d.valueTemp);
+//           })
+//           .attr("cy", function (d) {
+//             return newY(d.totalNumberOfTest);
+//             // return newY(d.valueTempSecond);
+//           });
+//       }
+
+//       function idled() {
+//         idleTimeout = null;
+//       }
+
+//       function brushended(e) {
+//         var s = e.selection;
+
+//         if (!s) {
+//           if (!idleTimeout) return (idleTimeout = setTimeout(idled, idleDelay));
+//           newX = x.domain(x0);
+//           newY = y.domain(y0);
+//         } else {
+//           newX = x.domain([s[0][0], s[1][0]].map(newX.invert));
+//           newY = y.domain([s[1][1], s[0][1]].map(newY.invert));
+
+//           SVG.select(".brush").call(brush.move, null);
+//         }
+//         updateChart(newX, newY);
+//       }
+
+//       function start_brush_tool() {
+//         SVG.append("g")
+//           .attr("class", "brush")
+//           .call(brush);
+//       }
+
+//       function end_brush_tool() {
+//         SVG.selectAll("g.brush").remove();
+//       }
+
+//       /*
+
+//       var tooltip = d3
+//         .select("#graph1")
+//         .append("div")
+//         .attr("class", "tooltip")
+//         .style("opacity", 0);
+
+//       // tooltip mouseover event handler
+//       var tipMouseover = function (d, data) {
+//         //var color = colorScale(d.manufacturer);
+//         var html =
+//           "Number Of Topics " +
+//           "<b>" +
+//           data.totalNumberOfTopics +
+//           "</b>" +
+//           "<br>" +
+//           "Active Tests " +
+//           "<b>" +
+//           data.numberOfActiveTest +
+//           "</b>";
+
+//         tooltip
+//           .html(html)
+//           .style("left", d.pageX + 15 + "px")
+//           .style("top", d.pageY - 28 + "px")
+//           .transition()
+//           .duration(200) // ms
+//           .style("opacity", 0.9); // started as 0!
+//       };
+//       // tooltip mouseout event handler
+//       var tipMouseout = function (d) {
+//         tooltip
+//           .transition()
+//           .duration(300) // ms
+//           .style("opacity", 0); // don't care about position!
+//       };
+
+//       */
+
+//       var Tooltip = select("#scatter1Scroll")
+//         .append("div")
+//         .style("opacity", 0)
+//         .attr("class", "tooltip")
+//         .style("background-color", "white")
+//         // .style("border", "solid")
+//         // .style("border-width", "2px")
+//         .style("border-radius", "5px")
+//         .style("padding", "5px");
+
+//       let tipMouseover = function (d, datapoints) {
+//         // console.log(datapoints.uniqueTotalCandidates)
+//         Tooltip.style("opacity", 1)
+//           .style("visibility", "visible")
+//           .html(
+
+//             `<div class="scatter-main">
+//               <div class="scatter-header">${datapoints.topicName}</div> 
+//               <div class="scatterbody-content"> 
+//                 <div class="d-flex ">
+//                   <div style="width:5%">
+
+//                   </div>
+//                   <div  style="width:75%">
+//                   <div class="scatter-texthead d-flex align-items-start">Tests</div>
+//                 </div>
+//                 <div style="width:20%" class="scatter-testnum">${datapoints.totalNumberOfTest} </div>
+//               </div>
+
+//               <div class="mt-2"> 
+//                 <div class="d-flex ">
+//                   <div style="width:5%"></div>
+//                   <div  style="width:75%">
+//                   <div class="scatter-texthead  d-flex align-items-start">Candidates</div>
+
+//                 </div>
+//                 <div style="width:20%" class="scatter-testnum">${datapoints.uniqueTotalCandidates} </div>
+//               </div>
+
+//               <div class="mt-2"> 
+//                 <div class="d-flex ">
+//                   <div style="width:5%"></div>
+//                   <div  style="width:75%">
+//                   <div class="scatter-texthead  d-flex align-items-start">Currently Taking Test</div>
+
+//                 </div>
+//                 <div style="width:20%" class="scatter-testnum">${datapoints.submitted} </div>
+//               </div>
+//             </div>`
+//           )
+//           .style("left", d.pageX - 170 + "px")
+//           .style("top", d.pageY - 280 + "px");
+//         select(this)
+//           .attr("r", function (d) {
+//             // console.log( radiusScale((d.uniqueTotalCandidates) + 5));
+//             return d.totalNumberOfTest > 0 ? radiusScale(d.totalNumberOfTest) : radiusScale(d.totalNumberOfTest + 1);
+
+//             // return (radiusScale(d.uniqueTotalCandidates) + 5);
+//             // add mpg
+//           })
+//           .style("stroke", function (d) {
+//             return d.active ? "#bcb4fe" : "#D0DFC5";
+//           })
+//           .style("stroke-width", 5)
+
+//           .style("opacity", 0.5);
+//         Tooltip.style("display", "block");
+//       };
+
+//       let tipMouseout = function (d) {
+//         Tooltip.style("opacity", 0);
+//         select(this)
+//           .attr("r", function (d) {
+//             return d.totalNumberOfTest > 0 ? radiusScale(d.totalNumberOfTest) : radiusScale(d.totalNumberOfTest + 1);
+
+//             // return radiusScale(d.uniqueTotalCandidates);
+//             // add mpg
+//           })
+//           .style("stroke", "none")
+//           .style("opacity", 0.7);
+//         Tooltip.style("display", "none");
+//       };
+
+//       var radiusScale = d3
+//         .scaleSqrt()
+//         // .scaleSequentialSqrt()        
+//         .domain(
+//           extent(data, function (d) {
+//             return d.totalNumberOfTest;
+//           })
+//         )
+//         .range([0, startPoint]);
+
+
+//       scatter
+//         .selectAll("circle")
+//         .data(data)
+//         .enter()
+//         .append("circle")
+//         .attr("class", "pointer")
+//         .attr("cx", function (d) {
+
+//           return x(d.valueTemp);
+//         })
+//         .attr("cy", function (d) {
+
+//           return y(d.totalNumberOfTest);
+//           // return y(d.valueTempSecond);
+//         })
+//         // .attr("r", 8)
+//         .attr("r", function (d) {
+//           // console.log(d.totalNumberOfTest, "neww")
+//           return d.totalNumberOfTest > 0 ? radiusScale(d.totalNumberOfTest) : radiusScale(d.totalNumberOfTest + 1);
+//         })
+//         // .style("fill", "#61a3a9")
+//         .attr("fill", function (d) {
+//           return d.active ? "#8676FF" : "#BCCBB1";
+//         })
+//         .style("opacity", 0.7)
+//         .on("mouseover", tipMouseover)
+
+//         .on("mousemove", function (event) {
+//           Tooltip
+//             // .style('left', `${event.pageX}px`)
+//             // .style('top', `${event.pageY}px`);
+//             .style("left", event.pageX - 170 + "px")
+//             .style("top", event.pageY - 280 + "px")
+
+//         })
+//         .on("mouseout", tipMouseout);
+//       ;
+
+
+//     }, 1000);
+
+
+
+//   }
+
+// }
+
+var QuesData =
+{
+  name: [],
+  age: 18,
+  dept: "CSE",
+  score: 90
+};
+
 class scatterplotZoom {
-
   theZoom(newData) {
-    var data = newData;
-    var checkbox = document.querySelector("#brush");
-    var clickbox = document.querySelector("#clickBox");
 
+    // console.log("classs", newData);
 
+    if (document.getElementById("graph1").innerHTML != "") {
+      document.getElementById("graph1").innerHTML = "";
+    }
+
+    let data = newData;
     let width;
+
+
     setTimeout(() => {
-
-      // console.log(data,"sepalll")
-
 
       if (window.innerWidth >= 3000) {
         width = window.innerWidth - 1700
@@ -567,50 +1011,92 @@ class scatterplotZoom {
 
       }
       // set the dimensions and margins of the graph
-      var margin = { top: 10, right: 30, bottom: 30, left: 60 },
-        width = width - margin.left - margin.right,
-        height = 300 - margin.top - margin.bottom;
+      let margin = { top: 10, right: 0, bottom: 30, left: 30 };
+      width = width - margin.left - margin.right;
+      let height = 300 - margin.top - margin.bottom;
+      const startPoint = 50;
+      const svgWidth = width + 100;
+      const svgHeight = height + margin.top + margin.bottom;
 
-
-      var zoom = d3
+      let zoom = d3
         .zoom()
-        //.scaleExtent([1, 1]) // This control how much you can unzoom (x0.5) and zoom (x20)
-        //.translateExtent([[-100, -100], [height + 100, width + 100]])
         .on("zoom", zoomed);
 
-      var SVG = d3
+      let SVG = d3
         .select("#graph1")
+        .classed("svg-container", true)
         .append("svg")
-        .attr("width", width + margin.left + margin.right)
-        .attr("height", height + margin.top + margin.bottom)
+        .attr("viewBox", `0 0 ${svgWidth} ${svgHeight}`)
+        .attr("preserveAspectRatio", "xMinYMin meet")
+        .classed("svg-content-responsive", true)
         .call(zoom)
-        .append("g")
-        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+      // .style("background-color", "red");
 
-      var x0 = [0, 25];
-      var y0 = [0, 9];
+      SVG = SVG.append("g")
+        .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
 
-      const max1 = Math.max(...data.map((o) => o.numberOfActiveTest));
-      const max2 = Math.max(...data.map((o) => o.totalNumberOfTopics));
+
+      let ctrl, key;
+
+      // Attach the resize event listener
+      document.body.addEventListener("keydown", function (ev) {
+        ev = ev || window.event;
+        key = ev.which || ev.code;
+        ctrl = ev.ctrlKey ? ev.ctrlKey : ((key === 17) ? true : false)
+        window.addEventListener("resize", resize);
+
+        // }
+      }, false);
+
+      function resize() {
+
+        if (ctrl && key === 109 && window.innerWidth > 1900) {
+
+          let containerWidth = parseInt(d3.select("#graph1").style("width"));
+          let containerHeight = parseInt(d3.select("#graph1").style("height"));
+
+          SVG.attr("viewBox", "0 0 " + svgWidth * containerWidth / (svgWidth) + " " + svgHeight * containerHeight / svgHeight);
+        }
+        else if (window.innerWidth > 1700) {
+
+          SVG.attr("viewBox", `0 0 ${svgWidth + 80} ${svgHeight}`);
+          if (window.innerHeight > 950) {
+            SVG.attr("viewBox", `0 0 ${svgWidth} ${svgHeight + 50}`);
+          }
+
+        }
+        else {
+
+          SVG.attr("viewBox", `0 0 ${svgWidth + 20} ${svgHeight + 50}`)
+
+        }
+      }
+
+      const max1 = Math.max(...data.map((o) => o.valueTemp));
+      const max2 = Math.max(...data.map((o) => o.valueTempRandom));
+      // const max2 = Math.max(...data.map((o) => o.valueTempSecond));
+      let x0 = [0, max1];
+      let y0 = [0, max2];
 
       // console.log(max2,"maxx1")
       // Add X axis
 
-      var x = d3
+      let x = d3
         .scaleLinear()
         .domain(x0)
-        .range([0, (width - 50)]);
+        // .range([startPoint, (width - (margin.left + margin.right))]);
+        .range([startPoint, (width - (margin.left + margin.right))]);
 
-      var y = d3
+      let y = d3
         .scaleLinear()
-        .domain([0, max1])
-        .range([(height - 50), 5]);
+        .domain([0, max2])
+        .range([(height - (margin.top + margin.bottom)), startPoint]);
 
 
-      var newX = x;
-      var newY = y;
+      let newX = x;
+      let newY = y;
 
-      var brush = d3
+      let brush = d3
         .brush()
         .extent([[0, 0], [width, height]])
         .on("end", brushended),
@@ -618,37 +1104,37 @@ class scatterplotZoom {
         idleDelay = 350;
 
       // Add X axis
-      var xAxis = SVG.append("g")
+      let xAxis = SVG.append("g")
         .attr("class", "x axis")
         .attr("id", "axis--x")
         .attr("transform", "translate(0," + height + ")")
       // .call(d3.axisBottom(x));
 
       // Add Y axis
-      var yAxis = SVG.append("g")
+      let yAxis = SVG.append("g")
         .attr("class", "y axis")
         .attr("id", "axis--y")
       // .call(d3.axisLeft(y));
 
 
       // Add a clipPath: everything out of this area won't be drawn.
-      var clip = SVG.append("defs")
+      let clip = SVG.append("defs")
         .append("SVG:clipPath")
         .attr("id", "clip")
         .append("SVG:rect")
-        .attr("width", width)
+        .attr("width", (width + startPoint))
         .attr("height", height)
         .attr("x", 0)
         .attr("y", 0);
 
-      // Create the scatter variable: where both the circles and the brush take place
-      var scatter = SVG.append("g").attr("clip-path", "url(#clip)");
+      // Create the scatter letiable: where both the circles and the brush take place
+      let scatter = SVG.append("g").attr("clip-path", "url(#clip)");
       // .attr("clip-path", "url(#clip)");
 
 
 
       function updateChart(newX, newY) {
-        var t = SVG.transition().duration(750);
+        let t = SVG.transition().duration(750);
 
         // update axes with these new boundaries
         xAxis.transition(t).call(d3.axisBottom(newX));
@@ -659,10 +1145,12 @@ class scatterplotZoom {
           .selectAll("circle")
           .transition(t)
           .attr("cx", function (d) {
-            return newX(d.totalNumberOfTopics);
+
+            return newX(d.valueTemp);
           })
           .attr("cy", function (d) {
-            return newY(d.numberOfActiveTest);
+            return newY(d.valueTempRandom);
+            // return newY(d.valueTempSecond);
           });
       }
 
@@ -673,18 +1161,16 @@ class scatterplotZoom {
         newX = e.transform.rescaleX(x);
         newY = e.transform.rescaleY(y);
 
-        // update axes with these new boundaries
-        // xAxis.call(d3.axisBottom(newX));
-        // yAxis.call(d3.axisLeft(newY));
-
         // update circle position
         scatter
           .selectAll("circle")
           .attr("cx", function (d) {
-            return newX(d.totalNumberOfTopics);
+
+            return newX(d.valueTemp);
           })
           .attr("cy", function (d) {
-            return newY(d.numberOfActiveTest);
+            return newY(d.valueTempRandom);
+            // return newY(d.valueTempSecond);
           });
       }
 
@@ -693,7 +1179,7 @@ class scatterplotZoom {
       }
 
       function brushended(e) {
-        var s = e.selection;
+        let s = e.selection;
 
         if (!s) {
           if (!idleTimeout) return (idleTimeout = setTimeout(idled, idleDelay));
@@ -718,335 +1204,153 @@ class scatterplotZoom {
         SVG.selectAll("g.brush").remove();
       }
 
-      // checkbox.addEventListener("change", function () {
-      //   if (this.checked) {
-      //     start_brush_tool(); // Checkbox is checked..
-      //   } else {
-      //     end_brush_tool(); // Checkbox is not checked..
-      //   }
-      // });
-
-      // clickbox.addEventListener("click", function () {
-      //   console.log("working")
-      //   newX = x.domain(x0);
-      //   newY = y.domain(y0);
-
-      //   updateChart(newX, newY);
-      // })
-      var tooltip = d3
-        .select("#graph1")
+      let Tooltip = select("#scatter1Scroll")
         .append("div")
+        .style("opacity", 0)
         .attr("class", "tooltip")
-        .style("opacity", 0);
+        .style("background-color", "white")
+        // .style("border", "solid")
+        // .style("border-width", "2px")
+        .style("border-radius", "5px")
+        .style("padding", "5px");
 
-      // tooltip mouseover event handler
-      var tipMouseover = function (d, data) {
-        //var color = colorScale(d.manufacturer);
-        var html =
-          "Number Of Topics " +
-          "<b>" +
-          data.totalNumberOfTopics +
-          "</b>" +
-          "<br>" +
-          "Active Tests " +
-          "<b>" +
-          data.numberOfActiveTest +
-          "</b>";
+      let tipMouseover = function (d, datapoints) {
+        // console.log(datapoints.uniqueTotalCandidates)
+        Tooltip.style("opacity", 1)
+          .style("visibility", "visible")
+          .html(
 
-        tooltip
-          .html(html)
-          .style("left", d.pageX + 15 + "px")
-          .style("top", d.pageY - 28 + "px")
-          .transition()
-          .duration(200) // ms
-          .style("opacity", 0.9); // started as 0!
+            `<div class="scatter-main">
+              <div class="scatter-header">${datapoints.topicName}</div> 
+              <div class="scatterbody-content"> 
+                <div class="d-flex ">
+                  <div style="width:5%">
+                 
+                  </div>
+                  <div  style="width:75%">
+                    <div class="scatter-texthead d-flex align-items-start">Tests</div>
+                  </div>
+                  <div style="width:20%" class="scatter-testnum">${datapoints.totalNumberOfTest} </div>
+                </div>
+              
+                <div class="mt-2"> 
+                  <div class="d-flex ">
+                    <div style="width:5%"></div>
+                    <div  style="width:75%">
+                    <div class="scatter-texthead  d-flex align-items-start">Candidates</div>
+                  
+                  </div>
+                  <div style="width:20%" class="scatter-testnum">${datapoints.uniqueTotalCandidates} </div>
+                </div>
+
+                <div class="mt-2"> 
+                  <div class="d-flex ">
+                    <div style="width:5%"></div>
+                    <div  style="width:75%">
+                    <div class="scatter-texthead  d-flex align-items-start">Currently Taking Test</div>
+                    
+                  </div>
+                  <div style="width:20%" class="scatter-testnum">${datapoints.submitted} </div>
+                </div>
+              </div>
+            </div>`
+          )
+          .style("left", d.pageX - 170 + "px")
+          .style("top", d.pageY - 280 + "px");
+        select(this)
+          .attr("r", function (d) {
+            // console.log( radiusScale((d.uniqueTotalCandidates) + 5));
+            return d.totalNumberOfTest > 0 ? radiusScale(d.totalNumberOfTest) : radiusScale(d.totalNumberOfTest + 1);
+
+            // return (radiusScale(d.uniqueTotalCandidates) + 5);
+            // add mpg
+          })
+          .style("stroke", function (d) {
+            return d.active ? "#bcb4fe" : "#D0DFC5";
+          })
+          .style("stroke-width", 5)
+
+          .style("opacity", 0.5);
+        Tooltip.style("display", "block");
       };
-      // tooltip mouseout event handler
-      var tipMouseout = function (d) {
-        tooltip
-          .transition()
-          .duration(300) // ms
-          .style("opacity", 0); // don't care about position!
+
+      let tipMouseout = function (d) {
+        Tooltip.style("opacity", 0);
+        select(this)
+          .attr("r", function (d) {
+            return d.totalNumberOfTest > 0 ? radiusScale(d.totalNumberOfTest) : radiusScale(d.totalNumberOfTest + 1);
+
+            // return radiusScale(d.uniqueTotalCandidates);
+            // add mpg
+          })
+          .style("stroke", "none")
+          .style("opacity", 0.7);
+        Tooltip.style("display", "none");
       };
 
-      // function reset_zoom() {
-      //   newX = x.domain(x0);
-      //   newY = y.domain(y0);
+      let radiusScale = d3
+        .scaleSqrt()
+        // .scaleSequentialSqrt()        
+        // .domain(
+        //   extent(data, function (d) {
 
-      //   updateChart(newX, newY);
-      // }
+        //     // console.log(d.numberOfActiveTest,"ec csxc cds")
+        //     // return d.numberOfActiveTest;
+        //     return d.totalNumberOfTest;
+        //   })
+        // )
+        .domain([0, d3.max(data, function (d) { return d.totalNumberOfTest; })])
+
+        .range([0, startPoint]);
+
 
       scatter
         .selectAll("circle")
         .data(data)
         .enter()
         .append("circle")
+        .attr("class", "pointer")
         .attr("cx", function (d) {
-          return x(d.totalNumberOfTopics);
+
+          return x(d.valueTemp);
         })
         .attr("cy", function (d) {
-          return y(d.numberOfActiveTest);
+
+          return y(d.valueTempRandom);
+          // return y(d.valueTempSecond);
         })
-        .attr("r", 8)
-        .style("fill", "#61a3a9")
-        .style("opacity", 0.5)
+        // .attr("r", 8)
+        .attr("r", function (d) {
+          // console.log(d.totalNumberOfTest, "neww")
+          return d.totalNumberOfTest > 0 ? radiusScale(d.totalNumberOfTest) : radiusScale(d.totalNumberOfTest + 1);
+        })
+        // .style("fill", "#61a3a9")
+        .attr("fill", function (d) {
+          return d.active ? "#8676FF" : "#BCCBB1";
+        })
+        .style("opacity", 0.7)
         .on("mouseover", tipMouseover)
+
+        .on("mousemove", function (event) {
+          Tooltip
+            .style("left", event.pageX - 170 + "px")
+            .style("top", event.pageY - 280 + "px")
+
+        })
         .on("mouseout", tipMouseout);
 
 
     }, 1000);
 
-
-
   }
 
 }
-// #Changed Code
-// class D3BarChart {
-//   async myData(user) {
-//     script.marks_data = [];
-//     let fullbarData =
-//     script.allData = user;
-//     // script.marks_data = user.count;
-//     var max = Math.max(...user.map((o) => o.count));
-//     script.max = max;
-//     script.allData.forEach((element) => {
-//       script.marks_data.push(element.count);
-//     });
-//     document.getElementById("barchartGraph").innerHTML = "";
 
-//     //1) d.x_axis  2) HIghest marks of BAR ; 3) Bar Color ; 4)bardata ; 5)y_axis
-//     this.makegraph();
-//   }
-
-//   makegraph() {
-//         // console.log("users",script.max)
-
-//     // console.log("lennn", len)
-//     const rectWidth = 50;
-//     const svgHeight = 250,
-//       barWidth = 20
-
-//     let len = script.allData.length * (rectWidth) ;
-//     let margin = { top: 10, right: 10, bottom: 35, left: 15 },
-//       height = svgHeight - margin.bottom,
-//       width = len ;
-//     // For making the svg
-//     const svg1 = select("#barchartGraph")
-//       .append("svg")
-//       .attr("height", svgHeight)
-//       .attr("width", len + 50);
-//       // .style("background-color", "red");
-
-//     //SCALES START
-
-//     const xScale = scaleBand()
-//       .domain(script.allData.map((d) => d.x_axis))        //variable1??
-//       .range([0, len]);
-//       // .padding(0),
-
-//     // variable2??
-//     const yScale = scaleLinear().domain([0, script.max]).range([0, svgHeight - margin.bottom - margin.top]);
-//     const yScale1 = scaleLinear().domain([0, script.max]).range([svgHeight - margin.bottom, 0]);
-
-//     const x_axis = axisBottom(xScale)
-//         .tickSize(-svgHeight),
-//       xAxisTranslate = svgHeight - margin.bottom + 5;
-
-//     const y_axis = axisLeft(yScale1)
-//       .tickSize(-width)
-//        .ticks((script.max+5)/5);
-
-//     const g =  svg1
-//       .append("g")
-//       .attr("transform", "translate(" + 30 + "," +xAxisTranslate + ")")
-//     // .attr("transform","translate(150,150)");
-//     g.append("g")
-//       .attr("class", "bar-x-axis").call(x_axis)
-//         .selectAll("text")
-//         .style("text-anchor", "end")
-//       .style("color", "#A3A3A3")
-//       .style("font","Roboto")
-//         .attr("dx", "-.8em")
-//         .attr("dy", ".15em")
-//       // .attr("transform", "rotate(-30)");
-//       .attr("transform", "rotate(-15)");
-
-//     svg1.append("g").attr("class", "bar-x-axis").attr("transform", "translate(30,0)")
-//       .call(y_axis)
-//     .selectAll("text")
-//         .style("text-anchor", "end")
-//       .style("color", "#A3A3A3")
-//       .style("font","Roboto")
-//         .attr("dx", "-.8em")
-//         .attr("dy", ".15em")
-
-//     //  const xGridLine = axisBottom()
-//     //   .scale(xScale)
-//     //   .tickSize(svgHeight-25, 0, 0)
-//     //   .tickFormat("");
-
-//     //    svg1
-//     //   .append("g")
-//     //   .classed("gridLine", true)
-//     //   .attr("transform", "translate(15,0)")
-//     //   .style("color", "#F0F0F0")
-//     //   .attr("opacity", "0.5")
-//     //   .call(xGridLine);
-
-//     //SCALES END
-//     const t = select("svg1").transition().duration(2000);
-
-//      const g1 =  svg1
-//       .append("g")
-//       .attr("transform", "translate(" + 25 + ","+ 0 + ")")
-
-//     const rect =
-//       g1.selectAll("rect")
-//       .data(script.marks_data, (d) => d)
-//       .join(
-//         (enter) => {
-//           const rect = enter
-//             .append("rect")
-//             .attr("width", rectWidth-barWidth)
-//             .attr("stroke-width", 3)
-//             // .attr("stroke", "#7E857E")
-//             .attr("stroke", "#88888E")
-
-//             .attr("fill", "#514B4B")
-//             // overwrite the default so the animation looks better:
-//             .attr("x", (d, i) => i * rectWidth)
-//             .attr("y", function (p) {
-
-//              return  height;
-//             })
-
-//             .attr("height", function (d) {
-//               // return yScale(d);
-//               return 0
-
-//             })     .attr("transform", "translate(" + margin.left + "," + 0 + ")")
-//     //mose over start
-//       .on("mouseover", function (marks_data, i) {
-//         tooltip
-//           .style("top", event.pageY - 10 + "px")
-//           .style("left", event.pageX + 10 + "px").html(`Marks: ${marks_data}`).style("visibility", "visible");
-//         select(this).attr("fill", "#666666");
-
-//         //tryyyy
-//         /*
-//          svg1
-//             .append("circle")
-//             .attr("cx", (d) => xScale(d) + 20)
-//             .attr("cy", (d) =>
-//               yScale1(d)
-//             )
-//             .attr("r", 4)
-//             .attr("fill", "#3379B3")
-//             .attr("stroke-width", function() {
-//               return 2;
-//             })
-//             .attr("stroke", "white");
-//           tooltip.style("left", i.pageX + "px");
-//           tooltip.style("top", i.pageY - 87 + "px");
-//           tooltip.style("display", "inline-block");
-//             */
-//         //end
-//       })
-//       .on("mousemove", function () {
-//         tooltip
-//           // tooltip.html(``).style("visibility", "hidden");
-//       })
-//       .on("mouseout", function () {
-//         tooltip.html(``).style("visibility", "hidden");
-//         select(this).attr("fill", "#514B4B");
-//         // tooltip.remove()
-//       });
-
-//             // .attr("transform", "translate(25," + 0 + ")");
-
-//           return rect;
-//         },
-//         (update) => update,
-//         (exit) => {
-//           exit
-//             .transition(t)
-//             .attr("y", function (p) {
-
-//               return svgHeight - margin.bottom - yScale(p);
-//             })
-//               .attr("height", 0)
-//             .remove();
-//         }
-//       )
-//       // animate enter + update selection
-//         .transition()
-//         .duration(2000)
-//       .delay((d, i) => i * 10)
-//       .attr("x", (d, i) => i * rectWidth)
-//         .attr("y", function (p) {
-
-//         return  height - yScale(p);
-//       })
-//       .attr("height", function (d) {
-//               return yScale(d);
-//       })
-//       .attr("width", rectWidth- barWidth)
-
-//     // //Line chart
-//       var x = xScale,
-//       y = yScale1,
-//       line = d3Line
-//         .line()
-//         .x(function (d) {
-//           return x(d.x_axis);
-//         })
-//         .y(function (d) {
-//           return y(d.count);
-//         });
-//     // .curve(curveBasis);
-
-//     const g2 = svg1
-//       .append("g")
-//       .attr("transform", "translate(" + 55 + "," + 0 + ")");
-//     const path = g2
-//       .append("path")
-//       .datum(script.allData)
-//       .attr("fill", "none")
-//       .attr("stroke", "#79BAC5")
-//       .attr("stroke-linejoin", "round")
-//       .attr("stroke-linecap", "round")
-//       .attr("stroke-width", 1)
-//       .attr("d", line);
-
-//     const tooltip = select("body")
-//       .append("div")
-//       .attr("class", "d3-tooltip")
-//       .style("position", "absolute")
-//       .style("z-index", "10")
-//       .style("visibility", "hidden")
-//       .style("padding", "15px")
-//       .style("background", "#56ecb2")
-//       .style("border-radius", "5px")
-//       .style("color", "#fff")
-//       .text("a simple tooltip");
-//     // console.log(script.count);
-//     // rect.exit().remove();
-//     // svg.selectAll("rect > *").remove();
-
-//     // console.log(chartcontainer)
-//     // chartcontainer.scrollLeft;
-
-//   }
-
-// }
 
 class D3BarChart {
   async myData(user, max_val, allBarData, xScaleDomain, barColor) {
-    // console.log("usserr", user)
     script.barData = [];
     script.allData = user;
-    // script.marks_data = user.count;
     script.max = max_val;
     allBarData.forEach((element) => {
       script.barData.push(element);
@@ -1058,31 +1362,120 @@ class D3BarChart {
   }
 
   makegraph(xScaleDomain, barColor) {
-    // console.log("xScaleDomain", xScaleDomain.length)
-
     let heightOfScreen =
       window.innerHeight
       || document.documentElement.clientHeight ||
       document.body.clientHeight;
 
-
+    let len;
+    let svgHeight;
     const rectWidth = 50;
-    const svgHeight = (heightOfScreen >= 1800) ? 800 : (heightOfScreen >= 1400) ? 600 : (heightOfScreen >= 1000) ? 380
-      : (heightOfScreen >= 900) ? 270 : (heightOfScreen >= 800) ? 250 : (heightOfScreen >= 700) ? 220 : (heightOfScreen >= 600) ? 150 : (heightOfScreen >= 500) ? 110 : 200;
-
     const barWidth = 30;
 
-    let len = xScaleDomain.length <= 7 ? 3 * (script.allData.length * rectWidth) : (xScaleDomain.length <= 12 ? 1.8 * (script.allData.length * rectWidth) :
-      1.2 * (script.allData.length * rectWidth));
-    let margin = { top: 10, right: 35, bottom: 45, left: 40 },
+    if (xScaleDomain.length <= 7) {
+      if (heightOfScreen > 1000) {
+        svgHeight = 220;
+        len = 4 * (script.allData.length * rectWidth);
+      }
+      else if (heightOfScreen > 900) {
+        svgHeight = 220;
+        len = 3.5 * (script.allData.length * rectWidth);
+      }
+      else if (heightOfScreen >= 700) {
+        svgHeight = 200;
+        len = 2.8 * (script.allData.length * rectWidth);
+      }
+      else if (heightOfScreen >= 600) {
+        svgHeight = 200;
+        len = 2.3 * (script.allData.length * rectWidth);
+      }
+      else if (heightOfScreen >= 500) {
+        svgHeight = 210;
+        len = 1.8 * (script.allData.length * rectWidth);
+      }
+      else {
+        svgHeight = 200;
+        len = 1.5 * (script.allData.length * rectWidth);
+      }
+      // svgHeight = (heightOfScreen >= 1800) ? 800 : (heightOfScreen >= 1400) ? 600 :  (heightOfScreen >= 800) ? 220: 200;
+
+      // len = 2.8 * (script.allData.length * rectWidth);
+    }
+
+    else if (xScaleDomain.length <= 12) {
+      if (heightOfScreen > 1000) {
+        svgHeight = 220;
+        len = 2.3 * (script.allData.length * rectWidth);
+      }
+      else if (heightOfScreen > 900) {
+        svgHeight = 220;
+        len = 2 * (script.allData.length * rectWidth);
+      }
+      else if (heightOfScreen >= 800) {
+        svgHeight = 220;
+        len = 1.8 * (script.allData.length * rectWidth);
+      }
+      else if (heightOfScreen >= 700) {
+        svgHeight = 220;
+        len = 1.5 * (script.allData.length * rectWidth);
+      }
+      else if (heightOfScreen >= 600) {
+        svgHeight = 220;
+        len = 1.3 * (script.allData.length * rectWidth);
+      }
+      else if (heightOfScreen >= 500) {
+        svgHeight = 220;
+        len = 1 * (script.allData.length * rectWidth);
+      }
+      else {
+        svgHeight = 200;
+        len = 1.5 * (script.allData.length * rectWidth);
+      }
+      // svgHeight = (heightOfScreen >= 1800) ? 800 : (heightOfScreen >= 1400) ? 600 :  (heightOfScreen >= 800) ? 220: 200;
+
+      // len = 2.8 * (script.allData.length * rectWidth);
+    }
+
+    else {
+      if (heightOfScreen > 800) {
+        svgHeight = 220;
+        len = 1.8 * (script.allData.length * rectWidth);
+      }
+      else if (heightOfScreen >= 700) {
+        svgHeight = 220;
+        len = 1.6 * (script.allData.length * rectWidth);
+      }
+      else if (heightOfScreen >= 500) {
+        svgHeight = 220;
+        len = 1.3 * (script.allData.length * rectWidth);
+      }
+      else {
+        svgHeight = 200;
+        len = 1.5 * (script.allData.length * rectWidth);
+      }
+      // svgHeight = (heightOfScreen >= 1800) ? 800 : (heightOfScreen >= 1400) ? 600 : (heightOfScreen >= 1000) ? 250
+      // : (heightOfScreen >= 900) ? 240 : (heightOfScreen >= 800) ? 220 : (heightOfScreen >= 700) ? 210 : (heightOfScreen >= 600) ? 200 : (heightOfScreen >= 500) ? 210 : 200;
+
+      // len = (script.allData.length * rectWidth);
+    }
+
+
+    // let margin = { top: 10, right: 35, bottom: 45, left: 40 },
+    let margin = { top: 10, right: 35, bottom: 45, left: 20 },
+
       height = svgHeight - margin.bottom,
       width = len + (2 * rectWidth);
-    const extra = 1
+    const extra = 1;
+
     // For making the svg
     const svg1 = select("#barchartGraph")
+      // .classed("svg-container", true)
       .append("svg")
-      .attr("height", svgHeight)
-      .attr("width", width);
+      .attr("height", (svgHeight))
+      .attr("width", width)
+      // .attr("viewBox", `0 0 ${width} ${svgHeight}`)
+      .attr("preserveAspectRatio", "xMinYMin meet")
+      .classed("svg-content-responsive", true);
     // .style("background-color", "red");
 
     //SCALES START
@@ -1119,9 +1512,6 @@ class D3BarChart {
 
     const y_axis = axisLeft(yScale1)
       .tickSize(-(len + 5))
-      // .ticks(script.max <= 10 ? script.max
-      //   : script.max <= 29 ? (script.max + 5) / 5
-      //     : script.max <= 25 || ?);
       .ticks(script.max < 5 ? script.max : 5);
 
     const g = svg1
@@ -1207,11 +1597,27 @@ class D3BarChart {
             })
             .attr("transform", "translate(" + margin.left + "," + 0 + ")")
             //mose over start
-            .on("mouseover", function (barData, i) {
+            .on("mouseover", function (event, d) {
+              g1
+                .append("circle")
+                .attr("transform", "translate(" + margin.left + "," + 0 + ")")
+                .attr("cx", () => xScale(d.x_axis) + ((rectWidth - barWidth) / 2))
+                .attr("cy", () => {
+
+                  return (height - yScale(d.count))
+                }
+
+                )
+                .attr("r", 4)
+                .attr("fill", "#3379B3")
+                .attr("stroke-width", function () {
+                  return 2;
+                })
+                .attr("stroke", "white");
               tooltip
                 .style("top", event.pageY - 10 + "px")
                 .style("left", event.pageX + 10 + "px")
-                .html(`${i.count}`)
+                .html(`${d.count}`)
                 .style("visibility", "visible")
                 .style("display", "inline-block");
               select(this).attr("fill", function () {
@@ -1223,7 +1629,9 @@ class D3BarChart {
             .on("mouseout", function () {
               tooltip.html(``).style("visibility", "hidden");
               select(this).attr("fill", barColor);
-              tooltip.style("display", "none")
+              tooltip.style("display", "none");
+              g1.select("circle").remove();
+              tooltip.style("display", "none");
               d3.selectAll(".d3-tooltip").style("display", "none");;
             });
 
@@ -1511,7 +1919,8 @@ class piePlot {
   }
 }
 
-//GRAPH 4
+//Graph4 Original
+/*
 class scatterplot_rect {
   async scatterGraph(data) {
     // console.log("recttt daatta", data)
@@ -1794,7 +2203,7 @@ class scatterplot_rect {
         .style("opacity", 0.8);
       Tooltip.style("display", "none");
     };
-    /*
+    // /*
     // create a tooltip
   var Tooltip = select("#rect_scatter")
     .append("div")
@@ -1838,7 +2247,7 @@ class scatterplot_rect {
       .style("opacity", 0.8)
   }
     
-  */
+  // * /
 
     // const response3 = await fetch(
     //   "https://run.mocky.io/v3/35effb46-6d36-4026-9695-e573f6c90248"
@@ -1848,6 +2257,459 @@ class scatterplot_rect {
     render();
   }
 }
+*/
+
+//GRAPH 4
+class scatterplot_rect {
+  async scatterGraph(theData) {
+    if (document.getElementById("rect_scatter").innerHTML != "") {
+      document.getElementById("rect_scatter").innerHTML = "";
+    }
+
+
+    const rectFullData = theData.groupsData;
+    let rectSvgWidth;
+    // console.log("svg", theData)
+    setTimeout(() => {
+
+      if (window.innerWidth >= 1700) {
+        rectSvgWidth = window.innerWidth - 400
+
+      }
+      else if (window.innerWidth >= 1500) {
+        rectSvgWidth = window.innerWidth - 400
+
+
+      }
+      else if (window.innerWidth >= 1300) {
+        rectSvgWidth = window.innerWidth - 400
+
+
+      }
+      else if (window.innerWidth >= 1100) {
+        rectSvgWidth = window.innerWidth - 300
+
+      }
+      else {
+        rectSvgWidth = window.innerWidth - 200
+
+      }
+      // set the dimensions and margins of the graph
+      let rectMargin = { top: 10, right: 30, bottom: 20, left: 60 };
+      rectSvgWidth = rectSvgWidth - rectMargin.left - rectMargin.right;
+      let RectScatterheight = 300 - rectMargin.top - rectMargin.bottom;
+
+      const startPoint = 50;
+      let svgWidth = rectSvgWidth + rectMargin.left + rectMargin.right;
+      let svgHeight = RectScatterheight + rectMargin.top + rectMargin.bottom;;
+      let rectZoom = d3
+        .zoom()
+        .on("zoom", zoomed);
+
+      // console.log("svg height is",svgHeight, "and chartheight",RectScatterheight )
+      // append the SVG object to the body of the page
+      let rectSVG = d3
+        .select("#rect_scatter")
+        .classed("svg-containerRect", true)
+        .append("svg")
+        .attr("viewBox", `0 0 ${svgWidth} ${svgHeight}`)
+        .attr("preserveAspectRatio", "xMinYMin meet")
+        .classed("svg-content-responsive", true)
+        .classed("zoom-in", true)
+        .call(rectZoom);
+      // .style("background-color", "pink");
+
+
+      rectSVG = rectSVG.append("g")
+        .attr("transform", "translate(" + rectMargin.left + "," + rectMargin.top + ")")
+
+
+      let ctrl, key;
+
+      // Attach the resize event listener
+      document.body.addEventListener("keydown", function (ev) {
+        ev = ev || window.event;
+        key = ev.which || ev.code;
+        ctrl = ev.ctrlKey ? ev.ctrlKey : ((key === 17) ? true : false)
+        window.addEventListener("resize", resize);
+
+        // }
+      }, false);
+
+      function resize() {
+
+        if (window.innerWidth >= 1700) {
+          rectSvgWidth = window.innerWidth - 400
+
+        }
+        else if (window.innerWidth >= 1500) {
+          rectSvgWidth = window.innerWidth - 400
+
+
+        }
+        else if (window.innerWidth >= 1300) {
+          rectSvgWidth = window.innerWidth - 400
+
+
+        }
+        else if (window.innerWidth >= 1100) {
+          rectSvgWidth = window.innerWidth - 300
+
+        }
+        else {
+          rectSvgWidth = window.innerWidth - 200
+
+        }
+
+        svgWidth = rectSvgWidth + rectMargin.left + rectMargin.right;
+        svgHeight = RectScatterheight + rectMargin.top + rectMargin.bottom;;
+        if (ctrl && key === 109 && window.innerWidth > 1900) {
+          let containerWidth = parseInt(d3.select("#rect_scatter").style("width"));
+          let containerHeight = parseInt(d3.select("#rect_scatter").style("height"));
+
+          rectSVG.attr("viewBox", "0 0 " + svgWidth * containerWidth / (svgWidth) + " " + svgHeight * containerHeight / svgHeight);
+        }
+        else if (window.innerWidth > 1700) {
+          rectSVG.attr("viewBox", `0 0 ${svgWidth + 80} ${svgHeight}`);
+          if (window.innerHeight > 950) {
+            rectSVG.attr("viewBox", `0 0 ${svgWidth} ${svgHeight + 50}`);
+          }
+
+        }
+        else {
+          rectSVG.attr("viewBox", `0 0 ${svgWidth} ${svgHeight}`)
+        }
+
+      }
+
+      let max1 = Math.max(...rectFullData.map((o) => o.valueTemp));
+      let max2 = Math.max(...rectFullData.map((o) => o.valueTempRandom));
+
+      let x0rect = [0, max1];
+      let y0 = [0, max2];
+
+      // Add X axis
+      let x_Rect = d3
+        .scaleLinear()
+        .domain(x0rect)
+        // .range([startPoint, (width - (margin.left + margin.right))]);
+        .range([startPoint, (rectSvgWidth - (rectMargin.left + rectMargin.right))]);
+
+      const xScale1 = scaleLinear()
+        .domain([0, 5])
+        .range([0, (rectSvgWidth + rectMargin.right)])
+        .nice();
+      const xGridLine = axisBottom(xScale1)
+        .scale(xScale1)
+        .tickSize(RectScatterheight, 0, 0)
+        .ticks(6)
+        .tickFormat("");
+
+      const yScale1 = scaleLinear().domain([0, 5]).range([0, RectScatterheight]).nice(),
+        yGridLine = axisLeft(yScale1)
+          .scale(yScale1)
+          .tickSize(-svgWidth, 0)
+          .ticks(6)
+          .tickFormat("");
+
+      // console.log("what",data.map((d) => d.topicName))
+
+      // var x = d3.scaleBand()
+      // .domain(data.map((d) => d.topicName))
+      // .range([0, width]);
+
+      // Add Y axis
+      let y = d3
+        .scaleLinear()
+        .domain([0, max2])
+        .range([(RectScatterheight - (rectMargin.top + rectMargin.bottom)), startPoint]);
+      let newX = x_Rect;
+      let newY = y;
+
+      let brush = d3
+        .brush()
+        .extent([[0, 0], [rectSvgWidth, RectScatterheight]])
+        .on("end", brushended),
+        idleTimeout,
+        idleDelay = 350;
+
+      // Add X axis
+      let xAxis = rectSVG.append("g")
+        .attr("class", "x axis")
+        .attr("id", "axis--x")
+        .attr("transform", "translate(0," + RectScatterheight + ")")
+      // .call(d3.axisBottom(x));
+
+      // Add Y axis
+      let yAxis = rectSVG.append("g")
+        .attr("class", "y axis")
+        .attr("id", "axis--y")
+      // .call(d3.axisLeft(y));
+
+
+      rectSVG
+        .append("g")
+        .classed("gridLine", true)
+        .attr("transform", "translate(0,0)")
+        .style("color", "grey")
+        .attr("opacity", "0.5")
+        .call(xGridLine);
+      rectSVG.select('.domain').attr('stroke-width', 0);
+      rectSVG
+        .append("g")
+        .classed("gridLine", true)
+        .attr("transform", "translate(0,0)")
+        .style("color", "grey")
+        .attr("opacity", "0.5")
+        .call(yGridLine);
+
+
+      // Add a clipPath: everything out of this area won't be drawn.
+      let clipRect = rectSVG.append("defs")
+        .append("rectSVG:clipPath")
+        .attr("id", "clipRect")
+        .append("rectSVG:rect")
+        .attr("width", (rectSvgWidth))
+        .attr("height", RectScatterheight)
+        .attr("x", 0)
+        .attr("y", 0);
+
+
+      // Create the scatter variable: where both the circles and the brush take place
+      let scatterRect = rectSVG.append("g").attr("clip-path", "url(#clipRect)");
+      // .attr("clip-path", "url(#clip)");
+
+
+      function updateChart(newX, newY) {
+        let t = rectSVG.transition().duration(750);
+
+        // update axes with these new boundaries
+        xAxis.transition(t).call(d3.axisBottom(newX));
+        yAxis.transition(t).call(d3.axisLeft(newY));
+
+
+
+        // update circle position
+        scatterRect
+          .selectAll("rect")
+          .transition(t)
+          .attr("x", function (d) {
+
+            return newX(d.valueTemp);
+          })
+          .attr("y", function (d) {
+            return newY(d.valueTempRandom);
+            // return newY(d.valueTempSecond);
+          });
+      }
+      // Add circles
+      let radiusScale = d3
+        .scaleSqrt()
+        .domain([0, d3.max(rectFullData, function (d) { return d.repeatingPercentage; })])
+        .range([0, startPoint]);
+
+      function zoomed(e) {
+        // recover the new scale
+        newX = e.transform.rescaleX(x_Rect);
+        newY = e.transform.rescaleY(y);
+
+        // update circle position
+        scatterRect
+          .selectAll("rect")
+          .attr("x", function (d) {
+
+            return newX(d.valueTemp);
+          })
+          .attr("y", function (d) {
+            return newY(d.valueTempRandom);
+            // return newY(d.valueTempSecond);
+          })
+          .attr("width", function (d) {
+            return d.repeatingPercentage > 2 ? radiusScale(d.repeatingPercentage + 2) : radiusScale(d.repeatingPercentage + 4.5);
+          })
+          .attr("height", function (d) {
+            return d.repeatingPercentage > 2 ? radiusScale(d.repeatingPercentage) : radiusScale(d.repeatingPercentage + 2.5);
+          });
+      }
+
+      function idled() {
+        idleTimeout = null;
+      }
+
+      function brushended(e) {
+        let s = e.selection;
+
+        if (!s) {
+          if (!idleTimeout) return (idleTimeout = setTimeout(idled, idleDelay));
+          newX = x_Rect.domain(x0rect);
+          newY = y.domain(y0);
+        } else {
+          newX = x_Rect.domain([s[0][0], s[1][0]].map(newX.invert));
+          newY = y.domain([s[1][1], s[0][1]].map(newY.invert));
+
+          rectSVG.select(".brush").call(brush.move, null);
+        }
+        updateChart(newX, newY);
+      }
+
+      function start_brush_tool() {
+        rectSVG.append("g")
+          .attr("class", "brush")
+          .call(brush);
+      }
+
+      function end_brush_tool() {
+        rectSVG.selectAll("g.brush").remove();
+      }
+
+
+      //Tooltip For rect scatter graph Zoomable
+
+
+      let rectTooltip = select("body")
+        .append("div")
+        .style("opacity", 0)
+        .attr("class", "tooltip")
+      // .style("background-color", "white")
+      // .style("border-radius", "5px")
+      // .style("padding", "5px");
+
+      // Three function that change the tooltip when user hover / move / leave a cell
+      let tipMouseover = function (d, rectFullData) {
+
+        // console.log(datapoints.numberOfTests)
+
+
+        rectTooltip.style("opacity", 1)
+          .html(
+
+            `<div class="scatter-main">
+              <div class="scatter2-header">${rectFullData.groupName}</div> 
+              <div id='tipDiv'></div>
+              <div class="scatterbody2-content"> 
+                <div class="d-flex ">
+                  <div style="width:5%">
+                  </div>
+                  <div  style="width:75%">
+                    <div class="scatter-texthead">Tagged Tests</div>
+                  </div>
+                  <div style="width:20%" class="scatter-testnum">${rectFullData.numberOfTests} </div>
+                </div>
+
+                <div class="mt-2"> 
+                  <div class="d-flex ">
+                    <div style="width:5%"></div>
+                    <div  style="width:75%">
+                    <div class="scatter-texthead  d-flex align-items-start">Candidates</div>
+                  
+                  </div>
+                  <div style="width:20%" class="scatter-testnum">${rectFullData.numberOfCandidates} </div>
+                </div>
+              </div>
+            </div>`
+
+          )
+          .style("left", d.pageX - 170 + "px")
+        // .style("top", d.pageY - 280 + "px");
+        const tooltipHeight = rectTooltip.node().getBoundingClientRect().height;
+        const tooltipBottomPosition = d.pageY + 150 + tooltipHeight;
+        const screenHeight = window.innerHeight || document.documentElement.clientHeight;
+        if (tooltipBottomPosition > screenHeight) {
+          rectTooltip.style("top", event.pageY - 20 - tooltipHeight + "px");
+        } else {
+          rectTooltip.style("top", event.pageY + 20 + "px");
+        }
+        select(this)
+          .attr("width", function (d) {
+            return d.repeatingPercentage > 2 ? radiusScale(d.repeatingPercentage + 4) : radiusScale(d.repeatingPercentage + 6.5);
+          })
+          .attr("height", function (d) {
+            return d.repeatingPercentage > 2 ? radiusScale(d.repeatingPercentage + 2) : radiusScale(d.repeatingPercentage + 4.5);
+          })
+          .style("stroke", function (d) {
+            return d.active ? "#003D35" : "#970000";
+          })
+          .style("opacity", 0.54);
+        rectTooltip.style("display", "block");
+      };
+
+      let tipMouseout = function (d) {
+        rectTooltip.style("opacity", 0);
+        select(this)
+          .attr("width", function (d) {
+            return d.repeatingPercentage > 2 ? radiusScale(d.repeatingPercentage + 2) : radiusScale(d.repeatingPercentage + 4.5);
+          })
+          .attr("height", function (d) {
+            return d.repeatingPercentage > 2 ? radiusScale(d.repeatingPercentage) : radiusScale(d.repeatingPercentage + 2.5);
+          })
+          .style("stroke", "none")
+          .style("opacity", 0.8);
+        rectTooltip.style("display", "none");
+      };
+
+
+
+      scatterRect
+        .selectAll("rect")
+        .data(rectFullData)
+        .enter()
+        .append("rect")
+        .attr("class", "pointer")
+        .attr("x", function (d) {
+
+          return x_Rect(d.valueTemp);
+        })
+        .attr("y", function (d) {
+
+          return y(d.valueTempRandom);
+          // return y(d.valueTempSecond);
+        })
+        // .attr("r", 8)
+        .attr("width", function (d) {
+          // console.log(radiusScale(d.repeatingPercentage + 2))
+          return d.repeatingPercentage > 2 ? radiusScale(d.repeatingPercentage + 2) : radiusScale(d.repeatingPercentage + 4.5);
+        })
+        .attr("height", function (d) {
+          // console.log(radiusScale(d.repeatingPercentage),"heiighhtt ")
+          return d.repeatingPercentage > 2 ? radiusScale(d.repeatingPercentage) : radiusScale(d.repeatingPercentage + 2.5);
+        })
+        // .attr("r", function (d) {
+        //   console.log(radiusScale(d.repeatingPercentage), "neww")
+        //   return d.repeatingPercentage > 0 ? radiusScale(d.repeatingPercentage) : radiusScale(d.repeatingPercentage + 1);
+        // })
+        // .style("fill", "#61a3a9")
+        .attr("fill", function (d) {
+          return d.active ? "#308D85" : "#E74B1D";
+        })
+        .style("opacity", 0.7)
+        .on("mouseover", tipMouseover)
+
+        .on("mousemove", function (event) {
+          rectTooltip
+            .style("left", event.pageX - 170 + "px")
+          const tooltipHeight = rectTooltip.node().getBoundingClientRect().height;
+          const tooltipBottomPosition = event.pageY + 150 + tooltipHeight;
+          const screenHeight = window.innerHeight || document.documentElement.clientHeight;
+          if (tooltipBottomPosition > screenHeight) {
+            rectTooltip.style("top", event.pageY - 20 - tooltipHeight + "px");
+          } else {
+
+            rectTooltip.style("top", event.pageY + 20 + "px");
+          }
+
+        })
+        .on("mouseout", tipMouseout);
+
+
+    }, 1000);
+
+
+
+
+  }
+}
+
+
 
 // class scatterplot_rect {
 //   async scatterGraph(data) {
@@ -2141,11 +3003,45 @@ class scatterplot_rect {
 // // GRAPH 5
 
 class treeGraph {
+
+
   async dendoGram(classes) {
     if (document.getElementById("dendogram").innerHTML != "") {
       document.getElementById("dendogram").innerHTML = ""
     }
     // console.log(classes);
+
+    let svgWidth;
+    let svgHeight = 270;
+
+    const margin = {
+      top: 25,
+      bottom: 5,
+      left: 25,
+      right: 20,
+    };
+
+
+    // var widthss = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
+    if (window.innerWidth >= 1700) {
+      svgWidth = window.innerWidth + 450
+      // svgHeight = 250
+    }
+    else if (window.innerWidth >= 1500) {
+      svgWidth = window.innerWidth + 400
+    }
+    else if (window.innerWidth >= 1300) {
+      svgWidth = window.innerWidth + 320;
+    }
+    else if (window.innerWidth >= 1100) {
+      svgWidth = window.innerWidth + 250;
+    }
+
+    const width1 = svgWidth - margin.left - margin.right;
+    const height1 = svgHeight - margin.top - margin.bottom;
+
+
+
     let div = d3
       .select("body")
       .append("div")
@@ -2154,8 +3050,8 @@ class treeGraph {
       .style("background-color", "black");
 
     // console.log("svgwidth is", script.svgWidth)
-    const diameter = script.svgWidth,
-      radius = diameter / 3 + 30,
+    const diameter = svgWidth > 2500 ? svgWidth / 1.5 : (svgWidth < 1750 ? svgWidth / 1.1 : svgWidth / 1.35),
+      radius = diameter / 2.5 + 30,
       innerRadius = radius / 2;
 
     // console.log("Radius", radius, "Inner radiusss" , innerRadius)
@@ -2174,11 +3070,67 @@ class treeGraph {
 
     let svg = d3
       .select("#dendogram")
+      // .classed("svg-container", true)
       .append("svg")
+
+      .attr("viewBox", `-${svgWidth / 2.5} -430 ${svgWidth} 850`)
       .attr("preserveAspectRatio", "xMinYMin meet")
-      .attr("viewBox", `-${script.svgWidth / 2} -450 ${script.svgWidth} 900`)
-      .classed("svg-content", true);
+      .classed("svg-content-responsive", true);
+    // .attr("height", 900)
     // .style("background-color", "pink");
+
+    var ctrl, key;
+
+    // Attach the resize event listener
+    document.body.addEventListener("keydown", function (ev) {
+
+
+
+      ev = ev || window.event;
+      key = ev.which || ev.code;
+      ctrl = ev.ctrlKey ? ev.ctrlKey : ((key === 17) ? true : false)
+      window.addEventListener("resize", resize);
+
+      // }
+    }, false);
+
+    function resize() {
+      if (window.innerWidth >= 1700) {
+        svgWidth = window.innerWidth + 450
+        // svgHeight = 250
+      }
+      else if (window.innerWidth >= 1500) {
+        svgWidth = window.innerWidth + 400
+      }
+      else if (window.innerWidth >= 1300) {
+        svgWidth = window.innerWidth + 350;
+      }
+      else if (window.innerWidth >= 1100) {
+        svgWidth = window.innerWidth + 250;
+      }
+
+
+      if (ctrl && key === 109 && window.innerWidth > 1700) {
+        svgWidth = window.innerWidth + 500
+
+        var containerWidth = parseInt(d3.select("#dendogram").style("width"));
+        var containerHeight = parseInt(d3.select("#dendogram").style("height"));
+
+        svg.attr("viewBox", `-${svgWidth * containerWidth / (svgWidth - 100)} -430 ${svgWidth} 850`)
+      }
+      // else if (window.innerWidth > 1700) {
+
+      //   svg.attr("viewBox", `0 0 ${svgWidth + 80} ${svgHeight}`);
+      //   if (window.innerHeight > 950) {
+      //     svg.attr("viewBox", `0 0 ${svgWidth + 200} ${svgHeight + 50}`);
+      //   }
+
+      // }
+      else {
+
+        svg.attr("viewBox", `-${svgWidth / 2.5} -430 ${svgWidth} 850`)
+      }
+    }
 
     svg
       .selectAll("circle")
@@ -2216,15 +3168,16 @@ class treeGraph {
         (d.source = d[0]), (d.target = d[d.length - 1]);
       })
       .attr("class", "link")
-      .attr("d", line);
+      .attr("d", line)
 
     node = node.data(root.leaves());
 
+
     // console.log("root", node);
-    node
+    let chkNodeMouse = node
       .enter()
       .append("a")
-      .attr("class", "node")
+      .attr("class", "node pointer")
       // .attr("dy", "0.31em")
       .append("text")
       .attr("class", "node")
@@ -2242,23 +3195,51 @@ class treeGraph {
       .attr("text-anchor", function (d) {
         return d.x < 180 ? "start" : "end";
       })
-
       .text(function (d) {
-        if (d.data.parentTag.length > 8) {
+        if (d.data.parentTag.length > 5) {
           return d.data.parentTag.substring(0, 5) + "...";
         } else {
+          // console.log("sub stringssss",d.data.parentTag);
           return d.data.parentTag;
         }
-        // return d.data.parentTag;
-        // return d.data.key;
       })
       .on("mouseover", mouseovered)
-      .on("mouseout", mouseouted);
+      .on("mouseout", mouseouted)
+      .on("click", function (d, i) {
+        let arrSaved = [];
+        if (i.data.imports.length > 1) {
+          for (let j in i.data.imports) {
+            if (arrSaved.includes(i.data.imports[j])) {
+              // return;
+            }
+            else {
+              arrSaved.push(i.data.imports[j]);
+            }
+          }
+        }
+        // else {
+        //   console.log("the elsee", i)
+        // }
+        // QuesData.name = arrSaved;
+        // const liveValue = QuesData.name; // This value can be updated dynamically
+        // console.log("whattt",i.data.key);
+
+        const liveValue = i.data.key
+        const event = new CustomEvent('liveValueUpdated', { detail: liveValue });
+        window.dispatchEvent(event);
+
+      });
+
+    // chkNodeMouse.on("click", this.mouseSelect);
+
+    // node.on("click", function() {
+    //   console.log("rect");
+    // });
 
     function mouseovered(d, i) {
       // console.log("mousemoved", i);
       link
-        .classed("link--target", function (l) {
+        .classed("link--target ", function (l) {
           if (l.target === i) {
             // console.log("targeett", l.target);
             return (l.source.source = true);
@@ -2267,11 +3248,9 @@ class treeGraph {
         .classed("link--source", function (l) {
           if (l.source === i) return (l.target.target = true);
         })
-
         .filter(function (l) {
           return l.target === i || l.source === i;
         })
-
         .raise();
 
       node
@@ -2283,7 +3262,7 @@ class treeGraph {
         });
 
       div.transition().duration(200).style("opacity", 0.9);
-    }
+    };
 
     function mouseouted() {
       // console.log(d);
@@ -2291,7 +3270,9 @@ class treeGraph {
 
       node.classed("node--target", false).classed("node--source", false);
       div.transition().duration(500).style("opacity", 0);
-    }
+    };
+
+
 
     // Lazily construct the package hierarchy from class names.
     function packageHierarchy(classes) {
@@ -2360,9 +3341,33 @@ class treeGraph {
       return importss;
     }
   }
+  // mouseSelect(d, i) {
+  //   // const eventBus = new Vue();
+  //   // console.log(eventBus);
+  //   let arrSaved = [];
+  //   if (i.data.imports.length > 0) {
+  //     // console.log(i.data.imports);
+
+  //     for (let j in i.data.imports) {
+  //       if (arrSaved.includes(i.data.imports[j])) {
+  //         return;
+  //       }
+  //       else {
+  //         arrSaved.push(i.data.imports[j]);
+  //       }
+  //     }
+  //   }
+  //   else {
+  //     // console.log("the elsee", i)
+  //   }
+  //   console.log("the elsee", arrSaved)
+  //   // window.vueInstance.$emit('value-updated', arrSaved);
+  //   // console.log("inss", window.vueInstance.$emit('value-updated', arrSaved))
+  //   // return (arrSaved);
+  //   // const value = 'example value';
+  //   // eventBus.$emit('button-clicked', value);
+  // };
 }
-
-
 
 
 class proctBarChart {
@@ -2548,6 +3553,7 @@ class proctBarChart {
   }
   */
 
+
   async proctBarData(id, types, user, max_val, allBarData, xScaleDomain, barColor) {
     // console.log("usserr typee", types);
     script.barData = [];
@@ -2557,6 +3563,7 @@ class proctBarChart {
     allBarData.forEach((element) => {
       script.barData.push(element);
     });
+    // document.getElementById(id).innerHTML = "";
 
     // console.log(document.getElementById(id).innerHTML);
 
@@ -2579,7 +3586,7 @@ class proctBarChart {
 
     const barWidth = 30;
     let len = script.allData.length * rectWidth;
-    let margin = { top: 10, right: 35, bottom: 45, left: 40 },
+    let margin = { top: 10, right: 35, bottom: 48, left: 40 },
       height = svgHeight - margin.bottom,
       width = len + (2 * rectWidth);
 
@@ -2587,8 +3594,9 @@ class proctBarChart {
     // For making the svg
     const svg1 = select(id)
       .append("svg")
-      .attr("height", svgHeight)
-      .attr("width", width);
+      .attr("height", (svgHeight + 20))
+      .attr("width", width)
+    // .style("background-color","red");
     // .attr("preserveAspectRatio", "xMinYMin meet")
     //   .attr("viewBox", `0 0 ${width} ${svgHeight}`)
 
@@ -3796,7 +4804,7 @@ class proctLineChart {
 class reclinechart {
   //   async mygraph1(data) {
 
-  //     // console.log("data is" , data)
+
 
   //     // this.dataForLineGraph = Object.keys(res.data.data);
   //     const margin = { top: 20, right: 20, bottom: 30, left: 50 };
@@ -3898,7 +4906,6 @@ class reclinechart {
   //       .attr("stroke", "white")
   //       .style("filter", "url(#drop-shadow)")
   //       .on("click", function (e, d) {
-  //         // console.log(e,d)
   //         // graph
   //         //   .append("rect")
   //         //   .attr("x", () => xScale(d.totalCandidates)-20)
@@ -3988,8 +4995,7 @@ class reclinechart {
 
   async mygraph1(data) {
     data = data[3];
-    console.log("data is", data);
-    //  console.log("chhhk dddd",typeof(data))
+
 
     // this.dataForLineGraph = Object.keys(res.data.data);
     const margin = { top: 20, right: 20, bottom: 30, left: 50 };
@@ -4025,13 +5031,8 @@ class reclinechart {
     //         reverseData.push(chk[i][j].Level)
     //    }
     // const chks = chk.map((d)=>d)
-
-    console.log("reverse", reverseData);
-    console.log("nameee", name);
-
     //  const max = Math.max(...data.map((o) => o.progress.length));
     const max = reverseData.length;
-    console.log("chhhk", max);
     const xScale = d3
       .scaleLinear()
       // .padding(0.25)
@@ -4117,8 +5118,7 @@ class reclinechart {
 
   async mygraph2(data) {
     data = data[0];
-    console.log("data is", data);
-    //  console.log("chhhk dddd",typeof(data))
+
 
     // this.dataForLineGraph = Object.keys(res.data.data);
     const margin = { top: 20, right: 20, bottom: 30, left: 50 };
@@ -4155,12 +5155,10 @@ class reclinechart {
     //    }
     // const chks = chk.map((d)=>d)
 
-    console.log("reverse", reverseData);
-    console.log("nameee", name);
 
     //  const max = Math.max(...data.map((o) => o.progress.length));
     const max = reverseData.length;
-    console.log("chhhk", max);
+
     const xScale = d3
       .scaleLinear()
       // .padding(0.25)
@@ -4246,8 +5244,7 @@ class reclinechart {
 
   async mygraph3(data) {
     data = data[1];
-    console.log("data is", data);
-    //  console.log("chhhk dddd",typeof(data))
+
 
     // this.dataForLineGraph = Object.keys(res.data.data);
     const margin = { top: 20, right: 20, bottom: 30, left: 50 };
@@ -4284,12 +5281,10 @@ class reclinechart {
     //    }
     // const chks = chk.map((d)=>d)
 
-    console.log("reverse", reverseData);
-    console.log("nameee", name);
 
     //  const max = Math.max(...data.map((o) => o.progress.length));
     const max = reverseData.length;
-    console.log("chhhk", max);
+
     const xScale = d3
       .scaleLinear()
       // .padding(0.25)
@@ -4375,8 +5370,6 @@ class reclinechart {
 
   async mygraph4(data) {
     data = data[2];
-    console.log("data is", data);
-    //  console.log("chhhk dddd",typeof(data))
 
     // this.dataForLineGraph = Object.keys(res.data.data);
     const margin = { top: 20, right: 20, bottom: 30, left: 50 };
@@ -4413,12 +5406,11 @@ class reclinechart {
     //    }
     // const chks = chk.map((d)=>d)
 
-    console.log("reverse", reverseData);
-    console.log("nameee", name);
+
 
     //  const max = Math.max(...data.map((o) => o.progress.length));
     const max = reverseData.length;
-    console.log("chhhk", max);
+
     const xScale = d3
       .scaleLinear()
       // .padding(0.25)
@@ -4507,7 +5499,6 @@ class reclinechart {
 // class reclinechart {
 //   //   async mygraph1(data) {
 
-//   //     // console.log("data is" , data)
 
 //   //     // this.dataForLineGraph = Object.keys(res.data.data);
 //   //     const margin = { top: 20, right: 20, bottom: 30, left: 50 };
@@ -4609,7 +5600,6 @@ class reclinechart {
 //   //       .attr("stroke", "white")
 //   //       .style("filter", "url(#drop-shadow)")
 //   //       .on("click", function (e, d) {
-//   //         // console.log(e,d)
 //   //         // graph
 //   //         //   .append("rect")
 //   //         //   .attr("x", () => xScale(d.totalCandidates)-20)
@@ -4699,8 +5689,7 @@ class reclinechart {
 
 //   async mygraph1(data) {
 //     data = data[3];
-//     console.log("data is", data);
-//     //  console.log("chhhk dddd",typeof(data))
+
 
 //     // this.dataForLineGraph = Object.keys(res.data.data);
 //     const margin = { top: 20, right: 20, bottom: 30, left: 50 };
@@ -4737,12 +5726,10 @@ class reclinechart {
 //     //    }
 //     // const chks = chk.map((d)=>d)
 
-//     console.log("reverse", reverseData);
-//     console.log("nameee", name);
+
 
 //     //  const max = Math.max(...data.map((o) => o.progress.length));
 //     const max = reverseData.length;
-//     console.log("chhhk", max);
 //     const xScale = d3
 //       .scaleLinear()
 //       // .padding(0.25)
@@ -4828,8 +5815,7 @@ class reclinechart {
 
 //   async mygraph2(data) {
 //     data = data[0];
-//     console.log("data is", data);
-//     //  console.log("chhhk dddd",typeof(data))
+
 
 //     // this.dataForLineGraph = Object.keys(res.data.data);
 //     const margin = { top: 20, right: 20, bottom: 30, left: 50 };
@@ -4866,12 +5852,9 @@ class reclinechart {
 //     //    }
 //     // const chks = chk.map((d)=>d)
 
-//     console.log("reverse", reverseData);
-//     console.log("nameee", name);
 
 //     //  const max = Math.max(...data.map((o) => o.progress.length));
 //     const max = reverseData.length;
-//     console.log("chhhk", max);
 //     const xScale = d3
 //       .scaleLinear()
 //       // .padding(0.25)
@@ -4957,8 +5940,6 @@ class reclinechart {
 
 //   async mygraph3(data) {
 //     data = data[1];
-//     console.log("data is", data);
-//     //  console.log("chhhk dddd",typeof(data))
 
 //     // this.dataForLineGraph = Object.keys(res.data.data);
 //     const margin = { top: 20, right: 20, bottom: 30, left: 50 };
@@ -4995,12 +5976,10 @@ class reclinechart {
 //     //    }
 //     // const chks = chk.map((d)=>d)
 
-//     console.log("reverse", reverseData);
-//     console.log("nameee", name);
+
 
 //     //  const max = Math.max(...data.map((o) => o.progress.length));
 //     const max = reverseData.length;
-//     console.log("chhhk", max);
 //     const xScale = d3
 //       .scaleLinear()
 //       // .padding(0.25)
@@ -5086,8 +6065,7 @@ class reclinechart {
 
 //   async mygraph4(data) {
 //     data = data[2];
-//     console.log("data is", data);
-//     //  console.log("chhhk dddd",typeof(data))
+
 
 //     // this.dataForLineGraph = Object.keys(res.data.data);
 //     const margin = { top: 20, right: 20, bottom: 30, left: 50 };
@@ -5124,12 +6102,11 @@ class reclinechart {
 //     //    }
 //     // const chks = chk.map((d)=>d)
 
-//     console.log("reverse", reverseData);
-//     console.log("nameee", name);
+
 
 //     //  const max = Math.max(...data.map((o) => o.progress.length));
 //     const max = reverseData.length;
-//     console.log("chhhk", max);
+
 //     const xScale = d3
 //       .scaleLinear()
 //       // .padding(0.25)
@@ -7365,6 +8342,7 @@ class funnelChart {
 }
 
 
+
 // eslint-disable-next-line no-redeclare
 export {
   D3BarChart,
@@ -7378,6 +8356,256 @@ export {
   reclinechart,
   DensityChart,
   funnelChart,
-  proctLineChart
+  proctLineChart,
+  QuesData,
 };
+// module.exports = {};
 // treeGraph1
+
+
+
+
+// #Changed Code
+
+/*
+class D3BarChart {
+  async myData(user) {
+    script.marks_data = [];
+    let fullbarData =
+    script.allData = user;
+    // script.marks_data = user.count;
+    var max = Math.max(...user.map((o) => o.count));
+    script.max = max;
+    script.allData.forEach((element) => {
+      script.marks_data.push(element.count);
+    });
+    document.getElementById("barchartGraph").innerHTML = "";
+
+    //1) d.x_axis  2) HIghest marks of BAR ; 3) Bar Color ; 4)bardata ; 5)y_axis
+    this.makegraph();
+  }
+
+  makegraph() {
+        // console.log("users",script.max)
+
+    // console.log("lennn", len)
+    const rectWidth = 50;
+    const svgHeight = 250,
+      barWidth = 20
+
+    let len = script.allData.length * (rectWidth) ;
+    let margin = { top: 10, right: 10, bottom: 35, left: 15 },
+      height = svgHeight - margin.bottom,
+      width = len ;
+    // For making the svg
+    const svg1 = select("#barchartGraph")
+      .append("svg")
+      .attr("height", svgHeight)
+      .attr("width", len + 50);
+      // .style("background-color", "red");
+
+    //SCALES START
+
+    const xScale = scaleBand()
+      .domain(script.allData.map((d) => d.x_axis))        //variable1??
+      .range([0, len]);
+      // .padding(0),
+
+    // variable2??
+    const yScale = scaleLinear().domain([0, script.max]).range([0, svgHeight - margin.bottom - margin.top]);
+    const yScale1 = scaleLinear().domain([0, script.max]).range([svgHeight - margin.bottom, 0]);
+
+    const x_axis = axisBottom(xScale)
+        .tickSize(-svgHeight),
+      xAxisTranslate = svgHeight - margin.bottom + 5;
+
+    const y_axis = axisLeft(yScale1)
+      .tickSize(-width)
+       .ticks((script.max+5)/5);
+
+    const g =  svg1
+      .append("g")
+      .attr("transform", "translate(" + 30 + "," +xAxisTranslate + ")")
+    // .attr("transform","translate(150,150)");
+    g.append("g")
+      .attr("class", "bar-x-axis").call(x_axis)
+        .selectAll("text")
+        .style("text-anchor", "end")
+      .style("color", "#A3A3A3")
+      .style("font","Roboto")
+        .attr("dx", "-.8em")
+        .attr("dy", ".15em")
+      // .attr("transform", "rotate(-30)");
+      .attr("transform", "rotate(-15)");
+
+    svg1.append("g").attr("class", "bar-x-axis").attr("transform", "translate(30,0)")
+      .call(y_axis)
+    .selectAll("text")
+        .style("text-anchor", "end")
+      .style("color", "#A3A3A3")
+      .style("font","Roboto")
+        .attr("dx", "-.8em")
+        .attr("dy", ".15em")
+
+    //  const xGridLine = axisBottom()
+    //   .scale(xScale)
+    //   .tickSize(svgHeight-25, 0, 0)
+    //   .tickFormat("");
+
+    //    svg1
+    //   .append("g")
+    //   .classed("gridLine", true)
+    //   .attr("transform", "translate(15,0)")
+    //   .style("color", "#F0F0F0")
+    //   .attr("opacity", "0.5")
+    //   .call(xGridLine);
+
+    //SCALES END
+    const t = select("svg1").transition().duration(2000);
+
+     const g1 =  svg1
+      .append("g")
+      .attr("transform", "translate(" + 25 + ","+ 0 + ")")
+
+    const rect =
+      g1.selectAll("rect")
+      .data(script.marks_data, (d) => d)
+      .join(
+        (enter) => {
+          const rect = enter
+            .append("rect")
+            .attr("width", rectWidth-barWidth)
+            .attr("stroke-width", 3)
+            // .attr("stroke", "#7E857E")
+            .attr("stroke", "#88888E")
+
+            .attr("fill", "#514B4B")
+            // overwrite the default so the animation looks better:
+            .attr("x", (d, i) => i * rectWidth)
+            .attr("y", function (p) {
+
+             return  height;
+            })
+
+            .attr("height", function (d) {
+              // return yScale(d);
+              return 0
+
+            })     .attr("transform", "translate(" + margin.left + "," + 0 + ")")
+    //mose over start
+      .on("mouseover", function (marks_data, i) {
+        tooltip
+          .style("top", event.pageY - 10 + "px")
+          .style("left", event.pageX + 10 + "px").html(`Marks: ${marks_data}`).style("visibility", "visible");
+        select(this).attr("fill", "#666666");
+
+        //tryyyy
+        /*
+         svg1
+            .append("circle")
+            .attr("cx", (d) => xScale(d) + 20)
+            .attr("cy", (d) =>
+              yScale1(d)
+            )
+            .attr("r", 4)
+            .attr("fill", "#3379B3")
+            .attr("stroke-width", function() {
+              return 2;
+            })
+            .attr("stroke", "white");
+          tooltip.style("left", i.pageX + "px");
+          tooltip.style("top", i.pageY - 87 + "px");
+          tooltip.style("display", "inline-block");
+            
+        //end
+      })
+      .on("mousemove", function () {
+        tooltip
+          // tooltip.html(``).style("visibility", "hidden");
+      })
+      .on("mouseout", function () {
+        tooltip.html(``).style("visibility", "hidden");
+        select(this).attr("fill", "#514B4B");
+        // tooltip.remove()
+      });
+
+            // .attr("transform", "translate(25," + 0 + ")");
+
+          return rect;
+        },
+        (update) => update,
+        (exit) => {
+          exit
+            .transition(t)
+            .attr("y", function (p) {
+
+              return svgHeight - margin.bottom - yScale(p);
+            })
+              .attr("height", 0)
+            .remove();
+        }
+      )
+      // animate enter + update selection
+        .transition()
+        .duration(2000)
+      .delay((d, i) => i * 10)
+      .attr("x", (d, i) => i * rectWidth)
+        .attr("y", function (p) {
+
+        return  height - yScale(p);
+      })
+      .attr("height", function (d) {
+              return yScale(d);
+      })
+      .attr("width", rectWidth- barWidth)
+
+    // //Line chart
+      var x = xScale,
+      y = yScale1,
+      line = d3Line
+        .line()
+        .x(function (d) {
+          return x(d.x_axis);
+        })
+        .y(function (d) {
+          return y(d.count);
+        });
+    // .curve(curveBasis);
+
+    const g2 = svg1
+      .append("g")
+      .attr("transform", "translate(" + 55 + "," + 0 + ")");
+    const path = g2
+      .append("path")
+      .datum(script.allData)
+      .attr("fill", "none")
+      .attr("stroke", "#79BAC5")
+      .attr("stroke-linejoin", "round")
+      .attr("stroke-linecap", "round")
+      .attr("stroke-width", 1)
+      .attr("d", line);
+
+    const tooltip = select("body")
+      .append("div")
+      .attr("class", "d3-tooltip")
+      .style("position", "absolute")
+      .style("z-index", "10")
+      .style("visibility", "hidden")
+      .style("padding", "15px")
+      .style("background", "#56ecb2")
+      .style("border-radius", "5px")
+      .style("color", "#fff")
+      .text("a simple tooltip");
+    // console.log(script.count);
+    // rect.exit().remove();
+    // svg.selectAll("rect > *").remove();
+
+    // console.log(chartcontainer)
+    // chartcontainer.scrollLeft;
+
+  }
+
+}
+
+*/
+

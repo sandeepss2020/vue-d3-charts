@@ -87,6 +87,6 @@
     "build:unpkg": "cross-env NODE_ENV=production rollup --config build/rollup.config.js --format iife"
   },
   "unpkg": "dist/vue-d3-charts.min.js",
-  "version": "0.2.3" 
+  "version": "0.2.4" 
   
 }
