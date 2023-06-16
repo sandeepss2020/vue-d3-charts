@@ -2609,15 +2609,14 @@ class scatterplot_rect {
             </div>`
 
           )
-          .style("left", d.pageX - 170 + "px")
-        // .style("top", d.pageY - 280 + "px");
+          .style("left", d.pageX - 50 + "px")        // .style("top", d.pageY - 280 + "px");
         const tooltipHeight = rectTooltip.node().getBoundingClientRect().height;
         const tooltipBottomPosition = d.pageY + 150 + tooltipHeight;
         const screenHeight = window.innerHeight || document.documentElement.clientHeight;
         if (tooltipBottomPosition > screenHeight) {
-          rectTooltip.style("top", event.pageY - 20 - tooltipHeight + "px");
+          rectTooltip.style("top", d.pageY - 20 - tooltipHeight + "px");
         } else {
-          rectTooltip.style("top", event.pageY + 20 + "px");
+          rectTooltip.style("top", d.pageY + 20 + "px");
         }
         select(this)
           .attr("width", function (d) {
@@ -2686,7 +2685,7 @@ class scatterplot_rect {
 
         .on("mousemove", function (event) {
           rectTooltip
-            .style("left", event.pageX - 170 + "px")
+            .style("left", event.pageX - 50 + "px")
           const tooltipHeight = rectTooltip.node().getBoundingClientRect().height;
           const tooltipBottomPosition = event.pageY + 150 + tooltipHeight;
           const screenHeight = window.innerHeight || document.documentElement.clientHeight;
@@ -3024,17 +3023,17 @@ class treeGraph {
 
     // var widthss = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
     if (window.innerWidth >= 1700) {
-      svgWidth = window.innerWidth + 450
+      svgWidth = window.innerWidth - 400
       // svgHeight = 250
     }
     else if (window.innerWidth >= 1500) {
-      svgWidth = window.innerWidth + 400
+      svgWidth = window.innerWidth - 370
     }
     else if (window.innerWidth >= 1300) {
-      svgWidth = window.innerWidth + 320;
+      svgWidth = window.innerWidth - 350;
     }
     else if (window.innerWidth >= 1100) {
-      svgWidth = window.innerWidth + 250;
+      svgWidth = window.innerWidth - 300;
     }
 
     const width1 = svgWidth - margin.left - margin.right;
@@ -3049,8 +3048,8 @@ class treeGraph {
       .style("opacity", 0)
       .style("background-color", "black");
 
-    // console.log("svgwidth is", script.svgWidth)
-    const diameter = svgWidth > 2500 ? svgWidth / 1.5 : (svgWidth < 1750 ? svgWidth / 1.1 : svgWidth / 1.35),
+    console.log("innerwidth",window.innerWidth,"svgwidth is", svgWidth);
+    const diameter = svgWidth > 2500 ? svgWidth / 1.5 : ( svgWidth < 1300 ? svgWidth / 0.75 : svgWidth < 1750 ? svgWidth / 0.85 : svgWidth / 1.35),
       radius = diameter / 2.5 + 30,
       innerRadius = radius / 2;
 
@@ -3096,22 +3095,23 @@ class treeGraph {
 
     function resize() {
       if (window.innerWidth >= 1700) {
-        svgWidth = window.innerWidth + 450
+        svgWidth = window.innerWidth - 400
         // svgHeight = 250
       }
       else if (window.innerWidth >= 1500) {
-        svgWidth = window.innerWidth + 400
+        svgWidth = window.innerWidth - 370
       }
       else if (window.innerWidth >= 1300) {
-        svgWidth = window.innerWidth + 350;
+        svgWidth = window.innerWidth - 350;
       }
       else if (window.innerWidth >= 1100) {
-        svgWidth = window.innerWidth + 250;
+        svgWidth = window.innerWidth - 300;
       }
+  
 
 
       if (ctrl && key === 109 && window.innerWidth > 1700) {
-        svgWidth = window.innerWidth + 500
+        svgWidth = window.innerWidth - 400
 
         var containerWidth = parseInt(d3.select("#dendogram").style("width"));
         var containerHeight = parseInt(d3.select("#dendogram").style("height"));
