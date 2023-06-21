@@ -295,8 +295,8 @@ class scatterplot {
      </div>
     <div>`
           )
-          .style("left", event.pageX + 20 + "px")
-          .style("top", event.pageY + "px");
+          .style("left", d.pageX + 20 + "px")
+          .style("top", d.pageY + "px");
         select(this)
           .attr("r", function (d) {
             // console.log( radiusScale((d.uniqueTotalCandidates) + 5));
@@ -1256,7 +1256,16 @@ class scatterplotZoom {
             </div>`
           )
           .style("left", d.pageX - 170 + "px")
-          .style("top", d.pageY - 280 + "px");
+          const tooltipHeight = Tooltip.node().getBoundingClientRect().height;
+          const tooltipBottomPosition = d.pageY + 200 +tooltipHeight;
+          const screenHeight = window.innerHeight || document.documentElement.clientHeight;
+          if (tooltipBottomPosition < screenHeight) {
+           
+            Tooltip.style("top", d.pageY - 150 - tooltipHeight + "px");
+          } else {
+           
+            Tooltip.style("top", d.pageY  - 460 + "px");
+          }
         select(this)
           .attr("r", function (d) {
             // console.log( radiusScale((d.uniqueTotalCandidates) + 5));
@@ -1334,8 +1343,16 @@ class scatterplotZoom {
         .on("mousemove", function (event) {
           Tooltip
             .style("left", event.pageX - 170 + "px")
-            .style("top", event.pageY - 280 + "px")
-
+            const tooltipHeight = Tooltip.node().getBoundingClientRect().height;
+            const tooltipBottomPosition = event.pageY + 200 +tooltipHeight;
+            const screenHeight = window.innerHeight || document.documentElement.clientHeight;
+            if (tooltipBottomPosition < screenHeight) {
+             
+              Tooltip.style("top", event.pageY - 150 - tooltipHeight + "px");
+            } else {
+             
+              Tooltip.style("top", event.pageY  - 460 + "px");
+            }
         })
         .on("mouseout", tipMouseout);
 
@@ -1624,6 +1641,11 @@ class D3BarChart {
                 return barColor == "#E3607B" ? "#A7243F" : ("#346A97")
               });
 
+            })
+            .on("mousemove",function(event){
+              tooltip
+                .style("top", event.pageY - 10 + "px")
+                .style("left", event.pageX + 10 + "px")
             })
 
             .on("mouseout", function () {
@@ -3048,7 +3070,7 @@ class treeGraph {
       .style("opacity", 0)
       .style("background-color", "black");
 
-    console.log("innerwidth",window.innerWidth,"svgwidth is", svgWidth);
+    // console.log("innerwidth",window.innerWidth,"svgwidth is", svgWidth);
     const diameter = svgWidth > 2500 ? svgWidth / 1.5 : ( svgWidth < 1300 ? svgWidth / 0.75 : svgWidth < 1750 ? svgWidth / 0.85 : svgWidth / 1.35),
       radius = diameter / 2.5 + 30,
       innerRadius = radius / 2;
@@ -7909,24 +7931,33 @@ class DensityChart {
 
 class funnelChart {
   async createFunnel(originalData) {
-    var width;
-    var height = 200;
-
+    if (document.getElementById('funnel').innerHTML != "") {
+      document.getElementById('funnel').innerHTML = "";
+    }
+    let width;
+    let height = 185;  //200
+    let svgHeight =  250     //(185 + 65);
+    let extraGap = 50;
+    let myWidth = window.innerWidth;
     if (window.innerWidth >= 1700) {
-      width = window.innerWidth - 200
+      width = window.innerWidth  - 200
       // svgHeight = 250
     }
     else if (window.innerWidth >= 1500) {
-      width = window.innerWidth - 300
+      width = window.innerWidth - 300 
+      // svgHeight = 250
     }
     else if (window.innerWidth >= 1300) {
-      width = window.innerWidth - 400;
+      width = window.innerWidth - 300
+      // svgHeight = 250
     }
     else if (window.innerWidth >= 1100) {
-      width = window.innerWidth - 450;
+      width = window.innerWidth - 450
+      // svgHeight = 250
     }
-
-    // const width = 1150;
+    let svgWidth = width;
+    width = svgWidth - extraGap;
+    //  width = width + extraGap
     // const height = 200;
     const len = originalData.length;
     // const len = 15;
@@ -8005,7 +8036,7 @@ class funnelChart {
 
     let datass2 = []
     let k2 = len * 2;
-    let y_val = len + 1;
+    let y_val = len + 1.5;
     for (let i = 0; i < len; i++) {
       let val = 2;
 
@@ -8022,18 +8053,17 @@ class funnelChart {
 
 
     // create svg element:
-    var svg = d3.select("#funnel")
+    let svg1 = d3.select("#funnel")
       .classed("svg-container", true)
       .append("svg")
-      // .attr("width", width)
-      // .attr("height", height)
-
-      .attr("viewBox", `0 0 ${width} ${height}`)
+      .attr("viewBox", `0 0 ${svgWidth} ${svgHeight}`)
       .attr("preserveAspectRatio", "xMinYMin meet")
       // .attr('viewBox', '0 0 ' + svgWidth + ' ' + svgHeight)
       .classed("svg-content-responsive", true)
     // .style("background-color", "black");
 
+    let svg = svg1.append("g")
+    .attr("transform", "translate(" + 50 + "," + 0 + ")");
 
     //Only For SVG 
 
@@ -8058,43 +8088,32 @@ class funnelChart {
         var containerWidth = parseInt(d3.select("#funnel").style("width"));
         var containerHeight = parseInt(d3.select("#funnel").style("height"));
         if (document.querySelector('#funnel').offsetWidth > 1300) {
-
-          svg.attr("viewBox", "0 0 " + (width * 1.2) * containerWidth / (width - width / 7) + " " + height * containerHeight / (height - height / 3.7));
+          svg1.attr("viewBox", "0 0 " + (width * 1.2) * containerWidth / (width - width / 20) + " " + height * containerHeight / (height - height / 3.7));
         }
         else {
-
-          svg.attr("viewBox", "0 0 " + width * containerWidth / (width) + " " + height * containerHeight / height);
+          svg1.attr("viewBox", "0 0 " + width * containerWidth / (width - width/5) + " " + height * containerHeight / (height - height/7));
         }
       }
       else if (window.innerWidth > 1700) {
-
-
-
         if (document.querySelector('#funnel').offsetHeight > 1200) {
-
-          svg.attr("viewBox", `0 0 ${width + 250} ${height}`);
+          // svg1.attr("viewBox", `0 0 ${width + 250} ${height}`);
+          svg1.attr("viewBox", `0 0 ${svgWidth + 250} ${svgHeight}`);
         }
         else {
-          svg.attr("viewBox", `0 0 ${width + 80} ${height}`);
+          svg1.attr("viewBox", `0 0 ${svgWidth + 150} ${svgHeight +10}`);
         }
 
       }
       else {
 
         if (document.querySelector('#funnel').offsetHeight > 1100) {
-          svg.attr("viewBox", `0 0 ${width + 100} ${height}`)
+          svg1.attr("viewBox", `0 0 ${svgWidth + 100} ${svgHeight}`)
         }
         else {
-          svg.attr("viewBox", `0 0 ${width + 20} ${height}`)
+          svg1.attr("viewBox", `0 0 ${svgWidth + 50} ${svgHeight}`)
         }
-
-
       }
     }
-
-
-
-    // prepare a helper function
     var curveFunc = d3.area()
       .x(function (d) { return d.x })      // Position of both line breaks on the X axis
       .y1(function (d) { return d.y })     // Y position of top line breaks
@@ -8158,14 +8177,13 @@ class funnelChart {
     svg.append('path')
       .attr('d', curveFunc3(datass2))
       .attr('stroke', '#d6d1eb')
-      .style("stroke-width", 3)
+      .style("stroke-width", 2.5)
       .attr('fill', 'none');
 
 
 
 
     //Funnel Gridlines
-
     const xScale1 = scaleLinear()
       .domain([0, len])
       .range([0, width])
@@ -8314,8 +8332,9 @@ class funnelChart {
       .attr("class", "bar-x-axis")
       .call(x_axis)
     // .style("color", "red")
+    
+    xGroup_text.select('.domain').attr('stroke-width', 0);
 
-    xGroup_text.select('.domain').attr('stroke-width', 0)
     xGroup_text
       .selectAll("text")
       .text(function (d, i) {
@@ -8337,6 +8356,138 @@ class funnelChart {
       })
       .attr("transform", "translate(" + 0 + "," + -6 + ")")
       .raise();
+
+      const glast = svg
+      .append("g")      
+      .attr("transform", "translate(" + 0 + "," + (svgHeight - 50) + ")")
+
+      const xGroup2_Rect = glast.append("g")
+      .attr("class", "x-axis")
+      .call(x_axis)
+      // .style("color", "pink");
+
+      xGroup2_Rect.append("rect")
+      .attr("width", width)
+      .attr("height", "40")
+      .attr("x", 0)
+      .attr("y", 0)
+      .style("fill", "#E5E5E5")
+      // .style("background-color", "black")
+      .attr("transform", "translate(" + 0 + "," +(-20) + ")");
+
+      const xGroup_LastText = glast.append("g")
+      .attr("class", "bar-x-axis")
+      .call(x_axis);
+
+      xGroup_LastText.select('.domain').attr('stroke-width', 0);
+
+      xGroup_LastText
+      .selectAll("text")
+      .text(function (d, i) {
+        return ((` Round ` + originalData[i].level) + ' : ' + originalData[i].actualCount)
+        // return i < (len - 1) ?
+        //   (` Round ` + originalData[i].level) + ' : ' + originalData[i].actualCount : (`Selected`+' :'+'100')
+      })
+      
+      .style("color", "#7664BC")
+      .attr("font-weight", function (d, i) {
+
+        return 600
+
+      })
+      
+      .attr("font-family", "Poppins")
+      .attr("font-size", function (d, i) {
+
+        return "12px"
+
+      })
+      .attr("transform", "translate(" + 0 + "," + -6 + ")")
+      .raise();
+      
+
+      //Y scale Text
+      const yScaleText = scaleLinear()
+      .domain([0, height])
+      .range([height, 0])
+
+      const y_axis_title = axisLeft(yScaleText)
+      .tickFormat("")
+      .tickSizeOuter(0)
+      .tickSizeInner(0);
+      const y_title = svg
+      .append("g")
+      .attr("transform", "translate(" + -20 + "," + (-height / 1.8) + ")");
+    const y_tittle_txt = y_title
+      .append("g")
+      .call(y_axis_title);
+      y_tittle_txt.select('.domain').attr('stroke-width', 0);
+
+      y_tittle_txt.select("text")
+      .style("text-anchor", "middle")
+      .style("color", "#030229")
+      .style("font-family", "poppins")
+      .style("font-size", "12px")
+      .style("font-weight", "500")
+
+      .attr("dx", "-.8em")
+      .attr("dy", ".15em")
+      .attr("transform", "rotate(-90)")
+      .text(function () {
+        return "Accumulative"
+      });
+
+      const y_axis_title2 = axisLeft(yScaleText)
+      .tickFormat("")
+      .tickSizeOuter(0)
+      .tickSizeInner(0);
+      const y_title2 = svg
+      .append("g")
+      .attr("transform", "translate(" + -15 + "," + ((height / 10 ) - 25) + ")");
+    const y_tittle_txt2 = y_title2
+      .append("g")
+      .call(y_axis_title2);
+      y_tittle_txt2.select('.domain').attr('stroke-width', 0);
+
+
+      y_tittle_txt2.select("text")
+      .style("text-anchor", "middle")
+      .style("color", "#030229")
+      .style("font-family", "poppins")
+      .style("font-size", "12px")
+      .style("font-weight", "500")
+
+      .attr("dx", "-.8em")
+      .attr("dy", ".15em")
+      .attr("transform", "rotate(-90)")
+      // .attr("transform", "translate(" + 40 + "," + 0 + ")")
+      .text(function () {
+        return "Selection"
+      })
+      
+      const y_title3 = svg
+      .append("g")
+      .attr("transform", "translate(" + -28 + "," + ((height / 10 ) - 20) + ")");
+      const y_tittle_txt3 = y_title3
+      .append("g")
+      .call(y_axis_title2);
+      y_tittle_txt3.select('.domain').attr('stroke-width', 0);
+
+      y_tittle_txt3.select("text")
+      .style("text-anchor", "middle")
+      .style("color", "#030229")
+      .style("font-family", "poppins")
+      .style("font-size", "12px")
+      .style("font-weight", "500")
+
+      .attr("dx", "-.8em")
+      .attr("dy", ".15em")
+      .attr("transform", "rotate(-90)")
+      // .attr("transform", "translate(" + 40 + "," + 0 + ")")
+      .text(function () {
+        return "Actual"
+      })
+    
 
   }
 }
