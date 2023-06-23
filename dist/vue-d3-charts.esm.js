@@ -7760,7 +7760,7 @@ class DensityChart {
       .enter()
       .append("ellipse")
       .attr("fill", "black")
-      .style("opacity", 0)
+      .style("opacity",0 )
       .attr("stroke", "none")
       .attr("cx", function (d, i) {
         return x(d.date)
@@ -7770,12 +7770,12 @@ class DensityChart {
 
         return y(d.value)
       })
-      .attr("rx", 8)
+      .attr("rx", 7)
       .attr("ry", height).raise();
 
 
 
-    var Tooltip = select("#tooltipDashboard")
+    var Tooltip = select("body")
       // var Tooltip = select("#density_graph")
       .append("div")
       .style("opacity", 0)
@@ -7892,8 +7892,10 @@ class DensityChart {
         </div>
         </div>`
       )
-        .style("left", e.pageX - 70 + "px")
-        .style("top", e.pageY - 170 + "px")
+      .style("left", e.pageX + 0 + "px")
+        .style("top", e.pageY - 0 + "px")
+        // .style("left", e.pageX + 70 + "px")
+        // .style("top", e.pageY - 170 + "px")
         //     .style('left', `${e.pageX}px`)
         // .style('top', `${e.pageY}px`)
         .style("opacity", 1)
@@ -7906,8 +7908,8 @@ class DensityChart {
       Tooltip
         // .style('left', `${event.pageX}px`)
         // .style('top', `${event.pageY}px`);
-        .style("left", event.pageX - 70 + "px")
-        .style("top", event.pageY - 170 + "px")
+        .style("left", event.pageX - 0 + "px")
+        .style("top", event.pageY - 0 + "px")
 
     });
 
@@ -7927,7 +7929,6 @@ class DensityChart {
 
   }
 }
-
 
 class funnelChart {
   async createFunnel(originalData) {
