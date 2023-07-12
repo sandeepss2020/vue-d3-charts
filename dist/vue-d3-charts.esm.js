@@ -2291,8 +2291,11 @@ class scatterplot_rect {
 
     const rectFullData = theData.groupsData;
     let rectSvgWidth;
-    // console.log("svg", theData)
     setTimeout(() => {
+      if (window.innerWidth >= 1900) {
+        rectSvgWidth = window.innerWidth - 500
+
+      }
 
       if (window.innerWidth >= 1700) {
         rectSvgWidth = window.innerWidth - 400
@@ -2419,7 +2422,7 @@ class scatterplot_rect {
 
       const xScale1 = scaleLinear()
         .domain([0, 5])
-        .range([0, (rectSvgWidth + rectMargin.right)])
+        .range([0, (rectSvgWidth )])
         .nice();
       const xGridLine = axisBottom(xScale1)
         .scale(xScale1)
@@ -2430,7 +2433,7 @@ class scatterplot_rect {
       const yScale1 = scaleLinear().domain([0, 5]).range([0, RectScatterheight]).nice(),
         yGridLine = axisLeft(yScale1)
           .scale(yScale1)
-          .tickSize(-svgWidth, 0)
+          .tickSize((-rectSvgWidth ), 0)
           .ticks(6)
           .tickFormat("");
 
@@ -3219,7 +3222,7 @@ class treeGraph {
       })
       .text(function (d) {
         if (d.data.parentTag.length > 5) {
-          return d.data.parentTag.substring(0, 5) + "...";
+          return d.data.parentTag.substring(0, 4) + "..";
         } else {
           // console.log("sub stringssss",d.data.parentTag);
           return d.data.parentTag;
