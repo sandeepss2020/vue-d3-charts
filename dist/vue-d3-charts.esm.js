@@ -961,7 +961,14 @@ var QuesData =
   score: 90
 };
 
+
 class scatterplotZoom {
+  constructor() {
+    // this.mchkkk = [];
+    // this.SVG = ""
+    // this.onlytagName = this.onlytagName.bind(this); 
+    this.scatter = null;
+  }
   theZoom(newData) {
 
     // console.log("classs", newData);
@@ -1129,6 +1136,7 @@ class scatterplotZoom {
 
       // Create the scatter letiable: where both the circles and the brush take place
       let scatter = SVG.append("g").attr("clip-path", "url(#clip)");
+      this.scatter = scatter;
       // .attr("clip-path", "url(#clip)");
 
 
@@ -1292,6 +1300,9 @@ class scatterplotZoom {
             // return radiusScale(d.uniqueTotalCandidates);
             // add mpg
           })
+          .style("fill", function (d) {
+            return d.active ? "#8676FF" : "#BCCBB1";
+          })
           .style("stroke", "none")
           .style("opacity", 0.7);
         Tooltip.style("display", "none");
@@ -1338,6 +1349,10 @@ class scatterplotZoom {
           return d.active ? "#8676FF" : "#BCCBB1";
         })
         .style("opacity", 0.7)
+        .attr("id", function (d, i) {
+          // Assign a unique ID to each circle based on its index
+          return "circle" + i;
+        })
         .on("mouseover", tipMouseover)
 
         .on("mousemove", function (event) {
@@ -1356,12 +1371,100 @@ class scatterplotZoom {
         })
         .on("mouseout", tipMouseout);
 
+       
+        // this.toolTip = Tooltip;
+        // this.otherMouseover("d",data[0])
 
-    }, 1000);
+    }, 100);
+    return data;
 
   }
 
-}
+
+  otherMouseover(d, datapoints,num,data){
+ 
+    let id = '#circle'+num
+    console.log(id);
+    let Tooltip = select("#scatter1Scroll")
+    .append("div")
+    .style("opacity", 0)
+    .attr("class", "tooltip")
+    .style("background-color", "white")
+    // .style("border", "solid")
+    // .style("border-width", "2px")
+    .style("border-radius", "5px")
+    .style("padding", "5px");
+
+      console.log(datapoints,"otherone")
+
+      let radiusScale = d3
+      .scaleSqrt()
+      // .scaleSequentialSqrt()        
+      // .domain(
+      //   extent(data, function (d) {
+
+      //     // console.log(d.numberOfActiveTest,"ec csxc cds")
+      //     // return d.numberOfActiveTest;
+      //     return d.totalNumberOfTest;
+      //   })
+      // )
+      .domain([0, d3.max(data, function (d) { return d.totalNumberOfTest; })])
+
+      .range([0, 50]);
+
+      this.scatter.select(id)
+        .attr("r", function (d) {
+          // console.log( radiusScale((d.uniqueTotalCandidates) + 5));
+          return d.totalNumberOfTest > 0 ? radiusScale(d.totalNumberOfTest) : radiusScale(d.totalNumberOfTest + 1);
+          // return 8
+          // return (radiusScale(d.uniqueTotalCandidates) + 5);
+          // add mpg
+        })
+        .style("stroke", function (d) {
+          return d.active ? "#bcb4fe" : "#D0DFC5";
+        })
+        .style("fill", function (d) {
+          return d.active ? "red" : "green";
+        })
+        .style("stroke-width", 5)
+
+        .style("opacity", 0.5);
+        // Tooltip.style("display", "block");
+    };
+
+    tipMouseoutZoom(data) {
+      
+      let radiusScale = d3
+      .scaleSqrt()
+      // .scaleSequentialSqrt()        
+      // .domain(
+      //   extent(data, function (d) {
+
+      //     // console.log(d.numberOfActiveTest,"ec csxc cds")
+      //     // return d.numberOfActiveTest;
+      //     return d.totalNumberOfTest;
+      //   })
+      // )
+      .domain([0, d3.max(data, function (d) { return d.totalNumberOfTest; })])
+
+      .range([0, 50]);
+
+      this.scatter.selectAll("circle")
+        .attr("r", function (d) {
+          return d.totalNumberOfTest > 0 ? radiusScale(d.totalNumberOfTest) : radiusScale(d.totalNumberOfTest + 1);
+
+          // return radiusScale(d.uniqueTotalCandidates);
+          // add mpg
+        })
+        .style("fill", function (d) {
+          return d.active ? "#8676FF" : "#BCCBB1";
+        })
+        .style("stroke", "none")
+        .style("opacity", 0.7);
+    };
+  }
+
+
 
 
 class D3BarChart {
@@ -2291,8 +2394,11 @@ class scatterplot_rect {
 
     const rectFullData = theData.groupsData;
     let rectSvgWidth;
-    // console.log("svg", theData)
     setTimeout(() => {
+      if (window.innerWidth >= 1900) {
+        rectSvgWidth = window.innerWidth - 500
+
+      }
 
       if (window.innerWidth >= 1700) {
         rectSvgWidth = window.innerWidth - 400
@@ -2419,7 +2525,7 @@ class scatterplot_rect {
 
       const xScale1 = scaleLinear()
         .domain([0, 5])
-        .range([0, (rectSvgWidth + rectMargin.right)])
+        .range([0, (rectSvgWidth )])
         .nice();
       const xGridLine = axisBottom(xScale1)
         .scale(xScale1)
@@ -2430,7 +2536,7 @@ class scatterplot_rect {
       const yScale1 = scaleLinear().domain([0, 5]).range([0, RectScatterheight]).nice(),
         yGridLine = axisLeft(yScale1)
           .scale(yScale1)
-          .tickSize(-svgWidth, 0)
+          .tickSize((-rectSvgWidth ), 0)
           .ticks(6)
           .tickFormat("");
 
@@ -2598,10 +2704,6 @@ class scatterplot_rect {
 
       // Three function that change the tooltip when user hover / move / leave a cell
       let tipMouseover = function (d, rectFullData) {
-
-        // console.log(datapoints.numberOfTests)
-
-
         rectTooltip.style("opacity", 1)
           .html(
 
@@ -2647,6 +2749,9 @@ class scatterplot_rect {
           .attr("height", function (d) {
             return d.repeatingPercentage > 2 ? radiusScale(d.repeatingPercentage + 2) : radiusScale(d.repeatingPercentage + 4.5);
           })
+          .style("fill", function (d) {
+            return d.active ? "yellow" : "pink";
+          })
           .style("stroke", function (d) {
             return d.active ? "#003D35" : "#970000";
           })
@@ -2662,6 +2767,9 @@ class scatterplot_rect {
           })
           .attr("height", function (d) {
             return d.repeatingPercentage > 2 ? radiusScale(d.repeatingPercentage) : radiusScale(d.repeatingPercentage + 2.5);
+          })
+          .style("fill", function (d) {
+            return d.active ? "#308D85" : "#E74B1D";
           })
           .style("stroke", "none")
           .style("opacity", 0.8);
@@ -2719,15 +2827,71 @@ class scatterplot_rect {
           }
 
         })
-        .on("mouseout", tipMouseout);
+        .on("mouseout", tipMouseout);  
 
 
+        this.rectTooltip = rectTooltip
+        // this.tipMouseovered("d",rectFullData[20]);
     }, 1000);
 
-
-
-
   }
+
+  tipMouseovered(d, rectFullData) {
+    console.log(d,rectFullData)
+    this.rectTooltip.style("opacity", 1)
+      .html(
+
+        `<div class="scatter-main">
+          <div class="scatter2-header">${rectFullData.groupName}</div> 
+          <div id='tipDiv'></div>
+          <div class="scatterbody2-content"> 
+            <div class="d-flex ">
+              <div style="width:5%">
+              </div>
+              <div  style="width:75%">
+                <div class="scatter-texthead">Tagged Tests</div>
+              </div>
+              <div style="width:20%" class="scatter-testnum">${rectFullData.numberOfTests} </div>
+            </div>
+
+            <div class="mt-2"> 
+              <div class="d-flex ">
+                <div style="width:5%"></div>
+                <div  style="width:75%">
+                <div class="scatter-texthead  d-flex align-items-start">Candidates</div>
+              
+              </div>
+              <div style="width:20%" class="scatter-testnum">${rectFullData.numberOfCandidates} </div>
+            </div>
+          </div>
+        </div>`
+
+      )
+      .style("left", d.pageX - 50 + "px")        // .style("top", d.pageY - 280 + "px");
+    const tooltipHeight = this.rectTooltip.node().getBoundingClientRect().height;
+    const tooltipBottomPosition = d.pageY + 150 + tooltipHeight;
+    const screenHeight = window.innerHeight || document.documentElement.clientHeight;
+    if (tooltipBottomPosition > screenHeight) {
+      this.rectTooltip.style("top", d.pageY - 20 - tooltipHeight + "px");
+    } else {
+      this.rectTooltip.style("top", d.pageY + 20 + "px");
+    }
+    select(this)
+      .attr("width", function (d) {
+        return d.repeatingPercentage > 2 ? radiusScale(d.repeatingPercentage + 4) : radiusScale(d.repeatingPercentage + 6.5);
+      })
+      .attr("height", function (d) {
+        return d.repeatingPercentage > 2 ? radiusScale(d.repeatingPercentage + 2) : radiusScale(d.repeatingPercentage + 4.5);
+      })
+      .style("fill", function (d) {
+        return d.active ? "yellow" : "pink";
+      })
+      .style("stroke", function (d) {
+        return d.active ? "#003D35" : "#970000";
+      })
+      .style("opacity", 0.54);
+      this.rectTooltip.style("display", "block");
+  };
 }
 
 
@@ -3025,7 +3189,11 @@ class scatterplot_rect {
 
 class treeGraph {
 
-
+  constructor() {
+    // this.mchkkk = [];
+    this.getTagName = ""
+    this.onlytagName = this.onlytagName.bind(this); 
+  }
   async dendoGram(classes) {
     if (document.getElementById("dendogram").innerHTML != "") {
       document.getElementById("dendogram").innerHTML = ""
@@ -3154,6 +3322,7 @@ class treeGraph {
       }
     }
 
+    console.log("classessss data", classes)
     svg
       .selectAll("circle")
       .data(classes)
@@ -3195,7 +3364,14 @@ class treeGraph {
     node = node.data(root.leaves());
 
 
-    // console.log("root", node);
+      let mchkkk=[]
+      for (let index = 0; index < node._enter[0].length; index++) {
+        // console.log("hh",node._enter[0][index].__data__)
+        mchkkk.push(node._enter[0][index].__data__);
+      };
+      // console.log("my arr ", this.mchkkk)
+
+
     let chkNodeMouse = node
       .enter()
       .append("a")
@@ -3219,7 +3395,7 @@ class treeGraph {
       })
       .text(function (d) {
         if (d.data.parentTag.length > 5) {
-          return d.data.parentTag.substring(0, 5) + "...";
+          return d.data.parentTag.substring(0, 4) + "..";
         } else {
           // console.log("sub stringssss",d.data.parentTag);
           return d.data.parentTag;
@@ -3228,38 +3404,51 @@ class treeGraph {
       .on("mouseover", mouseovered)
       .on("mouseout", mouseouted)
       .on("click", function (d, i) {
-        let arrSaved = [];
-        if (i.data.imports.length > 1) {
-          for (let j in i.data.imports) {
-            if (arrSaved.includes(i.data.imports[j])) {
-              // return;
-            }
-            else {
-              arrSaved.push(i.data.imports[j]);
-            }
-          }
-        }
-        // else {
-        //   console.log("the elsee", i)
-        // }
-        // QuesData.name = arrSaved;
-        // const liveValue = QuesData.name; // This value can be updated dynamically
-        // console.log("whattt",i.data.key);
+ 
 
-        const liveValue = i.data.key
-        const event = new CustomEvent('liveValueUpdated', { detail: liveValue });
+        link
+        .classed("link--target ", function (l) {
+          if (l.target === i) {
+            
+            return (l.source.source = true);
+          }
+        })
+        .classed("link--source", function (l) {
+          if (l.source === i) return (l.target.target = true);
+        })
+        .filter(function (l) {
+          return l.target === i || l.source === i;
+        })
+        .raise();
+
+      node
+        .classed("node--target", function (n) {
+          return n.target;
+        })
+        .classed("node--source", function (n) {
+          return n.source;
+        });
+        const liveValue = i.data.parentTag
+        this.getTagName = i.data.parentTag;
+
+        // let den = new treeGraph();
+        // den.getTagName = i.data.key;
+
+        // console.log("theee",this.getTagName,"final")
+        const event = new CustomEvent('liveValueUpdated', { detail: liveValue  });
         window.dispatchEvent(event);
 
       });
-
     // chkNodeMouse.on("click", this.mouseSelect);
 
     // node.on("click", function() {
     //   console.log("rect");
     // });
+   
+    // console.log("mine ", mchkkk)
+    // mouseovered("e",mchkkk[2]);
 
     function mouseovered(d, i) {
-      // console.log("mousemoved", i);
       link
         .classed("link--target ", function (l) {
           if (l.target === i) {
@@ -3283,8 +3472,10 @@ class treeGraph {
           return n.source;
         });
 
-      div.transition().duration(200).style("opacity", 0.9);
+      // div.transition().duration(200).style("opacity", 0.9);
     };
+
+
 
     function mouseouted() {
       // console.log(d);
@@ -3309,8 +3500,9 @@ class treeGraph {
             // console.log("okkk222",find(parentTag.substring(0, (i = parentTag.lastIndexOf("#")))))
             // node.parent = find(parentTag.substring(0, (i = parentTag.lastIndexOf("."))));
             node.parent = find(
-              parentTag.substring(0, (i = parentTag.lastIndexOf("#")))
+              parentTag.substring(0, (i = parentTag.lastIndexOf(" "))) 
             );
+            
             node.parent.children.push(node);
             node.key = parentTag.substring(i + 1);
           }
@@ -3362,33 +3554,43 @@ class treeGraph {
 
       return importss;
     }
+    this.chkLink = link;
+    this.nodess = node
+  
+  //  this.onlytagName();
+    return mchkkk;
   }
-  // mouseSelect(d, i) {
-  //   // const eventBus = new Vue();
-  //   // console.log(eventBus);
-  //   let arrSaved = [];
-  //   if (i.data.imports.length > 0) {
-  //     // console.log(i.data.imports);
 
-  //     for (let j in i.data.imports) {
-  //       if (arrSaved.includes(i.data.imports[j])) {
-  //         return;
-  //       }
-  //       else {
-  //         arrSaved.push(i.data.imports[j]);
-  //       }
-  //     }
-  //   }
-  //   else {
-  //     // console.log("the elsee", i)
-  //   }
-  //   console.log("the elsee", arrSaved)
-  //   // window.vueInstance.$emit('value-updated', arrSaved);
-  //   // console.log("inss", window.vueInstance.$emit('value-updated', arrSaved))
-  //   // return (arrSaved);
-  //   // const value = 'example value';
-  //   // eventBus.$emit('button-clicked', value);
-  // };
+   mouseovereded(d, i) {
+      this.chkLink
+        .classed("link--target ", function (l) {
+          if (l.target === i) {
+            // console.log("targeett", l.target);
+            return (l.source.source = true);
+          }
+        })
+        .classed("link--source", function (l) {
+          if (l.source === i) return (l.target.target = true);
+        })
+        .filter(function (l) {
+          return l.target === i || l.source === i;
+        })
+        .raise();
+
+        this.nodess
+        .classed("node--target", function (n) {
+          return n.target;
+        })
+        .classed("node--source", function (n) {
+          return n.source;
+        });
+
+      // div.transition().duration(200).style("opacity", 0.9);
+    };
+    
+    onlytagName(){
+      console.log("thetagggs", this.getTagName,"hey");
+    }
 }
 
 
@@ -8757,6 +8959,7 @@ class D3BarChart {
 
   }
 
+  
 }
 
 */
