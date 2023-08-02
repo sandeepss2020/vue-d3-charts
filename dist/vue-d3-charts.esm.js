@@ -51,18 +51,14 @@ class scatterplot {
 
     // let data = data.slice(50)
 
-    // console.log("jss", data.topicData.length)
 
     let datapoints = data.topicData;
-    // console.log("chk", datapoints)
     let aboveZero = 0;
     for (let i in datapoints) {
       if (datapoints[i].uniqueTotalCandidates > 0) {
-        // console.log("total",datapoints[i].uniqueTotalCandidates)
         aboveZero++
       }
     }
-    // console.log("above Zero", aboveZero)
     let width = 300;
     // let count = 0,
     //   countneg = 0;
@@ -73,7 +69,6 @@ class scatterplot {
     //     countneg++;
     //   }
     // }
-    // console.log("count is", count, "and", countneg)
     // if (aboveZero <= 15) {
     //   let height = 180;
     //   makescattergraph(height);
@@ -1384,7 +1379,6 @@ class scatterplotZoom {
   otherMouseover(d, datapoints,num,data){
  
     let id = '#circle'+num
-    console.log(id);
     let Tooltip = select("#scatter1Scroll")
     .append("div")
     .style("opacity", 0)
@@ -1395,7 +1389,6 @@ class scatterplotZoom {
     .style("border-radius", "5px")
     .style("padding", "5px");
 
-      console.log(datapoints,"otherone")
 
       let radiusScale = d3
       .scaleSqrt()
@@ -2837,7 +2830,6 @@ class scatterplot_rect {
   }
 
   tipMouseovered(d, rectFullData) {
-    console.log(d,rectFullData)
     this.rectTooltip.style("opacity", 1)
       .html(
 
@@ -3195,9 +3187,18 @@ class treeGraph {
     this.onlytagName = this.onlytagName.bind(this); 
   }
   async dendoGram(classes) {
-    if (document.getElementById("dendogram").innerHTML != "") {
-      document.getElementById("dendogram").innerHTML = ""
-    }
+
+    const divElement = document.getElementById("dendogram");
+
+      if (divElement != null) {
+        document.getElementById("dendogram").innerHTML = "";
+      } else {
+        void 0;
+      }
+
+    // if (document.getElementById("dendogram").innerHTML != "") {
+    //   document.getElementById("dendogram").innerHTML = ""
+    // }
     // console.log(classes);
 
     let svgWidth;
@@ -3322,7 +3323,6 @@ class treeGraph {
       }
     }
 
-    console.log("classessss data", classes)
     svg
       .selectAll("circle")
       .data(classes)
@@ -3589,7 +3589,7 @@ class treeGraph {
     };
     
     onlytagName(){
-      console.log("thetagggs", this.getTagName,"hey");
+      // console.log("thetagggs", this.getTagName,"hey");
     }
 }
 
