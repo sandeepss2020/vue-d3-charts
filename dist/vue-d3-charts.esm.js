@@ -41,7 +41,6 @@ let script = {
 
 
 
-
 //ASSESSMENTS
 //GRAPH 1
 class scatterplot {
@@ -93,7 +92,6 @@ class scatterplot {
 
 
     //For Widthhhh...
-    // console.log("widtghhh", window.innerWidth)
     if (window.innerWidth >= 3000) {
       width = window.innerWidth - 1700
 
@@ -131,14 +129,12 @@ class scatterplot {
 
 
 
-    // console.log("maxxx",Math.max(...datapoints.map(o => o.uniqueTotalCandidates)))
     // let height = (Math.max(...datapoints.map(o => o.uniqueTotalCandidates))) * 3.5;
     let height = 250
     makescattergraph(height)
 
 
     function makescattergraph(height) {
-      // console.log("heighhhtt", height)
       var svg = d3
         .select("#graph1")
         .classed("svg-container", true)
@@ -184,7 +180,6 @@ class scatterplot {
         return radiusScale(d.uniqueTotalCandidates) + 2;
         // add mpg
       });
-      // console.log("force xx", forceXCombine)
       var simulation = d3
         .forceSimulation()
         .force("x", forceXCombine)
@@ -199,7 +194,6 @@ class scatterplot {
 
       // let datapoints = await response3.json();
       // datapoints = datapoints.slice(0, 25);
-      // console.log("datapoints", datapoints);
       defs
         .selectAll(".artist-pattern")
         .data(datapoints)
@@ -219,9 +213,7 @@ class scatterplot {
         .append("circle")
         .attr("class", "artist")
         .attr("r", function (d) {
-          // console.log( radiusScale(d.uniqueTotalCandidates))
 
-          // console.log("ddd", d.uniqueTotalCandidates, "and" , (radiusScale(d.uniqueTotalCandidates)%100) )
           return d.uniqueTotalCandidates > 0 ? radiusScale(d.uniqueTotalCandidates) : radiusScale(d.uniqueTotalCandidates + 1);
           // return radiusScale(d.uniqueTotalCandidates);
           // add mpg
@@ -233,16 +225,13 @@ class scatterplot {
       simulation.nodes(datapoints).on("tick", ticked);
 
       // let maxScale = Math.max(...datapoints.map((t) => t.x));
-      // // console.log("dataa1", datapoints)
 
-      // console.log("dataa", maxScale)
 
       const xScale = scaleLinear().domain([0, 300]).range([10, width / 1.4]);
 
       function ticked() {
         circles
           .attr("cx", function (d, i) {
-            // console.log(d.x)
             return xScale(d.x);
             // return(d.x);
           })
@@ -272,7 +261,6 @@ class scatterplot {
         .style("padding", "5px");
       // Three function that change the tooltip when user hover / move / leave a cell
       let mouseover = function (d, datapoints) {
-        // console.log(datapoints.uniqueTotalCandidates)
         Tooltip.style("opacity", 1)
           .style("visibility", "visible")
           .html(
@@ -295,7 +283,6 @@ class scatterplot {
           .style("top", d.pageY + "px");
         select(this)
           .attr("r", function (d) {
-            // console.log( radiusScale((d.uniqueTotalCandidates) + 5));
             return d.uniqueTotalCandidates > 0 ? radiusScale(d.uniqueTotalCandidates) : radiusScale(d.uniqueTotalCandidates + 1);
 
             // return (radiusScale(d.uniqueTotalCandidates) + 5);
@@ -352,7 +339,6 @@ class scatterplot {
 //     let width;
 //     setTimeout(() => {
 
-//       // console.log(data,"sepalll")
 
 
 //       if (window.innerWidth >= 3000) {
@@ -409,13 +395,11 @@ class scatterplot {
 //       const max1 = Math.max(...data.map((o) => o.numberOfActiveTest));
 //       const max2 = Math.max(...data.map((o) => o.totalNumberOfTopics));
 
-//       // console.log(max2,"maxx1")
 //       // Add X axis
 //       var x = d3.scaleLinear()
 //         .domain([0, 25])
 //         .range([0, (width - 50)]);
 
-//       // console.log("what",data.map((d) => d.topicName))
 
 //       // var x = d3.scaleBand()
 //       // .domain(data.map((d) => d.topicName))
@@ -458,7 +442,6 @@ class scatterplot {
 //         .enter()
 //         .append("circle")
 //         .attr("cx", function (d) {
-//           // console.log(d)
 //           return x(d.totalNumberOfTopics);
 //         })
 //         .attr("cy", function (d) { return y(d.numberOfActiveTest); })
@@ -523,7 +506,6 @@ class scatterplot {
 
 //   theZoom(newData) {
 
-//     console.log("classs", newData);
 
 //     if (document.getElementById("graph1").innerHTML != "") {
 //       document.getElementById("graph1").innerHTML = "";
@@ -642,7 +624,6 @@ class scatterplot {
 //       var x0 = [0, max1];
 //       var y0 = [0, max2];
 
-//       // console.log(max2,"maxx1")
 //       // Add X axis
 
 //       var x = d3
@@ -819,7 +800,6 @@ class scatterplot {
 //         .style("padding", "5px");
 
 //       let tipMouseover = function (d, datapoints) {
-//         // console.log(datapoints.uniqueTotalCandidates)
 //         Tooltip.style("opacity", 1)
 //           .style("visibility", "visible")
 //           .html(
@@ -862,7 +842,6 @@ class scatterplot {
 //           .style("top", d.pageY - 280 + "px");
 //         select(this)
 //           .attr("r", function (d) {
-//             // console.log( radiusScale((d.uniqueTotalCandidates) + 5));
 //             return d.totalNumberOfTest > 0 ? radiusScale(d.totalNumberOfTest) : radiusScale(d.totalNumberOfTest + 1);
 
 //             // return (radiusScale(d.uniqueTotalCandidates) + 5);
@@ -919,7 +898,6 @@ class scatterplot {
 //         })
 //         // .attr("r", 8)
 //         .attr("r", function (d) {
-//           // console.log(d.totalNumberOfTest, "neww")
 //           return d.totalNumberOfTest > 0 ? radiusScale(d.totalNumberOfTest) : radiusScale(d.totalNumberOfTest + 1);
 //         })
 //         // .style("fill", "#61a3a9")
@@ -967,7 +945,6 @@ class scatterplotZoom {
   }
   theZoom(newData) {
 
-    // console.log("classs", newData);
 
     if (document.getElementById("graph1").innerHTML != "") {
       document.getElementById("graph1").innerHTML = "";
@@ -1081,7 +1058,6 @@ class scatterplotZoom {
       let x0 = [0, max1];
       let y0 = [0, max2];
 
-      // console.log(max2,"maxx1")
       // Add X axis
 
       let x = d3
@@ -1219,7 +1195,6 @@ class scatterplotZoom {
         .style("padding", "5px");
 
       let tipMouseover = function (d, datapoints) {
-        // console.log(datapoints.uniqueTotalCandidates)
         Tooltip.style("opacity", 1)
           .style("visibility", "visible")
           .html(
@@ -1272,7 +1247,6 @@ class scatterplotZoom {
           }
         select(this)
           .attr("r", function (d) {
-            // console.log( radiusScale((d.uniqueTotalCandidates) + 5));
             return d.totalNumberOfTest > 0 ? radiusScale(d.totalNumberOfTest) : radiusScale(d.totalNumberOfTest + 1);
 
             // return (radiusScale(d.uniqueTotalCandidates) + 5);
@@ -1310,7 +1284,6 @@ class scatterplotZoom {
         // .domain(
         //   extent(data, function (d) {
 
-        //     // console.log(d.numberOfActiveTest,"ec csxc cds")
         //     // return d.numberOfActiveTest;
         //     return d.totalNumberOfTest;
         //   })
@@ -1337,7 +1310,6 @@ class scatterplotZoom {
         })
         // .attr("r", 8)
         .attr("r", function (d) {
-          // console.log(d.totalNumberOfTest, "neww")
           return d.totalNumberOfTest > 0 ? radiusScale(d.totalNumberOfTest) : radiusScale(d.totalNumberOfTest + 1);
         })
         // .style("fill", "#61a3a9")
@@ -1397,7 +1369,6 @@ class scatterplotZoom {
       // .domain(
       //   extent(data, function (d) {
 
-      //     // console.log(d.numberOfActiveTest,"ec csxc cds")
       //     // return d.numberOfActiveTest;
       //     return d.totalNumberOfTest;
       //   })
@@ -1408,7 +1379,6 @@ class scatterplotZoom {
 
       this.scatter.select(id)
         .attr("r", function (d) {
-          // console.log( radiusScale((d.uniqueTotalCandidates) + 5));
           return d.totalNumberOfTest > 0 ? radiusScale(d.totalNumberOfTest) : radiusScale(d.totalNumberOfTest + 1);
           // return 8
           // return (radiusScale(d.uniqueTotalCandidates) + 5);
@@ -1434,7 +1404,6 @@ class scatterplotZoom {
       // .domain(
       //   extent(data, function (d) {
 
-      //     // console.log(d.numberOfActiveTest,"ec csxc cds")
       //     // return d.numberOfActiveTest;
       //     return d.totalNumberOfTest;
       //   })
@@ -1786,7 +1755,6 @@ class D3BarChart {
       .duration(2000)
       .delay((d, i) => i * 10)
       .attr("x", function (d, i) {
-        // console.log("dd",d)
         return xScale(d.x_axis)
       })
       .attr("y", function (p) {
@@ -1822,11 +1790,9 @@ class D3BarChart {
         line = d3Line
           .line()
           .x(function (d) {
-            // console.log("linexxx", x(d.x_axis))
             return x(d.x_axis);
           })
           .y(function (d) {
-            // console.log("lineyyy", y(d.count))
             return y(d.count);
           });
       // .curve(curveBasis);
@@ -1889,16 +1855,13 @@ class D3BarChart {
 //GRAPH 3
 class piePlot {
   pieGraph(id, id2, data) {
-    // console.log(id2)
     if (document.getElementById(id2).innerHTML != "") {
       document.getElementById(id2).innerHTML = ""
     }
     let pie_data = data.pie_data
-    // console.log("pieee", id);
     const svgHeight = 250,
       radius = Math.min(script.svgWidth / 4, svgHeight) / 2;
     const start_point = script.svgWidth / 9;
-    // console.log("pie data", script.pie_data);
 
     const svg = select(id)
       .append("svg")
@@ -1915,7 +1878,6 @@ class piePlot {
         "translate(" + start_point + "," + svgHeight / 2 + ")"
       );
     // .attr("transform", `translate(${script.svgWidth / 4},${svgHeight / 2})`);
-    // console.log("widthhh", script.svgWidth)
     // var color = scaleOrdinal(d3.schemeCategory10);
     let colorScale = scaleOrdinal()
       // .domain(script.pie_data.map((d) => d.platform))
@@ -1927,7 +1889,6 @@ class piePlot {
 
 
     const pies = d3Line.pie().value(function (d) {
-      // console.log(d.testStatus);
 
       return d.percentage;
     });
@@ -1968,7 +1929,6 @@ class piePlot {
       .arc()
       .outerRadius(radius - 5)
       .innerRadius(60);
-    //  console.log("ok");
 
     const arc = g
       .selectAll("arc")
@@ -1984,11 +1944,9 @@ class piePlot {
         return colorScale(d.data.testStatus);
       });
     // .on("mouseover", function (d, i) {
-    //   // console.log("doneeee");
     //   tooltip
     //     .html(`Percentage: ${d.data.percentage}`)
     //     .style("visibility", "visible");
-    //   // console.log("percent is", d);
     //   select(this).attr("fill", "#F70D1A");
     // })
 
@@ -2009,8 +1967,7 @@ class piePlot {
     //   sum += x.percentage;
     // });
 
-    // console.log("summis", sum);
-    // console.log(total);
+
     svg
       .append("svg:text")
       .attr("dy", ".35em")
@@ -2054,7 +2011,6 @@ class piePlot {
 /*
 class scatterplot_rect {
   async scatterGraph(data) {
-    // console.log("recttt daatta", data)
     if (document.getElementById("rect_scatter").innerHTML != "") {
       document.getElementById("rect_scatter").innerHTML = "";
     }
@@ -2062,7 +2018,6 @@ class scatterplot_rect {
       const { xValue, yValue, margin, width, height, data, widthvalue } = props;
       const innerWidth = script.svgWidth - margin.left - margin.right;
       const innerHeight = 340 - margin.top - margin.bottom;
-      // console.log("llllll",data.groupsData)
       // const xScale = scaleBand().domain(data.map((d) => d.name)).range([0, innerWidth])
       // //to check the x scale original
       // const xScale = scaleLinear()
@@ -2140,7 +2095,6 @@ class scatterplot_rect {
         .attr("opacity", "0.5")
         .call(xGridLine);
 
-      // console.log("each radiussss ",circleRadius )
       const rects = svg_4.append("g").selectAll("rect").data(data.groupsData);
       rects
         .enter()
@@ -2207,7 +2161,6 @@ class scatterplot_rect {
         .attr("x", (d, i) =>
           yScale2(
             Math.floor(Math.random() * data.groupsData.length)
-            // console.log(Math.floor(Math.random() * data.groupsData.length))
           )
         );
     };
@@ -2239,7 +2192,6 @@ class scatterplot_rect {
         data,
       });
 
-      // console.log("render", data);
     }
 
     var Tooltip = select("body")
@@ -2253,7 +2205,6 @@ class scatterplot_rect {
     // Three function that change the tooltip when user hover / move / leave a cell
     let mouseover = function (d, datapoints) {
 
-      // console.log(datapoints.numberOfTests)
 
 
       Tooltip.style("opacity", 1)
@@ -2354,7 +2305,6 @@ class scatterplot_rect {
             .style("top", (event.pageY) + "px")
     select(this)
       .attr('r', function (circleRadius) {
-          // console.log("i values", circleRadius.cylinders)
   return 7*(Math.exp(circleRadius.horsepower /100));
         })
       .style("stroke", function (circleRadius) { return circleRadius.horsepower <= 100 ? 'red' : 'blue' })
@@ -2371,7 +2321,6 @@ class scatterplot_rect {
       .style("opacity", 0)
     select(this)
       .attr('r', function (circleRadius) {
-          // console.log("i values", circleRadius.cylinders)
   return 5*(Math.exp(circleRadius.horsepower /100));
         })
       .style("stroke", "none")
@@ -2440,7 +2389,6 @@ class scatterplot_rect {
         .zoom()
         .on("zoom", zoomed);
 
-      // console.log("svg height is",svgHeight, "and chartheight",RectScatterheight )
       // append the SVG object to the body of the page
       let rectSVG = d3
         .select("#rect_scatter")
@@ -2546,7 +2494,6 @@ class scatterplot_rect {
           .ticks(6)
           .tickFormat("");
 
-      // console.log("what",data.map((d) => d.topicName))
 
       // var x = d3.scaleBand()
       // .domain(data.map((d) => d.topicName))
@@ -2801,15 +2748,12 @@ class scatterplot_rect {
         })
         // .attr("r", 8)
         .attr("width", function (d) {
-          // console.log(radiusScale(d.repeatingPercentage + 2))
           return d.repeatingPercentage > 2 ? radiusScale(d.repeatingPercentage + 2) : radiusScale(d.repeatingPercentage + 4.5);
         })
         .attr("height", function (d) {
-          // console.log(radiusScale(d.repeatingPercentage),"heiighhtt ")
           return d.repeatingPercentage > 2 ? radiusScale(d.repeatingPercentage) : radiusScale(d.repeatingPercentage + 2.5);
         })
         // .attr("r", function (d) {
-        //   console.log(radiusScale(d.repeatingPercentage), "neww")
         //   return d.repeatingPercentage > 0 ? radiusScale(d.repeatingPercentage) : radiusScale(d.repeatingPercentage + 1);
         // })
         // .style("fill", "#61a3a9")
@@ -2926,7 +2870,6 @@ class scatterplot_rect {
 //         .scaleLinear()
 //         .domain(
 //           extent(data, function (d) {
-//                 // console.log("rects", d.repeatingPercentage)
 
 //             return d.repeatingPercentage;
 //           })
@@ -2990,7 +2933,6 @@ class scatterplot_rect {
 //       function ticked() {
 //         rects
 //           .attr("x", function (d) {
-//             // console.log(d)
 //             return xScale1(d.x);
 //             // return(d.x);
 //           })
@@ -3075,7 +3017,6 @@ class scatterplot_rect {
 //       .attr("opacity", "0.5")
 //       .call(xGridLine);
 
-//     // console.log("each radiussss ",circleRadius )
 
 //       .on("mouseover", mouseover)
 //       .on("mousemove", mousemove)
@@ -3156,7 +3097,6 @@ class scatterplot_rect {
 //           .style("top", (event.pageY) + "px")
 //   select(this)
 //     .attr('r', function (circleRadius) {
-//         // console.log("i values", circleRadius.cylinders)
 // return 7*(Math.exp(circleRadius.horsepower /100));
 //       })
 //     .style("stroke", function (circleRadius) { return circleRadius.horsepower <= 100 ? 'red' : 'blue' })
@@ -3173,7 +3113,6 @@ class scatterplot_rect {
 //     .style("opacity", 0)
 //   select(this)
 //     .attr('r', function (circleRadius) {
-//         // console.log("i values", circleRadius.cylinders)
 // return 5*(Math.exp(circleRadius.horsepower /100));
 //       })
 //     .style("stroke", "none")
@@ -3212,7 +3151,6 @@ class treeGraph {
     // if (document.getElementById("dendogram").innerHTML != "") {
     //   document.getElementById("dendogram").innerHTML = ""
     // }
-    // console.log(classes);
 
     let svgWidth;
     let svgHeight = 270;
@@ -3252,19 +3190,16 @@ class treeGraph {
       .style("opacity", 0)
       .style("background-color", "black");
 
-    // console.log("innerwidth",window.innerWidth,"svgwidth is", svgWidth);
     const diameter = svgWidth > 2500 ? svgWidth / 1.5 : ( svgWidth < 1300 ? svgWidth / 0.75 : svgWidth < 1750 ? svgWidth / 0.85 : svgWidth / 1.35),
       radius = diameter / 2.5 + 30,
       innerRadius = radius / 2;
 
-    // console.log("Radius", radius, "Inner radiusss" , innerRadius)
     let cluster = d3.cluster().size([360, innerRadius]);
 
     let line = d3
       .lineRadial()
       .curve(d3.curveBundle.beta(0.85))
       .radius(function (d) {
-        // console.log("ddddddddddddd", d);
         return d.y;
       })
       .angle(function (d) {
@@ -3360,10 +3295,8 @@ class treeGraph {
       return d.size;
     });
 
-    // console.log("root size", root);
     cluster(root);
 
-    // console.log("leaves", root.leaves());
     link = link
       .data(packageImports(root.leaves()))
       .enter()
@@ -3379,10 +3312,8 @@ class treeGraph {
 
       let mchkkk=[]
       for (let index = 0; index < node._enter[0].length; index++) {
-        // console.log("hh",node._enter[0][index].__data__)
         mchkkk.push(node._enter[0][index].__data__);
       };
-      // console.log("my arr ", this.mchkkk)
 
 
     let chkNodeMouse = node
@@ -3410,7 +3341,6 @@ class treeGraph {
         if (d.data.parentTag.length > 5) {
           return d.data.parentTag.substring(0, 4) + "..";
         } else {
-          // console.log("sub stringssss",d.data.parentTag);
           return d.data.parentTag;
         }
       })
@@ -3447,7 +3377,6 @@ class treeGraph {
         // let den = new treeGraph();
         // den.getTagName = i.data.key;
 
-        // console.log("theee",this.getTagName,"final")
         const event = new CustomEvent('liveValueUpdated', { detail: liveValue  });
         window.dispatchEvent(event);
 
@@ -3455,17 +3384,14 @@ class treeGraph {
     // chkNodeMouse.on("click", this.mouseSelect);
 
     // node.on("click", function() {
-    //   console.log("rect");
     // });
    
-    // console.log("mine ", mchkkk)
     // mouseovered("e",mchkkk[2]);
 
     function mouseovered(d, i) {
       link
         .classed("link--target ", function (l) {
           if (l.target === i) {
-            // console.log("targeett", l.target);
             return (l.source.source = true);
           }
         })
@@ -3491,7 +3417,6 @@ class treeGraph {
 
 
     function mouseouted() {
-      // console.log(d);
       link.classed("link--target", false).classed("link--source", false);
 
       node.classed("node--target", false).classed("node--source", false);
@@ -3510,7 +3435,6 @@ class treeGraph {
         if (!node) {
           node = map[parentTag] = data || { name: parentTag, children: [] };
           if (parentTag.length) {
-            // console.log("okkk222",find(parentTag.substring(0, (i = parentTag.lastIndexOf("#")))))
             // node.parent = find(parentTag.substring(0, (i = parentTag.lastIndexOf("."))));
             node.parent = find(
               parentTag.substring(0, (i = parentTag.lastIndexOf(" "))) 
@@ -3524,7 +3448,6 @@ class treeGraph {
       }
 
       classes.forEach(function (d) {
-        // console.log("name" , d.parentTag ,"and", d)
         find(d.parentTag, d);
       });
 
@@ -3533,7 +3456,6 @@ class treeGraph {
 
     // Return a list of imports for the given array of nodes.
     function packageImports(nodes) {
-      // console.log("nodesss2",nodes)
 
       let map = {},
         importss = [];
@@ -3541,26 +3463,19 @@ class treeGraph {
       // Compute a map from name to node.
       nodes.forEach(function (d) {
         map[d.data.parentTag] = d;
-        // console.log("mapssdd",map)
       });
 
-      // console.log("i2",map)
       // For each import, construct a link from the source to target node.
       nodes.forEach(function (d) {
-        // console.log("kyaa yaar 2", d.data.imports)
         if (d.data.imports)
           d.data.imports.forEach(function (i, j) {
-            // console.log("i",i)
-            // console.log("hmmm",j , map[i])
+
             if (typeof map[i] === "undefined") {
-              // console.log("haan g")
               return;
             } else {
               // for (let k = 0; k <= d.data.imports.length; k++) {
-              // console.log("mappp",j, map[d.data.parentTag], "andd", map[i],"or",i)
-              // console.log("break", d.data.imports.length)
+
               importss.push(map[d.data.parentTag].path(map[i]));
-              // console.log("last i 2", importss)
             }
           });
       });
@@ -3578,7 +3493,6 @@ class treeGraph {
       this.chkLink
         .classed("link--target ", function (l) {
           if (l.target === i) {
-            // console.log("targeett", l.target);
             return (l.source.source = true);
           }
         })
@@ -3792,10 +3706,8 @@ class proctBarChart {
 
 
   async proctBarData(id, types, user, max_val, allBarData, xScaleDomain, xScaleDomainGridLines,barColor) {
-    // console.log("usserr typee", types);
     script.barData = [];
     script.allData = user;
-    console.log(script.allData.length,"Its length")
     // script.marks_data = user.count;
     script.max = max_val;
     allBarData.forEach((element) => {
@@ -3803,7 +3715,6 @@ class proctBarChart {
     });
     // document.getElementById(id).innerHTML = "";
 
-    // console.log(document.getElementById(id).innerHTML);
 
 
     //1) d.x_axis  2) HIghest marks of BAR ; 3) Bar Color ; 4)bardata ; 5)y_axis
@@ -3816,7 +3727,6 @@ class proctBarChart {
       || document.documentElement.clientHeight ||
       document.body.clientHeight;
 
-    // console.log("height of screewn", heightOfScreen)
     const rectWidth = 50;
     // const svgHeight = 280;
     const svgHeight = (heightOfScreen >= 1800) ? 800 : (heightOfScreen >= 1400) ? 600 : (heightOfScreen >= 1000) ? 250
@@ -3826,12 +3736,10 @@ class proctBarChart {
 
     let len = script.allData.length >16 ? script.allData.length * rectWidth : 900;
     // let len = 900;
-    console.log("Actual Length of Gridlines")
     let margin = { top: 10, right: 35, bottom: 48, left: 40 },
       height = svgHeight - margin.bottom,
       width = len + (2 * rectWidth);
 
-    // console.log("heeeight", heightOfScreen)
     // For making the svg
     const svg1 = select(id)
       .append("svg")
@@ -3880,7 +3788,6 @@ class proctBarChart {
 
       xAxisTranslate = svgHeight - margin.bottom + margin.top;
 
-    // console.log("maxxx", script.max);
     const y_axis = axisLeft(yScale1)
       .tickSize(-(len + margin.right))
       // .ticks(script.max <= 10 ? script.max
@@ -4100,7 +4007,6 @@ class proctBarChart {
       .duration(2000)
       .delay((d, i) => i * 10)
       .attr("x", function (d, i) {
-        // console.log(d)
         return xScale(d.groupName)
       })
       .attr("y", function (d) {
@@ -4122,7 +4028,6 @@ class proctLineChart {
   async makeProcLineChart(id, data) {
     const margin = { top: 20, right: 20, bottom: 50, left: 50 };
     // const chartWidth = 950 ;
-    // console.log("Chartwidth", window.innerWidth)
 
     if (window.innerWidth >= 3000) {
       var chartWidth = window.innerWidth - 1700
@@ -4183,7 +4088,6 @@ class proctLineChart {
       .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
     let reverseData = data.map(d => d.key);
-    // console.log("reversedata",reverseData);
 
     const xScale = d3
       .scalePoint()
@@ -4197,7 +4101,6 @@ class proctLineChart {
       maxi = maxi + (4 - (maxi % 4));
     }
 
-    // console.log("maxxx ", maxi);
     const yScale = d3.scaleLinear().domain([0, maxi]).range([height, 0]);
     const xAxisGroup = graph
       .append("g")
@@ -4329,7 +4232,6 @@ class proctLineChart {
 // class reclinechart {
 //   //   async mygraph1(data) {
 
-//   //     // console.log("data is" , data)
 
 //   //     // this.dataForLineGraph = Object.keys(res.data.data);
 //   //     const margin = { top: 20, right: 20, bottom: 30, left: 50 };
@@ -4431,7 +4333,6 @@ class proctLineChart {
 //   //       .attr("stroke", "white")
 //   //       .style("filter", "url(#drop-shadow)")
 //   //       .on("click", function (e, d) {
-//   //         // console.log(e,d)
 //   //         // graph
 //   //         //   .append("rect")
 //   //         //   .attr("x", () => xScale(d.totalCandidates)-20)
@@ -4521,8 +4422,6 @@ class proctLineChart {
 
 //   async mygraph1(data) {
 //     data = data[3];
-//     console.log("data is", data);
-//     //  console.log("chhhk dddd",typeof(data))
 
 //     // this.dataForLineGraph = Object.keys(res.data.data);
 //     const margin = { top: 20, right: 20, bottom: 30, left: 50 };
@@ -4559,12 +4458,9 @@ class proctLineChart {
 //     //    }
 //     // const chks = chk.map((d)=>d)
 
-//     console.log("reverse", reverseData);
-//     console.log("nameee", name);
 
 //     //  const max = Math.max(...data.map((o) => o.progress.length));
 //     const max = reverseData.length;
-//     console.log("chhhk", max);
 //     const xScale = d3
 //       .scaleLinear()
 //       // .padding(0.25)
@@ -4650,8 +4546,7 @@ class proctLineChart {
 
 //   async mygraph2(data) {
 //     data = data[0];
-//     console.log("data is", data);
-//     //  console.log("chhhk dddd",typeof(data))
+
 
 //     // this.dataForLineGraph = Object.keys(res.data.data);
 //     const margin = { top: 20, right: 20, bottom: 30, left: 50 };
@@ -4688,12 +4583,11 @@ class proctLineChart {
 //     //    }
 //     // const chks = chk.map((d)=>d)
 
-//     console.log("reverse", reverseData);
-//     console.log("nameee", name);
+
 
 //     //  const max = Math.max(...data.map((o) => o.progress.length));
 //     const max = reverseData.length;
-//     console.log("chhhk", max);
+
 //     const xScale = d3
 //       .scaleLinear()
 //       // .padding(0.25)
@@ -4779,8 +4673,7 @@ class proctLineChart {
 
 //   async mygraph3(data) {
 //     data = data[1];
-//     console.log("data is", data);
-//     //  console.log("chhhk dddd",typeof(data))
+
 
 //     // this.dataForLineGraph = Object.keys(res.data.data);
 //     const margin = { top: 20, right: 20, bottom: 30, left: 50 };
@@ -4817,12 +4710,10 @@ class proctLineChart {
 //     //    }
 //     // const chks = chk.map((d)=>d)
 
-//     console.log("reverse", reverseData);
-//     console.log("nameee", name);
 
 //     //  const max = Math.max(...data.map((o) => o.progress.length));
 //     const max = reverseData.length;
-//     console.log("chhhk", max);
+
 //     const xScale = d3
 //       .scaleLinear()
 //       // .padding(0.25)
@@ -4908,8 +4799,7 @@ class proctLineChart {
 
 //   async mygraph4(data) {
 //     data = data[2];
-//     console.log("data is", data);
-//     //  console.log("chhhk dddd",typeof(data))
+
 
 //     // this.dataForLineGraph = Object.keys(res.data.data);
 //     const margin = { top: 20, right: 20, bottom: 30, left: 50 };
@@ -4946,12 +4836,11 @@ class proctLineChart {
 //     //    }
 //     // const chks = chk.map((d)=>d)
 
-//     console.log("reverse", reverseData);
-//     console.log("nameee", name);
+
 
 //     //  const max = Math.max(...data.map((o) => o.progress.length));
 //     const max = reverseData.length;
-//     console.log("chhhk", max);
+
 //     const xScale = d3
 //       .scaleLinear()
 //       // .padding(0.25)
@@ -8758,9 +8647,7 @@ class D3BarChart {
   }
 
   makegraph() {
-        // console.log("users",script.max)
 
-    // console.log("lennn", len)
     const rectWidth = 50;
     const svgHeight = 250,
       barWidth = 20
@@ -8968,15 +8855,15 @@ class D3BarChart {
       .style("border-radius", "5px")
       .style("color", "#fff")
       .text("a simple tooltip");
-    // console.log(script.count);
+
     // rect.exit().remove();
     // svg.selectAll("rect > *").remove();
 
-    // console.log(chartcontainer)
     // chartcontainer.scrollLeft;
 
   }
 
+  
 }
 
 */
