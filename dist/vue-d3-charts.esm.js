@@ -41,6 +41,7 @@ let script = {
 
 
 
+
 //ASSESSMENTS
 //GRAPH 1
 class scatterplot {
@@ -1730,7 +1731,19 @@ class D3BarChart {
               tooltip
                 .style("top", event.pageY - 10 + "px")
                 .style("left", event.pageX + 10 + "px")
-                .html(`${d.count}`)
+                // .html(`${d.count}`)
+                .html(
+                  `<div class="countDiv">
+                <div class="colorline"></div>
+                <div class="countDivOne">${d.x_axis}
+                </div>
+                <div class="countDivTwo">
+                ${d.count}
+                </div>
+                </div>`
+                )
+
+
                 .style("visibility", "visible")
                 .style("display", "inline-block");
               select(this).attr("fill", function () {
@@ -1790,11 +1803,11 @@ class D3BarChart {
       .style("position", "absolute")
       .style("z-index", "10")
       .style("visibility", "hidden")
-      .style("padding", "10px")
-      .style("background", "#56ecb2")
-      .style("border-radius", "5px")
-      .style("color", "#fff")
-      .text("a simple tooltip");
+      // .style("padding", "10px");
+      // .style("background", "#56ecb2")
+      // .style("border-radius", "5px")
+      // .style("color", "#fff")
+      // .text("a simple tooltip");
 
 
     // //Line chart
@@ -3778,10 +3791,11 @@ class proctBarChart {
   */
 
 
-  async proctBarData(id, types, user, max_val, allBarData, xScaleDomain, barColor) {
+  async proctBarData(id, types, user, max_val, allBarData, xScaleDomain, xScaleDomainGridLines,barColor) {
     // console.log("usserr typee", types);
     script.barData = [];
     script.allData = user;
+    console.log(script.allData.length,"Its length")
     // script.marks_data = user.count;
     script.max = max_val;
     allBarData.forEach((element) => {
@@ -3793,10 +3807,10 @@ class proctBarChart {
 
 
     //1) d.x_axis  2) HIghest marks of BAR ; 3) Bar Color ; 4)bardata ; 5)y_axis
-    this.makeProctBarGraph(id, types, xScaleDomain, barColor);
+    this.makeProctBarGraph(id, types, xScaleDomain,xScaleDomainGridLines, barColor);
   }
 
-  makeProctBarGraph(id, types, xScaleDomain, barColor) {
+  makeProctBarGraph(id, types, xScaleDomain,xScaleDomainGridLines, barColor) {
     let heightOfScreen =
       window.innerHeight
       || document.documentElement.clientHeight ||
@@ -3809,7 +3823,10 @@ class proctBarChart {
       : (heightOfScreen >= 900) ? 270 : (heightOfScreen >= 800) ? 250 : (heightOfScreen >= 700) ? 220 : (heightOfScreen >= 600) ? 150 : (heightOfScreen >= 500) ? 110 : 200;
 
     const barWidth = 30;
-    let len = script.allData.length * rectWidth;
+
+    let len = script.allData.length >16 ? script.allData.length * rectWidth : 900;
+    // let len = 900;
+    console.log("Actual Length of Gridlines")
     let margin = { top: 10, right: 35, bottom: 48, left: 40 },
       height = svgHeight - margin.bottom,
       width = len + (2 * rectWidth);
@@ -4123,11 +4140,11 @@ class proctLineChart {
     }
     else if (window.innerWidth >= 1900) {
       var chartWidth = window.innerWidth - 950
-      var chartHeight = 290;
+      var chartHeight = 250;
     }
     else if (window.innerWidth >= 1600) {
       var chartWidth = window.innerWidth - 800
-      var chartHeight = 220;
+      var chartHeight = 210;
     }
     else if (window.innerWidth >= 1500) {
       var chartWidth = window.innerWidth - 750
@@ -6900,14 +6917,15 @@ class DensityChart {
 
     let largest = Math.max(max1, max2, max3);
     if (largest % 5 !== 0) {
-
       largest = largest + (5 - (largest % 5));
+      if(largest %10 !== 0){
+        largest = largest + (largest%10)
+      }
     }
     // else{
     //   largest = largest + (5 - (largest % 5));
 
     // }
-
 
 
     const yScale_grid = d3
@@ -6931,13 +6949,13 @@ class DensityChart {
     const yScale1 = d3
       .scaleLinear()
       .domain([0, largest])
-      .range([(height1 - 8), 8]);
+      .range([(height1 - 8), 0]);
 
     // const yScale2 = d3.scaleLinear().domain([ 0,largest]).range([height1, -(margin.top-4)]);
-    const yScale2 = d3.scaleLinear().domain([0, largest]).range([(height1 - 8), 8]);
+    const yScale2 = d3.scaleLinear().domain([0, largest]).range([(height1 - 8), 0]);
 
 
-    const yScale3 = scaleLinear().domain([0, largest]).range([(height1 - 8), 8]);
+    const yScale3 = scaleLinear().domain([0, largest]).range([(height1 - 8), 0]);
     const x_axis = axisBottom(xScale1).tickSizeOuter(0)
       .tickSizeInner(0);
 
@@ -7955,7 +7973,7 @@ class DensityChart {
       .domain(xDomain)
       .range([0, width]);
 
-    var y = scaleLinear().domain([0, largest]).range([(height - 8), 8]);
+    var y = scaleLinear().domain([0, largest]).range([(height - 8),0]);
 
     var tt = g.selectAll()
       .data(data33)
@@ -8959,7 +8977,6 @@ class D3BarChart {
 
   }
 
-  
 }
 
 */
