@@ -22,7 +22,6 @@ window.onload = function () {
   document.getElementByTagName("svg").empty();
 };
 window.onbeforeunload = function () {
-  // console.log("CALL CALL CALL");
 };
 let script = {
   name: "BarCharts",
@@ -1235,16 +1234,16 @@ class scatterplotZoom {
             </div>`
           )
           .style("left", d.pageX - 170 + "px")
-          const tooltipHeight = Tooltip.node().getBoundingClientRect().height;
-          const tooltipBottomPosition = d.pageY + 200 +tooltipHeight;
-          const screenHeight = window.innerHeight || document.documentElement.clientHeight;
-          if (tooltipBottomPosition < screenHeight) {
-           
-            Tooltip.style("top", d.pageY - 150 - tooltipHeight + "px");
-          } else {
-           
-            Tooltip.style("top", d.pageY  - 460 + "px");
-          }
+        const tooltipHeight = Tooltip.node().getBoundingClientRect().height;
+        const tooltipBottomPosition = d.pageY + 200 + tooltipHeight;
+        const screenHeight = window.innerHeight || document.documentElement.clientHeight;
+        if (tooltipBottomPosition < screenHeight) {
+
+          Tooltip.style("top", d.pageY - 150 - tooltipHeight + "px");
+        } else {
+
+          Tooltip.style("top", d.pageY - 460 + "px");
+        }
         select(this)
           .attr("r", function (d) {
             return d.totalNumberOfTest > 0 ? radiusScale(d.totalNumberOfTest) : radiusScale(d.totalNumberOfTest + 1);
@@ -1326,22 +1325,22 @@ class scatterplotZoom {
         .on("mousemove", function (event) {
           Tooltip
             .style("left", event.pageX - 170 + "px")
-            const tooltipHeight = Tooltip.node().getBoundingClientRect().height;
-            const tooltipBottomPosition = event.pageY + 200 +tooltipHeight;
-            const screenHeight = window.innerHeight || document.documentElement.clientHeight;
-            if (tooltipBottomPosition < screenHeight) {
-             
-              Tooltip.style("top", event.pageY - 150 - tooltipHeight + "px");
-            } else {
-             
-              Tooltip.style("top", event.pageY  - 460 + "px");
-            }
+          const tooltipHeight = Tooltip.node().getBoundingClientRect().height;
+          const tooltipBottomPosition = event.pageY + 200 + tooltipHeight;
+          const screenHeight = window.innerHeight || document.documentElement.clientHeight;
+          if (tooltipBottomPosition < screenHeight) {
+
+            Tooltip.style("top", event.pageY - 150 - tooltipHeight + "px");
+          } else {
+
+            Tooltip.style("top", event.pageY - 460 + "px");
+          }
         })
         .on("mouseout", tipMouseout);
 
-       
-        // this.toolTip = Tooltip;
-        // this.otherMouseover("d",data[0])
+
+      // this.toolTip = Tooltip;
+      // this.otherMouseover("d",data[0])
 
     }, 100);
     return data;
@@ -1349,21 +1348,21 @@ class scatterplotZoom {
   }
 
 
-  otherMouseover(d, datapoints,num,data){
- 
-    let id = '#circle'+num
+  otherMouseover(d, datapoints, num, data) {
+
+    let id = '#circle' + num
     let Tooltip = select("#scatter1Scroll")
-    .append("div")
-    .style("opacity", 0)
-    .attr("class", "tooltip")
-    .style("background-color", "white")
-    // .style("border", "solid")
-    // .style("border-width", "2px")
-    .style("border-radius", "5px")
-    .style("padding", "5px");
+      .append("div")
+      .style("opacity", 0)
+      .attr("class", "tooltip")
+      .style("background-color", "white")
+      // .style("border", "solid")
+      // .style("border-width", "2px")
+      .style("border-radius", "5px")
+      .style("padding", "5px");
 
 
-      let radiusScale = d3
+    let radiusScale = d3
       .scaleSqrt()
       // .scaleSequentialSqrt()        
       // .domain(
@@ -1377,28 +1376,28 @@ class scatterplotZoom {
 
       .range([0, 50]);
 
-      this.scatter.select(id)
-        .attr("r", function (d) {
-          return d.totalNumberOfTest > 0 ? radiusScale(d.totalNumberOfTest) : radiusScale(d.totalNumberOfTest + 1);
-          // return 8
-          // return (radiusScale(d.uniqueTotalCandidates) + 5);
-          // add mpg
-        })
-        .style("stroke", function (d) {
-          return d.active ? "#bcb4fe" : "#D0DFC5";
-        })
-        .style("fill", function (d) {
-          return d.active ? "red" : "green";
-        })
-        .style("stroke-width", 5)
+    this.scatter.select(id)
+      .attr("r", function (d) {
+        return d.totalNumberOfTest > 0 ? radiusScale(d.totalNumberOfTest) : radiusScale(d.totalNumberOfTest + 1);
+        // return 8
+        // return (radiusScale(d.uniqueTotalCandidates) + 5);
+        // add mpg
+      })
+      .style("stroke", function (d) {
+        return d.active ? "#bcb4fe" : "#D0DFC5";
+      })
+      .style("fill", function (d) {
+        return d.active ? "red" : "green";
+      })
+      .style("stroke-width", 5)
 
-        .style("opacity", 0.5);
-        // Tooltip.style("display", "block");
-    };
+      .style("opacity", 0.5);
+    // Tooltip.style("display", "block");
+  };
 
-    tipMouseoutZoom(data) {
-      
-      let radiusScale = d3
+  tipMouseoutZoom(data) {
+
+    let radiusScale = d3
       .scaleSqrt()
       // .scaleSequentialSqrt()        
       // .domain(
@@ -1412,24 +1411,1916 @@ class scatterplotZoom {
 
       .range([0, 50]);
 
-      this.scatter.selectAll("circle")
-        .attr("r", function (d) {
-          return d.totalNumberOfTest > 0 ? radiusScale(d.totalNumberOfTest) : radiusScale(d.totalNumberOfTest + 1);
+    this.scatter.selectAll("circle")
+      .attr("r", function (d) {
+        return d.totalNumberOfTest > 0 ? radiusScale(d.totalNumberOfTest) : radiusScale(d.totalNumberOfTest + 1);
 
-          // return radiusScale(d.uniqueTotalCandidates);
-          // add mpg
-        })
-        .style("fill", function (d) {
-          return d.active ? "#8676FF" : "#BCCBB1";
-        })
-        .style("stroke", "none")
-        .style("opacity", 0.7);
+        // return radiusScale(d.uniqueTotalCandidates);
+        // add mpg
+      })
+      .style("fill", function (d) {
+        return d.active ? "#8676FF" : "#BCCBB1";
+      })
+      .style("stroke", "none")
+      .style("opacity", 0.7);
+  };
+}
+
+
+// /*
+//  For Test Stats
+
+class testBarChart {
+  async myDataTest(user, max_val, allBarData, xScaleDomain) {
+    script.barData = [];
+    script.allData = [];
+    script.allData = user;
+
+    script.max = max_val > 0 ? max_val : 1;
+    allBarData.forEach((element) => {
+      script.barData.push(element);
+    });
+    document.getElementById("testGraph").innerHTML = "";
+
+    //1) d.x_axis  2) HIghest marks of BAR ; 3) Bar Color ; 4)bardata ; 5)y_axis
+    this.testGraphHorizontal(xScaleDomain, user);
+  }
+
+  testGraphHorizontal(xScaleDomain, user) {
+    let circleNumber = user;
+    let heightOfScreen =
+      window.innerHeight
+      || document.documentElement.clientHeight ||
+      document.body.clientHeight;
+
+    let len;
+    let svgHeight;
+    const rectWidth = 50;
+    const barWidth = 12;
+
+    if (heightOfScreen > 1000) {
+      svgHeight = 400;
+      len = 2 * (script.allData.length * rectWidth);
+    }
+
+
+    //Normal Screen
+    // else if (heightOfScreen > 900) {
+    //   svgHeight = 300;
+    //   len = 3.5* (script.allData.length * rectWidth);
+    // }
+
+    // for 110 and 125
+    else if (heightOfScreen >= 700) {
+      svgHeight = 300;
+      len = 3.5 * (script.allData.length * rectWidth);
+    }
+
+    //for 150
+    else if (heightOfScreen >= 600) {
+      svgHeight = 200;
+      len = 2.3 * (script.allData.length * rectWidth);
+    }
+
+    else if (heightOfScreen >= 500) {
+      svgHeight = 210;
+      len = 1.8 * (script.allData.length * rectWidth);
+    }
+    else {
+      svgHeight = 200;
+      len = 1.5 * (script.allData.length * rectWidth);
+    }
+    // svgHeight = (heightOfScreen >= 1800) ? 800 : (heightOfScreen >= 1400) ? 600 :  (heightOfScreen >= 800) ? 220: 200;
+
+    // len = 2.8 * (script.allData.length * rectWidth);
+    // }
+
+
+    let margin = { top: 10, right: 35, bottom: 45, left: 35 },
+
+
+      height = svgHeight - margin.bottom,
+      width = len + (2 * rectWidth);
+    const leftExtra = 12;
+    const topExtra = 5;
+
+
+    // For making the svg
+    const svg1 = select("#testGraph")
+      .classed("svg-container", true)
+      .append("svg")
+      .attr("viewBox", `0 0 ${width} ${svgHeight}`)
+      .attr("preserveAspectRatio", "xMinYMin meet")
+    // .style("background-color", "red");
+
+    //SCALES START
+    const req_g = svg1
+      .append("g")
+      .attr("transform", "translate(" + (margin.left) + "," + margin.top + ")");
+
+    if (script.max % 5 !== 0) {
+      script.max = script.max + (5 - (script.max % 5));
+    }
+
+    let xScale = scaleLinear()
+      .domain([0, script.max])
+      .range([0, len]);
+
+    const yScale = d3.scalePoint()
+      .domain(xScaleDomain)
+      .range([margin.left, (svgHeight - margin.bottom - topExtra)]);
+
+    const xScale1 = scaleLinear()
+      .domain([0, script.max])
+      .range([0, len])
+      .nice();
+
+    const x_axis = axisBottom(xScale)
+      .tickSize(0)
+      .ticks(script.max < 5 ? script.max : 5),
+      xAxisTranslate = svgHeight - (margin.top + topExtra + 5);
+
+    const y_axis = axisLeft(yScale)
+      // .tickSize(-(len))
+      .tickSize(0)
+      .tickFormat(function (d) {
+        if (d.length > 10) {
+          return d.slice(0, 9) + "..";
+        } else {
+          return d;
+        }
+      });
+
+
+    const xScale4Axes = scaleLinear()
+      .domain([0, script.max])
+      .range([(-margin.left + leftExtra + 11), len])
+
+    const yScale4Axes = d3.scalePoint()
+      .domain(xScaleDomain)
+      .range([(5), svgHeight - (margin.bottom - 15)]);
+
+
+    const xAxis = axisBottom(xScale4Axes)
+      .tickFormat("")
+      .tickSize(0)
+
+    const yAxis = axisLeft(yScale4Axes)
+      .tickFormat("")
+      .tickSize(0)
+
+    const g = svg1
+      .append("g")
+      .attr("transform", "translate(" + (margin.left + margin.bottom + leftExtra) + "," + xAxisTranslate + ")");
+    // .attr("transform","translate(150,150)");
+    g.append("g")
+      .attr("class", "bar-x-axis")
+      .call(x_axis)
+      .selectAll("text")
+      .style("text-anchor", "end")
+      .style("color", "#A3A3A3")
+      .style("font", "Poppins")
+      .style("font-weight", "500")
+      .style("font-size", "12px")
+      .attr("transform", function (d) {
+        return ("translate(" + 0 + "," + topExtra + ")")
+      });
+    g.select("path,line").remove();
+    // g.select('.domain').attr('stroke-width', 0);
+
+    req_g
+      .append("g")
+      .attr("class", "bar-x-axis")
+      .attr("transform", "translate(" + (margin.left + 10) + "," + 0 + ")")
+      // .attr("transform", "translate(5,0)")
+      .call(y_axis)
+      .selectAll("text")
+      .style("text-anchor", "end")
+      .style("color", "#A3A3A3")
+      .style("font", "Poppins")
+      .style("font-weight", "500")
+      .style("font-size", "13px")
+      .attr("dx", "-.8em")
+      .attr("dy", ".15em")
+      .attr("transform", "translate(" + (5) + "," + (-topExtra) + ")");
+    // d3.select(".domain").remove();
+    d3.select("path,line").remove();
+
+
+    g.append("g")
+      .attr("class", "bar-x-axis")
+      .call(xAxis)
+    // .style("color", "#A3A3A3")
+
+
+    req_g
+      .append("g")
+      .attr("class", "bar-x-axis")
+      .attr("transform", "translate(" + (margin.left + 10) + "," + 0 + ")")
+      // .attr("transform", "translate(5,0)")
+      .call(yAxis)
+    // .style("color", "#A3A3A3")
+
+
+    //SCALES END
+
+
+    const t = select("svg1").transition().duration(2000);
+
+    const g1 = svg1
+      .append("g")
+      .attr("transform", "translate(" + (margin.left + margin.bottom + leftExtra) + "," + (-margin.top - topExtra) + ")");
+
+    const color = d3.scaleOrdinal().range(["#4EF085", "#FFA031", "#BF9BED", "#D66E6E", "#FF8686"]);
+
+    const rect = g1
+      .selectAll("rect")
+      .data(script.allData, (d) => d)
+      .join(
+        (enter) => {
+          const rect = enter
+            .append("rect")
+            .attr("class", "testBar")
+            .attr("fill", "#1DD1A1")
+            .attr("x", (d, i) => i * rectWidth)
+            .attr("y", function (p) {
+              return (height);
+            })
+            .attr("height", rectWidth - barWidth)
+
+            .attr("width", function (d) {
+              return 0;
+            })
+            .attr("transform", "translate(" + 0 + "," + 0 + ")")
+            //mose over start
+            .on("mouseover", function (event, d) {
+              g1
+                .append("circle")
+                .attr("transform", "translate(" + topExtra + "," + 0 + ")")
+                .attr("cy", () => yScale(d.testName) + ((rectWidth - barWidth) / 2))
+                .attr("cx", () => {
+
+                  return (xScale(d.candidateCount))
+                }
+
+                )
+                .attr("r", 8)
+                // .attr("fill", "#3379B3")
+                .attr("fill", function (data, i) {
+                  return color(d.id);
+                })
+                .attr("stroke-width", function () {
+                  return 4;
+                })
+                .attr("stroke", "white");
+              tooltip
+                .style("top", event.pageY - 15 + "px")
+                .style("left", event.pageX + 15 + "px")
+                // .html(`${d.count}`)
+                .html(
+                  `<div class="countDiv">
+                  <div class="DisplayTestName">${d.testName} ${d.candidateCount}
+                  </div>
+                  </div>`
+                )
+
+
+                .style("visibility", "visible")
+                .style("display", "inline-block");
+              select(this).attr("fill", function (data, i) {
+                return color(d.id);
+              })
+            })
+            .on("mousemove", function (event) {
+              tooltip
+                .style("top", event.pageY - 25 + "px")
+                .style("left", event.pageX + 15 + "px")
+            })
+
+            .on("mouseout", function (d) {
+              tooltip.html(``).style("visibility", "hidden");
+              select(this).attr("fill", "#1DD1A1");
+              tooltip.style("display", "none");
+              g1.select("circle").remove();
+              tooltip.style("display", "none");
+              d3.selectAll(".d3-tooltip").style("display", "none");;
+            });
+
+          return rect;
+        },
+        (update) => update,
+        (exit) => {
+          exit
+            .transition(t)
+            .attr("x", function (p) {
+              return svgHeight - margin.bottom - xScale(p);
+            })
+            .attr("height", 0)
+            .remove();
+        }
+      )
+      .transition()
+      .duration(2000)
+      .delay((d, i) => i * 10)
+      .attr("y", function (d, i) {
+
+        return yScale(d.testName)
+      })
+      .attr("x", function (p) {
+        return (xScale(0));
+      })
+      .attr("width", function (d) {
+        return (d.candidateCount == 0 ? xScale(0.4) : xScale(d.candidateCount));
+      })
+      .attr("height", rectWidth - barWidth);
+
+
+    const g2_diffColor = svg1
+      .append("g")
+      .attr("transform", "translate(" + (margin.left + margin.bottom + 5) + "," + (-margin.top - topExtra) + ")");
+
+    g2_diffColor.selectAll("topicBar")
+      .data(script.allData, (d) => d)
+      .enter()
+      .append("rect")
+      .attr("y", function (d, i) {
+        return yScale(d.testName)
+      })
+      .attr("x", function (p) {
+        return (xScale(0));
+      })
+      .attr("width", function (d) {
+        return 4;
+      })
+      .attr("height", rectWidth - barWidth)
+      .attr("fill", function (data, i,) {
+        return color(data.id);
+      });
+
+    const tooltip = select("body")
+      .append("div")
+      .attr("class", "d3-tooltip")
+      .style("position", "absolute")
+      .style("z-index", "10")
+      .style("visibility", "hidden")
+
+  }
+}
+// */
+
+
+// /*
+
+// For Topic Stats
+class topicBarChart {
+  async myData(user, max_val, allBarData, xScaleDomain) {
+    script.barData = [];
+    script.allData = [];
+    script.allData = user;
+    script.max = max_val;
+    allBarData.forEach((element) => {
+      script.barData.push(element);
+    });
+    document.getElementById("topicGraph").innerHTML = "";
+
+    //1) d.x_axis  2) HIghest marks of BAR ; 3) Bar Color ; 4)bardata ; 5)y_axis
+    this.makegraph(xScaleDomain, user);
+  }
+
+  makegraph(xScaleDomain, user) {
+    let circleNumber = user
+    let heightOfScreen =
+      window.innerHeight
+      || document.documentElement.clientHeight ||
+      document.body.clientHeight;
+
+    let len;
+    let svgHeight;
+    const rectWidth = 50;
+    const barWidth = -20;
+    if (heightOfScreen > 1000) {
+      svgHeight = 400;
+      len = 4 * (script.allData.length * rectWidth);
+    }
+
+
+    //Normal Screen
+    // else if (heightOfScreen > 900) {
+    //   svgHeight = 300;
+    //   len = 3.5* (script.allData.length * rectWidth);
+    // }
+
+    // for 110 and 125
+    else if (heightOfScreen >= 700) {
+      svgHeight = 300;
+      len = 3.5 * (script.allData.length * rectWidth);
+    }
+
+    //for 150
+    else if (heightOfScreen >= 600) {
+      svgHeight = 200;
+      len = 2.3 * (script.allData.length * rectWidth);
+    }
+
+    else if (heightOfScreen >= 500) {
+      svgHeight = 210;
+      len = 1.8 * (script.allData.length * rectWidth);
+    }
+    else {
+      svgHeight = 200;
+      len = 1.5 * (script.allData.length * rectWidth);
+    }
+    // svgHeight = (heightOfScreen >= 1800) ? 800 : (heightOfScreen >= 1400) ? 600 :  (heightOfScreen >= 800) ? 220: 200;
+
+    // len = 2.8 * (script.allData.length * rectWidth);
+    // }
+
+
+    // let margin = { top: 10, right: 35, bottom: 45, left: 40 },
+    let margin = { top: 10, right: 35, bottom: 45, left: 30 },
+
+      height = svgHeight - margin.bottom,
+      width = len + (4 * rectWidth);
+    const extra = 1;
+
+    // For making the svg
+    const svg1 = select("#topicGraph")
+      .classed("svg-container", true)
+      .append("svg")
+      // .attr("height", (svgHeight))
+      // .attr("width", width)
+      .attr("viewBox", `0 0 ${width} ${svgHeight}`)
+      .attr("preserveAspectRatio", "xMinYMin meet")
+    // .classed("svg-content-responsive", true)
+    // .style("background-color", "red");
+
+    //SCALES START
+    const req_g = svg1
+      .append("g")
+      .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+    if (script.max % 5 !== 0) {
+      script.max = script.max + (5 - (script.max % 5));
+    }
+
+    let xScale = d3.scalePoint()
+      .domain(xScaleDomain) //variable1??
+      .range([40, len]);
+
+    let xScale1 = d3.scaleLinear()
+      .domain([0, 5]) //variable1??
+      .range([0, len]);
+
+    const yScale = scaleLinear()
+      .domain([0, script.max])
+      .range([0, svgHeight - margin.bottom - extra]);
+
+    const yScale1 = scaleLinear()
+      .domain([0, script.max])
+      .range([height, 0])
+      .nice();
+
+    const x_axis = axisBottom(xScale).tickSize(-height).tickFormat(function (d) {
+      // Replace long names with shortened versions
+      if (d.length > 20) {
+        return d.slice(0, 20) + "..";
+      } else {
+        return d;
+      }
+    }),
+      xAxisTranslate = svgHeight - margin.bottom + margin.top;
+
+    const y_axis = axisLeft(yScale1)
+      .tickSize(-(len + 150))
+      .ticks(script.max < 5 ? script.max : 5);
+
+    const g = svg1
+      .append("g")
+      .attr("transform", "translate(" + (margin.left + margin.right + 10) + "," + xAxisTranslate + ")");
+    // .attr("transform","translate(150,150)");
+    g.append("g")
+      .attr("class", "bar-x-axis")
+      .call(x_axis)
+      .selectAll("text")
+      // .style("text-anchor", "end")
+      .style("color", "#A3A3A3")
+      .style("font", "Poppins")
+      .style("font-weight", "500")
+      .style("font-size", "12px")
+      // .attr("dx", "-.8em")
+      // .attr("dy", ".15em")
+      // .attr("transform", "rotate(-30)");
+      .attr("transform", function (d) {
+        return ("translate(" + 0 + "," + 5 + ")")
+      });
+    // d3.selectAll("path,line").remove();
+    g.select('.domain').attr('stroke-width', 0);
+
+    req_g
+      .append("g")
+      .attr("class", "bar-x-axis")
+      .attr("transform", "translate(5,0)")
+      .call(y_axis)
+      .selectAll("text")
+      .style("text-anchor", "end")
+      .style("color", "#A3A3A3")
+      .style("font", "Roboto")
+      .attr("dx", "-.8em")
+      .attr("dy", ".15em")
+      .attr("transform", "translate(" + 0 + "," + extra + ")");
+    d3.select(".domain").remove();
+    d3.select("path,line").remove();
+
+    // req_g.select('.domain').attr('stroke-width', 0);
+    //  const xGridLine = axisBottom()
+    //   .scale(xScale)
+    //   .tickSize(svgHeight-25, 0, 0)
+    //   .tickFormat("");
+
+    //    svg1
+    //   .append("g")
+    //   .classed("gridLine", true)
+    //   .attr("transform", "translate(15,0)")
+    //   .style("color", "#F0F0F0")
+    //   .attr("opacity", "0.5")
+    //   .call(xGridLine);
+
+    //SCALES END
+
+
+    const t = select("svg1").transition().duration(2000);
+
+    const g1 = svg1
+      .append("g")
+      .attr("transform", "translate(" + 35 + "," + margin.top + ")");
+
+    const color = d3.scaleOrdinal().range(["#4EF085", "#FFA031", "#BF9BED", "#D66E6E", "#FF8686"]);
+    // const deepColors = d3.scaleOrdinal().range(["#12B449", "#CD6E00", "#8D69BB", "#A43C3C", "#CD5454" ]);
+
+    const rect = g1
+      .selectAll("rect")
+      .data(script.allData, (d) => d)
+      .join(
+        (enter) => {
+          const rect = enter
+            .append("rect")
+            .attr("class", "topicBar")
+            .attr("width", rectWidth - barWidth)
+            .attr("fill", function (d, i) {
+              return color(i);
+            })
+            .attr("x", (d, i) => i * rectWidth)
+            .attr("y", function (p) {
+              return height;
+            })
+
+            .attr("height", function (d) {
+              return 0;
+            })
+            .attr("transform", "translate(" + 5 + "," + 0 + ")")
+            //mose over start
+            .on("mouseover", function (event, d) {
+              g1
+                .append("circle")
+                .attr("transform", "translate(" + 5 + "," + 0 + ")")
+                .attr("cx", () => xScale(d.topicName) + ((rectWidth - barWidth) / 2))
+                .attr("cy", () => {
+
+                  return (height - yScale(d.candidateCount))
+                }
+
+                )
+                .attr("r", 12)
+                // .attr("fill", "#3379B3")
+                .attr("fill", function (data, i) {
+                  return color(d.id);
+                })
+                .attr("stroke-width", function () {
+                  return 6;
+                })
+                .attr("stroke", "white");
+              tooltip
+                .style("top", event.pageY - 10 + "px")
+                .style("left", event.pageX + 10 + "px")
+                // .html(`${d.count}`)
+                .html(
+                  `<div class="countDiv">
+                <div class="DisplayTopicName">${d.topicName}
+                </div>
+                </div>`
+                )
+
+
+                .style("visibility", "visible")
+                .style("display", "inline-block");
+              select(this).attr("fill", function (data, i) {
+                return color(d.id);
+              })
+            })
+            .on("mousemove", function (event) {
+              tooltip
+                .style("top", event.pageY - 10 + "px")
+                .style("left", event.pageX + 10 + "px")
+            })
+
+            .on("mouseout", function (d) {
+              tooltip.html(``).style("visibility", "hidden");
+              select(this).attr("fill", function (data, i) {
+                return color(data.id);
+              });
+              tooltip.style("display", "none");
+              g1.select("circle").remove();
+              tooltip.style("display", "none");
+              d3.selectAll(".d3-tooltip").style("display", "none");;
+            });
+
+          // .attr("transform", "translate(25," + 0 + ")");
+
+          return rect;
+        },
+        (update) => update,
+        (exit) => {
+          exit
+            .transition(t)
+            .attr("y", function (p) {
+              return svgHeight - margin.bottom - yScale(p);
+            })
+            .attr("height", 0)
+            .remove();
+        }
+      )
+      // animate enter + update selection
+      .transition()
+      .duration(2000)
+      .delay((d, i) => i * 10)
+      .attr("x", function (d, i) {
+        return xScale(d.topicName)
+      })
+      .attr("y", function (p) {
+        return height - yScale(p.candidateCount);
+      })
+      .attr("height", function (d) {
+        return yScale(d.candidateCount);
+      })
+      .attr("width", rectWidth - barWidth);
+
+
+    g1.append('rect')
+      .attr('x', 0)
+      .attr('y', 0)
+      .attr('width', (width - 50))
+      .attr('height', height)
+      .attr('stroke', '#EEF0F3')
+      .attr('fill', 'none');
+
+    const tooltip = select("body")
+      .append("div")
+      .attr("class", "d3-tooltip")
+      .style("position", "absolute")
+      .style("z-index", "10")
+      .style("visibility", "hidden")
+    // .style("padding", "10px");
+    // .style("background", "#56ecb2")
+    // .style("border-radius", "5px")
+    // .style("color", "#fff")
+    // .text("a simple tooltip");
+
+
+
+    function linechart1() {
+      let x = xScale,
+        y = scaleLinear()
+          .domain([0, script.max])
+          .range([(height + extra), 0]),
+
+
+        line = d3Line
+          .line()
+          .x(function (d) {
+            return x(d.topicName);
+          })
+          .y(function (d) {
+            return y(d.candidateCount);
+          });
+      // .curve(curveBasis);
+
+      const g2 = svg1
+        .append("g")
+        .attr("transform", "translate(" + (margin.left + margin.right + 10) + "," + margin.top + ")");
+      const path = g2
+        .append("path")
+        .datum(script.allData)
+        .attr("fill", "none")
+        .attr("stroke", "#D4D4D4")
+        .attr("stroke-linejoin", "round")
+        .attr("stroke-linecap", "round")
+        .attr("stroke-width", 2)
+        .attr("d", line);
+    }
+
+    this.makegraph.linechart1 = linechart1;
+
+  }
+}
+
+// */
+
+
+// /*
+//For Active Progress
+class gradientChart {
+  // async createDensity(id, datass) {
+  //   var svgWidth;
+  //   var svgHeight = 270;
+  //   if (document.getElementById(id).innerHTML != "") {
+  //     document.getElementById(id).innerHTML = "";
+  //   }
+  //   const Data2 = datass;
+  //   let lineChartData1 = Data2
+
+  //   // lineChartData1 = { ...Data2 };
+
+
+
+  //   const margin = {
+  //     top: 25,
+  //     bottom: 25,
+  //     left: 25,
+  //     right: 20,
+  //   };
+
+
+  //   // var widthss = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
+  //   if (window.innerWidth >= 1700) {
+  //     svgWidth = window.innerWidth - 900
+  //     // svgHeight = 250
+  //   }
+  //   else if (window.innerWidth >= 1500) {
+  //     svgWidth = window.innerWidth - 800
+  //   }
+  //   else if (window.innerWidth >= 1300) {
+  //     svgWidth = window.innerWidth - 700;
+  //   }
+  //   else if (window.innerWidth >= 1100) {
+  //     svgWidth = window.innerWidth - 400;
+  //   }
+
+
+
+
+  //   const width1 = svgWidth - margin.left - margin.right;
+  //   const height1 = svgHeight - margin.top - margin.bottom;
+
+  //   const createGradient = select => {
+  //     const gradient = select
+  //       .select('defs')
+  //         .append('linearGradient')
+  //           .attr('id', 'gradient')
+  //           .attr('x1', '0%')
+  //           .attr('y1', '100%')
+  //           .attr('x2', '0%')
+  //           .attr('y2', '0%');
+
+  //     gradient
+  //       .append('stop')
+  //         .attr('offset', '0%')
+  //         .attr('style', 'stop-color:#F4BE37;stop-opacity:0.03');
+
+  //     gradient
+  //       .append('stop')
+  //         .attr('offset', '100%')
+  //         .attr('style', 'stop-color:#F8DD9C;stop-opacity:.2');
+  //   }
+
+
+  //   const createGlowFilter = select => {
+  //     const filter = select
+  //       .select('defs')
+  //         .append('filter')
+  //           .attr('id', 'glow')
+
+  //     filter
+  //       .append('feGaussianBlur')
+  //         .attr('stdDeviation', '4')
+  //         .attr('result', 'coloredBlur');
+
+  //     const femerge = filter
+  //       .append('feMerge');
+
+  //     femerge
+  //       .append('feMergeNode')
+  //       .attr('in', 'coloredBlur');
+  //     femerge
+  //       .append('feMergeNode')
+  //       .attr('in', 'SourceGraphic');
+  //   }
+
+  //   // /*original
+  //   const svg = d3
+  //     .select("#topicGraph")
+  //     .classed("svg-container", true)
+  //     .append("svg")
+  //     .attr("viewBox", `0 0 ${svgWidth} ${svgHeight}`)
+
+  //     .attr("preserveAspectRatio", "xMinYMin meet")
+  //     // .attr('viewBox', '0 0 ' + svgWidth + ' ' + svgHeight)
+  //     .classed("svg-content-responsive", true);
+
+  //     svg.append('defs');
+  //     svg.call(createGradient);
+  //     // svg.call(createGlowFilter);
+
+  //   var ctrl, key;
+
+  //   // Attach the resize event listener
+  //   document.body.addEventListener("keydown", function (ev) {
+  //     ev = ev || window.ev;
+  //     key = ev.which || ev.code;
+  //     ctrl = ev.ctrlKey ? ev.ctrlKey : ((key === 17) ? true : false)
+  //     window.addEventListener("resize", resize);
+
+  //     // }
+  //   }, false);
+
+  //   function resize() {
+
+  //     if (ctrl && key === 109 && window.innerWidth > 1900) {
+
+  //       var containerWidth = parseInt(d3.select("#topicGraph").style("width"));
+  //       var containerHeight = parseInt(d3.select("#topicGraph").style("height"));
+
+  //       svg.attr("viewBox", "0 0 " + svgWidth * containerWidth / (svgWidth - 100) + " " + svgHeight * containerHeight / svgHeight);
+  //     }
+  //     else if (window.innerWidth > 1700) {
+
+  //       svg.attr("viewBox", `0 0 ${svgWidth + 80} ${svgHeight}`);
+  //       if (window.innerHeight > 950) {
+  //         svg.attr("viewBox", `0 0 ${svgWidth + 200} ${svgHeight + 50}`);
+  //       }
+
+  //     }
+  //     else {
+
+  //       svg.attr("viewBox", `0 0 ${svgWidth + 20} ${svgHeight + 50}`)
+
+  //     }
+  //   }
+
+
+  //   const g = svg
+  //     .append("g")
+  //     // .attr('transform', `translate(${margin.left}, ${margin.top})`);
+
+  //     .attr("transform", "translate(" + margin.left + "," + margin.bottom + ")");
+
+  //   const xAxisTranslate = svgHeight - margin.bottom;
+
+  //   const g1 = svg
+  //     .append("g")
+  //     .attr("transform", "translate(" + margin.left + "," + xAxisTranslate + ")");
+
+  //   const parsedData1 = lineChartData1.map((company) => ({
+
+  //     ticker: company.ticker,
+  //     values: lineChartData1.map((val) => ({
+  //       close: val.close,
+  //       // date: parseTime(val.date)
+  //       date: val.date,
+  //     })),
+  //   }));      //GOOD
+
+
+  //   let xScaleDomain1 = parsedData1[0].values.map((d) => d.date);
+
+  //   const xScale = d3.scalePoint()
+  //     .domain(xScaleDomain1)
+  //     .range([0, width1]);
+
+  //   const xScale1 = d3.scalePoint().domain(xScaleDomain1).range([0, width1 - 15]);
+
+
+  //   const xScale11 = scaleLinear()
+  //     .domain([1, 7])
+  //     .range([0, width1])
+  //     .nice();
+
+
+  //   const max1 = Math.max(...parsedData1[0].values.map((o) => o.close));
+
+  //   let largest = Math.max(max1);
+  //   if (largest % 5 !== 0) {
+  //     largest = largest + (5 - (largest % 5));
+  //     if (largest % 10 !== 0) {
+  //       largest = largest + (largest % 10)
+  //     }
+  //   }
+  //   // else{
+  //   //   largest = largest + (5 - (largest % 5));
+
+  //   // }
+
+
+  //   const yScale_grid = d3
+  //     .scaleLinear()
+  //     // .domain( largest<=10?
+  //     //   [0, 5]:largest<=20?[0, 4]:[0, 5]
+  //     //   )
+  //     .domain(largest <= 10 ?
+  //       [0, 5] : largest <= 15 ? [0, 3] : largest <= 20 ? [0, 4] : [0, 5]
+  //     )
+  //     .range([height1, 0])
+  //     .nice();
+
+  //   const yScale = d3
+  //     .scaleLinear()
+  //     .domain([0, largest])
+  //     .range([height1, 0]);
+  //   // .domain([5, largest])
+  //   // .range([height1, 5]);
+
+  //   const yScale1 = d3
+  //     .scaleLinear()
+  //     .domain([0, largest])
+  //     .range([(height1 - 8), 0]);
+
+  //   // const yScale2 = d3.scaleLinear().domain([ 0,largest]).range([height1, -(margin.top-4)]);
+
+  //   const x_axis = axisBottom(xScale1).tickSizeOuter(0)
+  //     .tickSizeInner(0);
+
+  //   const xGridLine = axisBottom(xScale11)
+  //     .scale(xScale11)
+  //     .tickSize(-height1)
+  //     .ticks(7)
+  //     .tickFormat("");
+
+
+  //   svg
+  //     .append("g")
+  //     .classed("gridLine", true)
+  //     .attr("transform", "translate(" + margin.left + "," + xAxisTranslate + ")")
+  //     .style("color", "#DCDCDC")
+  //     .attr("opacity", "0.5")
+  //     .call(xGridLine)
+
+
+
+
+  //   const yGridLine = axisLeft(yScale_grid)
+  //     .scale(yScale)
+  //     .tickSize(-width1, 0, 0)
+  //     .ticks(largest <= 10 ? 5 : largest <= 15 ? 3 : largest <= 20 ? 4 : 5)
+  //     .tickFormat("");
+
+
+  //   g
+  //     .append("g")
+  //     .classed("gridLine", true)
+  //     // .attr("transform", "translate(25,0)")
+  //     .style("color", "#DCDCDC")
+  //     .attr("opacity", "0.5")
+  //     .call(yGridLine);
+
+  //   const y_axis = axisLeft(yScale)
+  //     // .tickSize(-width1)
+  //     .scale(yScale)
+  //     .ticks(largest <= 10 ? 5 : largest <= 15 ? 3 : largest <= 20 ? 4 : 5)
+  //     .tickSizeOuter(0)
+  //     .tickSizeInner(0);
+
+  //   g
+  //     .append("g")
+  //     .attr("class", "y axis")
+  //     // .attr("transform", "translate(" + 25 + "," + 0 + ")")
+  //     .style("color", "#A3A3A3")
+  //     .call(y_axis);
+
+
+
+  //   g.selectAll(".tick")
+  //     .filter(function (d) { return d === 0; })
+  //     .remove();
+
+  //   g.selectAll('.domain').attr('stroke-width', 0);
+
+
+  //   var x = xScale,
+  //     y = yScale1;
+
+  //   //LINE 1 STARTS
+  //   const line1 = d3Line
+  //     .line()
+  //     // .interpolate("basis")
+  //     .x(function (d) {
+  //       return x(d.date)
+  //     })
+  //     .y(function (d) {
+  //       return y(d.close)
+  //     })
+  //     // .curve(curveBasis);
+  //     .curve(d3.curveCatmullRom.alpha(0.8));
+
+  //   // /* cooment out
+  //   g.selectAll(".line")
+  //     .data(parsedData1)
+  //     .enter()
+  //     .append("path")
+  //     .attr("d", (d) => {
+  //       const lineValues1 = line1(d.values).slice(1);
+  //       const splitedValues1 = lineValues1.split(",");
+
+  //       return `M0,${height1},${lineValues1},l0,${height1 - splitedValues1[splitedValues1.length - 1]
+  //         }`;
+  //     })
+  //     // .style('fill', '#E31A1C')
+  //     // .style("fill", "#C3FDB8")
+  //     .style('fill', 'url(#gradient)')
+
+  //     .style("opacity", 0.4);
+
+
+  //   // comment out end
+  //   // */
+
+  //   g.selectAll(".line")
+  //     .data(parsedData1)
+  //     .enter()
+  //     .append("path")
+  //     .attr("d", (d) => line1(d.values))
+  //     .attr("stroke-width", "1")
+  //     .style("fill", "none")
+  //     .style("filter", "url(#glow)")
+  //     .attr("stroke", "#F4BE37");
+
+
+
+
+
+
+
+  //   //LINE 1 ENDS
+
+  //   g1.append("g")
+  //     .attr("class", "bar-x-axis")
+  //     .call(x_axis)
+  //     .style("color", "#A3A3A3")
+  //     .selectAll("text")
+  //     .text(function (d) {
+  //       return d.split(',')[0]
+  //     })
+  //     // .style("text-anchor", "end")
+  //     .style("color", "#A3A3A3")
+  //     // .style("font", "Roboto")
+  //     .attr("dx", ".8em")
+  //     .attr("dy", ".15em")
+  //     // .attr("transform", "rotate(-5)")
+  //     .attr("transform", "translate(" + 0 + "," + 5 + ")")
+  //     ;
+  //   g1.select('.domain').attr('stroke-width', 0)
+
+  // }
+
+  async createDensity(id, datass) {
+    let svgWidth;
+    let svgHeight = 200;
+    if (document.getElementById(id).innerHTML != "") {
+      document.getElementById(id).innerHTML = "";
+    }
+
+    const margin = {
+      top: 25,
+      bottom: 40,
+      left: 45,
+      right: 20,
     };
+
+
+    // var widthss = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
+    if (window.innerWidth >= 1700) {
+      svgWidth = window.innerWidth - 1320
+      // svgHeight = 250
+    }
+    else if (window.innerWidth >= 1500) {
+      svgWidth = window.innerWidth - 800
+    }
+    else if (window.innerWidth >= 1300) {
+      svgWidth = window.innerWidth - 700;
+    }
+    else if (window.innerWidth >= 1100) {
+      svgWidth = window.innerWidth - 400;
+    }
+
+
+    const width1 = svgWidth - margin.left - margin.right;
+    const height1 = svgHeight - margin.top - margin.bottom;
+
+
+    let data = datass.map(d => {
+      d['date'] = new Date(d['date']);
+      // d['date'] = (d['date']);
+      // d['close'] = d['close'] > 0 ? d['close'] : 0.5
+      return d
+    });
+
+    const getX = d => d["date"];
+    const getY = d => d["close"];
+
+    const x = d3.scaleTime()
+      .range([0, width1])
+      .domain([
+        d3.min(data, getX),
+        d3.max(data, getX)
+      ]);
+
+    let maxV = Math.max(...data.map(o => o.close));
+    let minV = Math.min(...data.map(o => o.close));
+
+    minV = minMax(minV)
+    function minMax(vals) {
+      if (vals % 5 !== 0) {
+        vals = vals - (vals % 5);
+      }
+      return vals;
+    }
+
+    const y = d3.scaleLinear()
+      .range([height1, 0])
+      .domain([
+        minV,
+        maxV
+      ])
+      .nice();
+
+    const valueLine = d3.area()
+      .curve(d3.curveBasis)
+      .curve(d3.curveCatmullRom.alpha(0.8))
+      .x(d => x(getX(d)))
+      .y0(height1)
+      .y1(d => y(getY(d)));
+
+
+
+    // Attach the resize event listener
+    document.body.addEventListener("keydown", function (ev) {
+      ev = ev || window.ev;
+      key = ev.which || ev.code;
+      ctrl = ev.ctrlKey ? ev.ctrlKey : ((key === 17) ? true : false)
+      window.addEventListener("resize", resize);
+
+      // }
+    }, false);
+
+    function resize() {
+
+      if (ctrl && key === 109 && window.innerWidth > 1900) {
+
+        var containerWidth = parseInt(d3.select("#topicGraph").style("width"));
+        var containerHeight = parseInt(d3.select("#topicGraph").style("height"));
+
+        svg.attr("viewBox", "0 0 " + svgWidth * containerWidth / (svgWidth - 100) + " " + svgHeight * containerHeight / svgHeight);
+      }
+      else if (window.innerWidth > 1700) {
+
+        svg.attr("viewBox", `0 0 ${svgWidth + 80} ${svgHeight}`);
+        if (window.innerHeight > 950) {
+          svg.attr("viewBox", `0 0 ${svgWidth + 200} ${svgHeight + 50}`);
+        }
+
+      }
+      else {
+
+        svg.attr("viewBox", `0 0 ${svgWidth + 20} ${svgHeight + 50}`)
+
+      }
+    }
+
+
+    // /*original
+    const svg = d3
+      .select("#progressGraph")
+      .classed("svg-container", true)
+      .append("svg")
+      .attr("viewBox", `0 0 ${svgWidth} ${svgHeight}`)
+
+      .attr("preserveAspectRatio", "xMinYMin meet")
+      // .attr('viewBox', '0 0 ' + svgWidth + ' ' + svgHeight)
+      .classed("svg-content-responsive", true)
+    // .style('background-color',"red");
+
+
+    const defs = svg.append('defs');
+
+    const graphArea = svg
+      .append('g')
+      .attr('transform', `translate(${margin.left}, ${margin.top})`);
+
+    var ctrl, key;
+
+    const bgGradient = defs
+      .append('linearGradient')
+      .attr('id', 'bg-gradient')
+      .attr('gradientTransform', 'rotate(90)');
+
+
+    const x_text = d3.scaleTime()
+      .range([15, width1])
+      .domain([
+        d3.min(data, getX),
+        d3.max(data, getX)
+      ]);
+    const xAxis = d3.axisBottom(x_text).tickSize([0]).ticks(data.length).tickFormat(function (d) {
+      // Replace long names with shortened versions
+      // return d.getFullYear()
+      let xVals = (`${d.toLocaleString('default', { weekday: 'long' }).slice(0, 3)} , ${d.getDate()}`)
+      // if (xVals.length > 5) {
+      //   return xVals.slice(0, 5) + "..";
+      // } else {
+      //   return xVals;
+      // }
+      return xVals;
+    });
+    const yAxis = d3.axisLeft(y).tickSize([0, 0]).tickSize(-(width1)).ticks(5);
+
+    graphArea
+      .append('g')
+      .attr('class', 'Xaxis')
+      .attr('transform', `translate(0, ${height1 + 8})`)
+      .call(xAxis)
+      .selectAll("text")
+      .style("text-anchor", "end")
+      .style("color", "#A3A3A3")
+      .style("font", "Roboto")
+      .style("font-weight", "300")
+      .style("font-size", "8px");
+
+
+
+
+
+    graphArea
+      .append('g')
+      .attr('class', 'Yaxis')
+      .call(yAxis)
+      .style("color", "#E3E3E3")
+      .attr("opacity", 1)
+      .selectAll("text")
+      .style("text-anchor", "end")
+      .style("color", "#A3A3A3")
+      .style("font", "Roboto")
+      .style("font-weight", "400")
+      .style("font-size", "12px")
+      .attr("transform", function (d) {
+        return ("translate(" + (-10) + "," + 0 + ")")
+      });
+    d3.selectAll(".domain").remove();
+    // d3.select("path,line").remove();
+
+
+    const xAxisLine = d3.axisBottom(x).tickSize([0]).ticks(data.length).tickFormat("")
+
+
+    graphArea
+      .append('g')
+      .attr('class', 'Xaxis')
+      .attr('transform', `translate(0, ${height1 + 5})`)
+      .call(xAxisLine)
+      .style("color", "#E3E3E3");
+
+    bgGradient
+      .append('stop')
+      .attr('stop-color', '#F4BE37')
+      .attr("stop-opacity", 0.45)
+      .attr('offset', '0%');
+    bgGradient
+      .append('stop')
+      .attr('stop-color', '#F4BE37')
+      .attr("stop-opacity", 0)
+      .attr('offset', '100%');
+
+    defs
+      .append('clipPath')
+      .attr('id', 'clip-line-path')
+      .append('path')
+      .attr('d', valueLine(data))
+      .attr('class', 'value-line')
+      .attr("fill", "none")
+      .attr("stroke", "#F8DD9C")
+      .attr("stroke-width", 1.5);
+
+    const clipPath = graphArea
+      .append('g')
+      .attr('clip-path', `url(#clip-line-path)`);
+
+    const line = d3.line().curve(d3.curveBasis).curve(d3.curveCatmullRom.alpha(0.8))
+      .x(d => x(getX(d)))
+      .y(d => y(getY(d)))
+
+    graphArea
+      .append('path')
+      .attr("fill", "none")
+      .attr('d', line(data))
+      .attr("stroke", "#F4BE37")
+      .attr("stroke-width", 1.5)
+
+    clipPath
+      .append('rect')
+      .attr('x', 0)
+      .attr('y', 0)
+      .attr('width', width1)
+      .attr('height', height1)
+      .style('fill', 'url(#bg-gradient)');
+
+
+
+
+
+  }
+}
+
+// */
+
+// /*
+
+// For Donut chart 
+class donoutChart {
+  async donutGraph(grpCount, individualCount, TotalCount) {
+    if (document.getElementById('donutChart').innerHTML != "") {
+      document.getElementById('donutChart').innerHTML = "";
+    }
+    var radius = 75;
+    var radius2 = 65;
+
+    var dataset = {
+      ages: [grpCount, individualCount],
+    };        // for Orange Color Circle 
+    var dataset2 = {
+      ages: [grpCount, individualCount],
+    };      // for Blue Color Circle 
+
+    var color = d3.scaleOrdinal().range(["#FEC956", "none"]);
+    const colors = d3.scaleOrdinal().range(["none", "#5782FF"]);
+
+
+
+    var arc = d3Line.arc()
+      .outerRadius(radius)
+      .innerRadius(radius - 40);
+
+    var arc2 = d3Line.arc()
+      .outerRadius(radius2)
+      .innerRadius(radius2 - 30);
+
+    var pie = d3Line.pie()
+      .sort(null)
+
+    var pie2 = d3Line.pie()
+      .sort(null)
+
+    let svgWidth;
+    let svgHeight = 200;
+    // const svgHeight = 150;
+    // radius = Math.min(script.svgWidth / 4, svgHeight) / 2;
+    const start_point = script.svgWidth / 9;
+
+    const margin = {
+      top: 25,
+      bottom: 40,
+      left: 45,
+      right: 20,
+    };
+
+
+    // var widthss = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
+    if (window.innerWidth >= 1700) {
+      svgWidth = window.innerWidth - 1320
+      // svgHeight = 250
+    }
+    else if (window.innerWidth >= 1500) {
+      svgWidth = window.innerWidth - 800
+    }
+    else if (window.innerWidth >= 1300) {
+      svgWidth = window.innerWidth - 700;
+    }
+    else if (window.innerWidth >= 1100) {
+      svgWidth = window.innerWidth - 400;
+    }
+
+
+
+    // Attach the resize event listener
+    document.body.addEventListener("keydown", function (ev) {
+      ev = ev || window.ev;
+      key = ev.which || ev.code;
+      ctrl = ev.ctrlKey ? ev.ctrlKey : ((key === 17) ? true : false)
+      window.addEventListener("resize", resize);
+
+      // }
+    }, false);
+
+
+    const width1 = svgWidth - margin.left - margin.right;
+    const height1 = svgHeight - margin.top - margin.bottom;
+
+
+
+    var svg = d3.select("#donutChart").append("svg")
+      .classed("svg-container", true)
+      // .attr("width", radius * 2)
+      // .attr("height", radius * 3)
+      .attr("viewBox", `0 0 ${svgWidth} ${svgHeight}`)
+      // .style("background-color", "black")
+      .attr("preserveAspectRatio", "xMinYMin meet")
+      // .attr('viewBox', '0 0 ' + svgWidth + ' ' + svgHeight)
+      .classed("svg-content-responsive", true)
+      .attr("class", "outerPie")
+      .append("g")
+      .attr("transform", "translate(" + radius * 3 + "," + radius + ")");
+
+    var svg2 = d3.select(".outerPie").append("svg")
+      .classed("svg-container", true)
+      // .attr("width", radius * 2)
+      // .attr("height", radius * 3)
+      .attr("viewBox", `0 0 ${svgWidth} ${svgHeight}`)
+      .attr("preserveAspectRatio", "xMinYMin meet")
+      // .attr('viewBox', '0 0 ' + svgWidth + ' ' + svgHeight)
+      .classed("svg-content-responsive", true)
+      .attr("class", "innerPie")
+      .append("g")
+      .attr("transform", "translate(" + radius * 3 + "," + radius + ")");
+
+    var circle = d3.select('.innerPie').append("svg")
+      .attr("class", "circle")
+      .append('circle')
+      .attr('cx', radius * 3)
+      .attr('cy', radius)
+      .attr('r', 30)
+      .attr('stroke', '#E5E4E2')
+      .attr('fill', 'none');
+
+
+
+
+    svg2
+      .append("svg:text")
+      .attr("dy", ".35em")
+      .attr("text-anchor", "middle")
+      // .attr("style", "font-family:Poppins")
+      .style("font-family", "Poppins")
+      .style("font-weight", "500")
+
+      .attr("font-size", "15px")
+      .attr("fill", "#454459")
+
+      .attr("transform", "translate(" + 0 + "," + (-5) + ")")
+      // .text(` ${dataset.ages[0] + dataset.ages[1]} `);
+      .text(` ${TotalCount} `);
+
+
+    var text = d3.select('.circle').append("svg").append("svg:text")
+      .attr("fill", "#454459")
+      .style("font", "Roboto")
+      .style("font-family", "Poppins")
+      .style("font-weight", "400")
+      .style("font-size", "13px")
+      .attr("opacity", 0.7)
+      .attr("x", radius * 2.8)
+      .attr("y", radius + 15)
+
+      .text("Total")
+
+
+    svg2.selectAll('text')
+      .style("color", "red");
+
+
+    let div = d3.select("body").append("div").attr("class", "toolTipCircle");
+
+    let path = svg.selectAll("path")
+      .data(pie(dataset.ages))
+      .enter().append("path")
+      .attr("fill", function (d, i) { return color(i); })
+      .attr("d", arc)
+      .on("mousemove", function (event, d) {
+        d3.select('.circle').append("svg").append("svg")
+          .append("circle")
+          .attr("transform", "translate(" + 0 + "," + 0 + ")")
+          .attr("cy", () => event.pageY - 25)
+          .attr("cx", () => {
+            return (event.pageX + 10)
+          }
+
+          )
+          .attr("r", 8)
+          .attr("fill", "#3379B3")
+
+          .attr("stroke-width", function () {
+            return 4;
+          })
+          .attr("stroke", "white");
+        div.style("left", event.pageX + 10 + "px");
+        div.style("top", event.pageY - 25 + "px");
+        div.style("display", "inline-block");
+        div.html("Groups" + "<br>" + (d.data));
+      })
+      .on("mouseout", function (d) {
+        div.style("display", "none");
+      });
+
+    let path2 = svg2.selectAll("path")
+      .data(pie2(dataset2.ages))
+      .enter().append("path")
+      .attr("fill", function (d, i) { return colors(i); })
+      .attr("d", arc2).on("mousemove", function (event, d) {
+        div.style("left", event.pageX + 10 + "px");
+        div.style("top", event.pageY - 25 + "px");
+        div.style("display", "inline-block");
+        div.html("Candidates" + "<br>" + (d.data));
+      })
+      .on("mouseout", function (d) {
+        div.style("display", "none");
+      });
   }
 
 
 
+  // path.on("mouseout", function(d){
+  //     div.style("display", "none");
+  // });
+}
 
+// */
+
+
+// /*
+
+class multiBarChart {
+  async multipleChart(myData) {
+    if (document.getElementById('multiBarGraph').innerHTML != "") {
+      document.getElementById('multiBarGraph').innerHTML = "";
+    }
+
+    let heightOfScreen =
+      window.innerHeight
+      || document.documentElement.clientHeight ||
+      document.body.clientHeight;
+    let len;
+    let svgHeight;
+
+
+    // var data = d3.csvParse('name,score1,score2,score3\njohn,100,80,70\njack,50,60,70\njill,120,130,140\njane,150,140,100\njohn,100,80,70\njack,50,60,70\njill,120,130,140\njane,150,140,100\njohn,100,80,70\njack,50,60,70\njill,120,130,140\njane,150,140,100\njohn,100,80,70\njack,50,60,70\njill,120,130,140\njane,150,140,100\njohn,100,80,70\njack,50,60,70\njill,120,130,140\njane,150,140,100\njohn,100,80,70\njack,190,180,170\n');
+    let data = myData
+    const barWidth = 40;
+    const subWBaridth = 15;
+    const rectWidth = barWidth;
+    if (heightOfScreen > 1000) {
+      svgHeight = 300;
+      len = ((data.length * 3) * (rectWidth + 5));
+    }
+
+
+    //Normal Screen
+    // else if (heightOfScreen > 900) {
+    //   svgHeight = 300;
+    //   len = 3.5* (script.allData.length * rectWidth);
+    // }
+
+    // for 110 and 125
+    else if (heightOfScreen >= 700) {
+      svgHeight = 300;
+      len = ((data.length * 3) * (rectWidth + 13));
+    }
+
+    //for 150
+    else if (heightOfScreen >= 600) {
+      svgHeight = 200;
+      len = 2.3 * (data.length * rectWidth);
+    }
+
+    else if (heightOfScreen >= 500) {
+      svgHeight = 210;
+      len = 1.8 * (data.length * rectWidth);
+    }
+    else {
+      svgHeight = 200;
+      len = 1.5 * (data.length * rectWidth);
+    }
+
+    // 1. Set canvas margins
+    var margin = {
+      top: 45,
+      right: 50,
+      bottom: 70,
+      left: 70
+    };
+    // let width = len + (2 * rectWidth);
+    var width = len + (rectWidth);
+    var height = svgHeight - margin.top - margin.bottom;
+    // var width = 1200 - margin.left - margin.right;
+    // var height = 300 - margin.top - margin.bottom;
+
+    var color = d3.scaleOrdinal(d3.schemeCategory10);
+
+    // 2. Set x and y scales
+    var xScale = d3.scaleBand().range([0, width]);
+    var yScale = d3.scaleLinear().range([height, 0]);
+
+    // 3. Create svg object
+    var svg = d3.select('#multiBarGraph').append('svg')
+      .attr('width', width + margin.left - 20)
+      .attr('height', height + margin.top + margin.bottom)
+      // .style("background-color", "red")
+      .append('g')
+      .attr('transform', `translate(${margin.left}, ${margin.top})`)
+
+
+    // var svg = d3.select('#topicGraph') .classed("svg-container", true)
+    //       .append("svg")
+    //       .attr("viewBox", `0 0 ${width + margin.left + margin.right} ${svgHeight + margin.bottom + margin.top}`)
+    //       .attr("preserveAspectRatio", "xMinYMin meet")
+    //     .style("background-color", "red")
+    //     .append('g')
+    //     .attr('transform', `translate(${margin.left}, ${margin.top})`)
+
+
+
+    // LOAD data - we are using csvParse because CodePen cannot load external files, normally we would fetch external file using .csv
+    // 4. Fetch and handle data
+    // d3.csv(DATA, function(data){
+    // handle error
+    // if(err) throw err;
+
+    // parseInt data
+    data.forEach(function (d) {
+      d.score1 = parseInt(d.score1);
+      d.score2 = parseInt(d.score2);
+      d.score3 = parseInt(d.score3);
+    });
+
+    // Use JS to sort array by score
+    // data = data.sort(function(a, b) {
+    //   return a.score1 - b.score1
+    // });
+
+    const max1 = Math.max(...data.map((o) => o.score1))
+    const max2 = Math.max(...data.map((o) => o.score2))
+    const max3 = Math.max(...data.map((o) => o.score3))
+    //scale axis based on data
+    xScale.domain(data.map(d => d.name));
+
+    yScale.domain([0, Math.max(max1, max2, max3)]);
+
+    // yScale.domain([0, 200]);
+
+    // Create new bar groups appending data and setting starting y index position (we use enter() join to create new 'g' for data point if non-existent)
+    // var barWidth = (width / data.length) /3; // bar height equidistant across graph height
+
+
+    var bar = svg.selectAll('.bar1')
+      .data(data, d => d.score1)
+      .enter().append('g')
+      .attr('transform', (d, i) => `translate(${(i * 4) * barWidth + 5}, 0)`)
+      .attr('class', 'bar1')
+
+    var bar2 = svg.selectAll('.bar2')
+      .data(data, d => d.score2)
+      .enter().append('g')
+      .attr('transform', (d, i) => `translate(${barWidth + (i * barWidth * 4) - 6},0)`)
+      .attr('class', 'bar2');
+
+    var bar3 = svg.selectAll('.bar3')
+      .data(data, d => d.score3)
+      .enter().append('g')
+      .attr('transform', (d, i) => `translate(${(barWidth * 2) + (i * barWidth * 4) - 16},0)`)
+      .attr('class', 'bar3');
+
+    var bar4 = svg.selectAll('.bar4')
+      .data(data, d => d.score1)
+      .enter().append('g')
+      .attr('transform', (d, i) => `translate(${(i * 4) * barWidth - 12}, -${40})`)
+      .attr('class', 'bar4');
+
+
+    // Append a graph to each bar 'g' setting the width and height
+
+
+    const defs = svg.append('defs');
+
+    const bgGradient = defs
+      .append('linearGradient')
+      .attr('id', 'bg-gradient')
+      .attr('gradientTransform', 'rotate(90)');
+    bgGradient
+      .append('stop')
+      .attr('stop-color', '#FDF9F0')
+      .attr('offset', '0%');
+    bgGradient
+      .append('stop')
+      .attr('stop-color', '#FFCF26')
+      .attr('offset', '100%');
+
+
+    const bgGradient2 = defs
+      .append('linearGradient')
+      .attr('id', 'bg-gradient2')
+      .attr('gradientTransform', 'rotate(90)');
+    bgGradient2
+      .append('stop')
+      .attr('stop-color', '#E9F2FF')
+      .attr('offset', '0%');
+    bgGradient2
+      .append('stop')
+      .attr('stop-color', '#49D3FF')
+      .attr('offset', '100%');
+
+
+    const bgGradient3 = defs
+      .append('linearGradient')
+      .attr('id', 'bg-gradient3')
+      .attr('gradientTransform', 'rotate(90)');
+    bgGradient3
+      .append('stop')
+      .attr('stop-color', '#E4FFF4')
+      .attr('offset', '0%');
+    bgGradient3
+      .append('stop')
+      .attr('stop-color', '#64E1A5')
+      .attr('offset', '100%');
+
+    bar.append('rect')
+      .attr('y', function (d) {
+        return yScale(d.score1)
+      })
+      .attr('width', barWidth - subWBaridth)
+      .attr('height', d => height - yScale(d.score1))
+      .style("bordeRadius", "5px")
+      // .style('fill', color('score1'));
+      .style("fill", "url(#bg-gradient)")
+      .attr('rx', 3)
+      .attr("stroke", "#FFD12C").attr("stroke-width", 0.5);
+
+    bar2.append('rect')
+      .attr('y', d => yScale(d.score2))
+      .attr('width', barWidth - subWBaridth)
+      .attr('height', d => height - yScale(d.score2))
+      // .style('fill', color('score2'));
+      .style("fill", "url(#bg-gradient2)")
+      .attr('rx', 3)
+      .attr("stroke", "#3379B3").attr("stroke-width", 0.5);
+
+    bar3.append('rect')
+      .attr('y', d => yScale(d.score3))
+      .attr('width', barWidth - subWBaridth)
+      .attr('height', d => height - yScale(d.score3))
+      // .style('fill', color('score3'));
+      .style("fill", "url(#bg-gradient3)")
+      .attr('rx', 3)
+      .attr("stroke", "#3EC584").attr("stroke-width", 0.5);
+
+
+    bar4.append('rect')
+      .attr('y', d => 0)
+      .attr('width', 3 * barWidth)
+      .attr('height', d => svgHeight - 30)
+      // .style('fill', color('score3'))
+      .style('fill', "none")
+      .attr('rx', 20)
+      .attr("stroke", "rgba(0, 0, 0, 0.25)").attr("stroke-width", 0.7);
+
+    // Add text to each bar graph
+    // text-anchor middle is the svg text equivalent to transform: translate(-50%, -50%) for regular CSS divs
+    bar.append('text')
+      .text(d => d.score1)
+      .attr('text-anchor', 'middle')
+      .attr('x', barWidth / 3)
+      .attr('y', d => yScale(d.score1) - 5)
+      .style("color", "#454459")
+      .style("font-family", "Poppins")
+      .style("font-size", "12px")
+      .style("font-weight", "400")
+
+    bar2.append('text')
+      .text(d => d.score2)
+      .attr('text-anchor', 'middle')
+      .attr('transform', d => `translate(${barWidth / 3},${yScale(d.score2) - 5})`)
+      .style("color", "#454459")
+      .style("font-family", "Poppins")
+      .style("font-size", "12px")
+      .style("font-weight", "400")
+
+
+    bar3.append('text')
+      .text(d => d.score3)
+      .attr('text-anchor', 'middle')
+      .attr('transform', d => `translate(${barWidth / 3},${yScale(d.score3) - 5})`)
+      .style("color", "#454459")
+      .style("font-family", "Poppins")
+      .style("font-size", "12px")
+      .style("font-weight", "400")
+
+
+
+    //For Total Text
+
+    bar4.append('text')
+      .text((d) => {
+        return `Total : ${d.score1 + d.score2 + d.score3}`
+      })
+      .attr('text-anchor', 'middle')
+      // .attr('transform', d => `translate(${barWidth *1.5},${yScale(height -(10))})`)
+      .attr('transform', d => `translate(${barWidth * 1.5},${12})`)
+      .style("color", "#6D6D6D")
+      .style("font-family", "Montserrat")
+      .style("font-size", "10px")
+      .style("font-weight", "400")
+
+
+    //For text of section
+
+    bar4.append('text')
+      .text((d) => {
+        return `Section`
+      })
+      .attr('text-anchor', 'middle')
+      .attr('transform', d => `translate(${barWidth * 1.5},${(height + margin.top + 10)})`)
+      .style("color", "#454459")
+      .style("font-family", "Poppins")
+      .style("font-size", "12px")
+      .style("font-weight", "400")
+
+    bar4.append('text')
+      .text((d, i) => {
+        return `${i + 1}`
+      })
+      .attr('text-anchor', 'middle')
+      .attr('transform', d => `translate(${barWidth * 1.5},${(height + margin.top + 25)})`)
+      .style("color", "#454459")
+      .style("font-family", "Poppins")
+      .style("font-size", "12px")
+      .style("font-weight", "400")
+
+
+    // Add X axis at bottom of chart (we must do this at bottom after data has been appended to svg)
+    // svg.append('g')
+    //   .attr('transform', `translate(0, ${height})`)
+    //   .call(d3.axisBottom(xScale).tickSize(0));
+
+    // // Add y axis with label
+    // svg.append('g')
+    //   .call(d3.axisLeft(yScale));
+
+
+    // const gs = svg
+    // .append("g")
+    // .attr("transform", "translate(" + margin.left + "," + 200 + ")");
+
+    bar4
+      .append("circle")
+      .attr("class", "circle")
+      .attr("fill", "#8D79F6")
+      // .style("opacity", 2)
+      .attr("stroke", "white")
+      .style("stroke-width", 3)
+      .attr("cx", function (d, i) {
+
+        return xScale()
+      })
+      .attr("cy", function (d) {
+        return yScale()
+      })
+      .attr("r", 8)
+      .attr("transform", "translate(" + (margin.right + margin.left) / 2 + "," + (height + margin.bottom + 15) + ")");
+
+    // Add chart title
+    // svg.append('text')
+    //   .text('Chart: Survey results')
+    //   .style('font-size', '20px')
+    //   .attr('transform', `translate(${0 - margin.left}, ${0 - (margin.top/2)})`);
+
+    //   Add chart x axis label
+    // svg.append('text')
+    //   .text('Participants')
+    //   .attr('text-anchor', 'middle')
+    //   .attr('transform', `translate(${width/2}, ${height + (margin.bottom / 2)})`);
+
+    // Add chart y axis label 
+    // svg.append('text')
+    //   .text('Points scored')
+    //   .attr('transform', 'rotate(-90)')
+    //   .attr('text-anchor', 'middle')
+    //   .attr('x', 0 - (height / 2))
+    //   .attr('y', 0 - (margin.left / 2))
+
+
+
+  }
+}
+
+
+// */
+
+
+
+//
 class D3BarChart {
   async myData(user, max_val, allBarData, xScaleDomain, barColor) {
     script.barData = [];
@@ -1720,7 +3611,7 @@ class D3BarChart {
               });
 
             })
-            .on("mousemove",function(event){
+            .on("mousemove", function (event) {
               tooltip
                 .style("top", event.pageY - 10 + "px")
                 .style("left", event.pageX + 10 + "px")
@@ -1771,11 +3662,11 @@ class D3BarChart {
       .style("position", "absolute")
       .style("z-index", "10")
       .style("visibility", "hidden")
-      // .style("padding", "10px");
-      // .style("background", "#56ecb2")
-      // .style("border-radius", "5px")
-      // .style("color", "#fff")
-      // .text("a simple tooltip");
+    // .style("padding", "10px");
+    // .style("background", "#56ecb2")
+    // .style("border-radius", "5px")
+    // .style("color", "#fff")
+    // .text("a simple tooltip");
 
 
     // //Line chart
@@ -2479,7 +4370,7 @@ class scatterplot_rect {
 
       const xScale1 = scaleLinear()
         .domain([0, 5])
-        .range([0, (rectSvgWidth )])
+        .range([0, (rectSvgWidth)])
         .nice();
       const xGridLine = axisBottom(xScale1)
         .scale(xScale1)
@@ -2490,7 +4381,7 @@ class scatterplot_rect {
       const yScale1 = scaleLinear().domain([0, 5]).range([0, RectScatterheight]).nice(),
         yGridLine = axisLeft(yScale1)
           .scale(yScale1)
-          .tickSize((-rectSvgWidth ), 0)
+          .tickSize((-rectSvgWidth), 0)
           .ticks(6)
           .tickFormat("");
 
@@ -2777,11 +4668,11 @@ class scatterplot_rect {
           }
 
         })
-        .on("mouseout", tipMouseout);  
+        .on("mouseout", tipMouseout);
 
 
-        this.rectTooltip = rectTooltip
-        // this.tipMouseovered("d",rectFullData[20]);
+      this.rectTooltip = rectTooltip
+      // this.tipMouseovered("d",rectFullData[20]);
     }, 1000);
 
   }
@@ -2839,7 +4730,7 @@ class scatterplot_rect {
         return d.active ? "#003D35" : "#970000";
       })
       .style("opacity", 0.54);
-      this.rectTooltip.style("display", "block");
+    this.rectTooltip.style("display", "block");
   };
 }
 
@@ -3136,17 +5027,17 @@ class treeGraph {
   constructor() {
     // this.mchkkk = [];
     this.getTagName = ""
-    this.onlytagName = this.onlytagName.bind(this); 
+    this.onlytagName = this.onlytagName.bind(this);
   }
   async dendoGram(classes) {
 
     const divElement = document.getElementById("dendogram");
 
-      if (divElement != null) {
-        document.getElementById("dendogram").innerHTML = "";
-      } else {
-        void 0;
-      }
+    if (divElement != null) {
+      document.getElementById("dendogram").innerHTML = "";
+    } else {
+      void 0;
+    }
 
     // if (document.getElementById("dendogram").innerHTML != "") {
     //   document.getElementById("dendogram").innerHTML = ""
@@ -3190,7 +5081,7 @@ class treeGraph {
       .style("opacity", 0)
       .style("background-color", "black");
 
-    const diameter = svgWidth > 2500 ? svgWidth / 1.5 : ( svgWidth < 1300 ? svgWidth / 0.75 : svgWidth < 1750 ? svgWidth / 0.85 : svgWidth / 1.35),
+    const diameter = svgWidth > 2500 ? svgWidth / 1.5 : (svgWidth < 1300 ? svgWidth / 0.75 : svgWidth < 1750 ? svgWidth / 0.85 : svgWidth / 1.35),
       radius = diameter / 2.5 + 30,
       innerRadius = radius / 2;
 
@@ -3246,7 +5137,7 @@ class treeGraph {
       else if (window.innerWidth >= 1100) {
         svgWidth = window.innerWidth - 300;
       }
-  
+
 
 
       if (ctrl && key === 109 && window.innerWidth > 1700) {
@@ -3310,10 +5201,10 @@ class treeGraph {
     node = node.data(root.leaves());
 
 
-      let mchkkk=[]
-      for (let index = 0; index < node._enter[0].length; index++) {
-        mchkkk.push(node._enter[0][index].__data__);
-      };
+    let mchkkk = []
+    for (let index = 0; index < node._enter[0].length; index++) {
+      mchkkk.push(node._enter[0][index].__data__);
+    };
 
 
     let chkNodeMouse = node
@@ -3347,37 +5238,37 @@ class treeGraph {
       .on("mouseover", mouseovered)
       .on("mouseout", mouseouted)
       .on("click", function (d, i) {
- 
+
 
         link
-        .classed("link--target ", function (l) {
-          if (l.target === i) {
-            
-            return (l.source.source = true);
-          }
-        })
-        .classed("link--source", function (l) {
-          if (l.source === i) return (l.target.target = true);
-        })
-        .filter(function (l) {
-          return l.target === i || l.source === i;
-        })
-        .raise();
+          .classed("link--target ", function (l) {
+            if (l.target === i) {
 
-      node
-        .classed("node--target", function (n) {
-          return n.target;
-        })
-        .classed("node--source", function (n) {
-          return n.source;
-        });
+              return (l.source.source = true);
+            }
+          })
+          .classed("link--source", function (l) {
+            if (l.source === i) return (l.target.target = true);
+          })
+          .filter(function (l) {
+            return l.target === i || l.source === i;
+          })
+          .raise();
+
+        node
+          .classed("node--target", function (n) {
+            return n.target;
+          })
+          .classed("node--source", function (n) {
+            return n.source;
+          });
         const liveValue = i.data.parentTag
         this.getTagName = i.data.parentTag;
 
         // let den = new treeGraph();
         // den.getTagName = i.data.key;
 
-        const event = new CustomEvent('liveValueUpdated', { detail: liveValue  });
+        const event = new CustomEvent('liveValueUpdated', { detail: liveValue });
         window.dispatchEvent(event);
 
       });
@@ -3385,7 +5276,7 @@ class treeGraph {
 
     // node.on("click", function() {
     // });
-   
+
     // mouseovered("e",mchkkk[2]);
 
     function mouseovered(d, i) {
@@ -3437,9 +5328,9 @@ class treeGraph {
           if (parentTag.length) {
             // node.parent = find(parentTag.substring(0, (i = parentTag.lastIndexOf("."))));
             node.parent = find(
-              parentTag.substring(0, (i = parentTag.lastIndexOf(" "))) 
+              parentTag.substring(0, (i = parentTag.lastIndexOf(" ")))
             );
-            
+
             node.parent.children.push(node);
             node.key = parentTag.substring(i + 1);
           }
@@ -3484,40 +5375,39 @@ class treeGraph {
     }
     this.chkLink = link;
     this.nodess = node
-  
-  //  this.onlytagName();
+
+    //  this.onlytagName();
     return mchkkk;
   }
 
-   mouseovereded(d, i) {
-      this.chkLink
-        .classed("link--target ", function (l) {
-          if (l.target === i) {
-            return (l.source.source = true);
-          }
-        })
-        .classed("link--source", function (l) {
-          if (l.source === i) return (l.target.target = true);
-        })
-        .filter(function (l) {
-          return l.target === i || l.source === i;
-        })
-        .raise();
+  mouseovereded(d, i) {
+    this.chkLink
+      .classed("link--target ", function (l) {
+        if (l.target === i) {
+          return (l.source.source = true);
+        }
+      })
+      .classed("link--source", function (l) {
+        if (l.source === i) return (l.target.target = true);
+      })
+      .filter(function (l) {
+        return l.target === i || l.source === i;
+      })
+      .raise();
 
-        this.nodess
-        .classed("node--target", function (n) {
-          return n.target;
-        })
-        .classed("node--source", function (n) {
-          return n.source;
-        });
+    this.nodess
+      .classed("node--target", function (n) {
+        return n.target;
+      })
+      .classed("node--source", function (n) {
+        return n.source;
+      });
 
-      // div.transition().duration(200).style("opacity", 0.9);
-    };
-    
-    onlytagName(){
-      // console.log("thetagggs", this.getTagName,"hey");
-    }
+    // div.transition().duration(200).style("opacity", 0.9);
+  };
+
+  onlytagName() {
+  }
 }
 
 
@@ -3705,7 +5595,7 @@ class proctBarChart {
   */
 
 
-  async proctBarData(id, types, user, max_val, allBarData, xScaleDomain, xScaleDomainGridLines,barColor) {
+  async proctBarData(id, types, user, max_val, allBarData, xScaleDomain, xScaleDomainGridLines, barColor) {
     script.barData = [];
     script.allData = user;
     // script.marks_data = user.count;
@@ -3718,10 +5608,10 @@ class proctBarChart {
 
 
     //1) d.x_axis  2) HIghest marks of BAR ; 3) Bar Color ; 4)bardata ; 5)y_axis
-    this.makeProctBarGraph(id, types, xScaleDomain,xScaleDomainGridLines, barColor);
+    this.makeProctBarGraph(id, types, xScaleDomain, xScaleDomainGridLines, barColor);
   }
 
-  makeProctBarGraph(id, types, xScaleDomain,xScaleDomainGridLines, barColor) {
+  makeProctBarGraph(id, types, xScaleDomain, xScaleDomainGridLines, barColor) {
     let heightOfScreen =
       window.innerHeight
       || document.documentElement.clientHeight ||
@@ -3734,7 +5624,7 @@ class proctBarChart {
 
     const barWidth = 30;
 
-    let len = script.allData.length >16 ? script.allData.length * rectWidth : 900;
+    let len = script.allData.length > 16 ? script.allData.length * rectWidth : 900;
     // let len = 900;
     let margin = { top: 10, right: 35, bottom: 48, left: 40 },
       height = svgHeight - margin.bottom,
@@ -6807,8 +8697,8 @@ class DensityChart {
     let largest = Math.max(max1, max2, max3);
     if (largest % 5 !== 0) {
       largest = largest + (5 - (largest % 5));
-      if(largest %10 !== 0){
-        largest = largest + (largest%10)
+      if (largest % 10 !== 0) {
+        largest = largest + (largest % 10)
       }
     }
     // else{
@@ -7862,14 +9752,14 @@ class DensityChart {
       .domain(xDomain)
       .range([0, width]);
 
-    var y = scaleLinear().domain([0, largest]).range([(height - 8),0]);
+    var y = scaleLinear().domain([0, largest]).range([(height - 8), 0]);
 
     var tt = g.selectAll()
       .data(data33)
       .enter()
       .append("ellipse")
       .attr("fill", "black")
-      .style("opacity",0 )
+      .style("opacity", 0)
       .attr("stroke", "none")
       .attr("cx", function (d, i) {
         return x(d.date)
@@ -8001,7 +9891,7 @@ class DensityChart {
         </div>
         </div>`
       )
-      .style("left", e.pageX + 0 + "px")
+        .style("left", e.pageX + 0 + "px")
         .style("top", e.pageY - 0 + "px")
         // .style("left", e.pageX + 70 + "px")
         // .style("top", e.pageY - 170 + "px")
@@ -8046,15 +9936,15 @@ class funnelChart {
     }
     let width;
     let height = 185;  //200
-    let svgHeight =  250     //(185 + 65);
+    let svgHeight = 250     //(185 + 65);
     let extraGap = 50;
     let myWidth = window.innerWidth;
     if (window.innerWidth >= 1700) {
-      width = window.innerWidth  - 200
+      width = window.innerWidth - 200
       // svgHeight = 250
     }
     else if (window.innerWidth >= 1500) {
-      width = window.innerWidth - 300 
+      width = window.innerWidth - 300
       // svgHeight = 250
     }
     else if (window.innerWidth >= 1300) {
@@ -8173,7 +10063,7 @@ class funnelChart {
     // .style("background-color", "black");
 
     let svg = svg1.append("g")
-    .attr("transform", "translate(" + 50 + "," + 0 + ")");
+      .attr("transform", "translate(" + 50 + "," + 0 + ")");
 
     //Only For SVG 
 
@@ -8201,7 +10091,7 @@ class funnelChart {
           svg1.attr("viewBox", "0 0 " + (width * 1.2) * containerWidth / (width - width / 20) + " " + height * containerHeight / (height - height / 3.7));
         }
         else {
-          svg1.attr("viewBox", "0 0 " + width * containerWidth / (width - width/5) + " " + height * containerHeight / (height - height/7));
+          svg1.attr("viewBox", "0 0 " + width * containerWidth / (width - width / 5) + " " + height * containerHeight / (height - height / 7));
         }
       }
       else if (window.innerWidth > 1700) {
@@ -8210,7 +10100,7 @@ class funnelChart {
           svg1.attr("viewBox", `0 0 ${svgWidth + 250} ${svgHeight}`);
         }
         else {
-          svg1.attr("viewBox", `0 0 ${svgWidth + 150} ${svgHeight +10}`);
+          svg1.attr("viewBox", `0 0 ${svgWidth + 150} ${svgHeight + 10}`);
         }
 
       }
@@ -8442,7 +10332,7 @@ class funnelChart {
       .attr("class", "bar-x-axis")
       .call(x_axis)
     // .style("color", "red")
-    
+
     xGroup_text.select('.domain').attr('stroke-width', 0);
 
     xGroup_text
@@ -8467,45 +10357,45 @@ class funnelChart {
       .attr("transform", "translate(" + 0 + "," + -6 + ")")
       .raise();
 
-      const glast = svg
-      .append("g")      
+    const glast = svg
+      .append("g")
       .attr("transform", "translate(" + 0 + "," + (svgHeight - 50) + ")")
 
-      const xGroup2_Rect = glast.append("g")
+    const xGroup2_Rect = glast.append("g")
       .attr("class", "x-axis")
       .call(x_axis)
-      // .style("color", "pink");
+    // .style("color", "pink");
 
-      xGroup2_Rect.append("rect")
+    xGroup2_Rect.append("rect")
       .attr("width", width)
       .attr("height", "40")
       .attr("x", 0)
       .attr("y", 0)
       .style("fill", "#E5E5E5")
       // .style("background-color", "black")
-      .attr("transform", "translate(" + 0 + "," +(-20) + ")");
+      .attr("transform", "translate(" + 0 + "," + (-20) + ")");
 
-      const xGroup_LastText = glast.append("g")
+    const xGroup_LastText = glast.append("g")
       .attr("class", "bar-x-axis")
       .call(x_axis);
 
-      xGroup_LastText.select('.domain').attr('stroke-width', 0);
+    xGroup_LastText.select('.domain').attr('stroke-width', 0);
 
-      xGroup_LastText
+    xGroup_LastText
       .selectAll("text")
       .text(function (d, i) {
         return ((` Round ` + originalData[i].level) + ' : ' + originalData[i].actualCount)
         // return i < (len - 1) ?
         //   (` Round ` + originalData[i].level) + ' : ' + originalData[i].actualCount : (`Selected`+' :'+'100')
       })
-      
+
       .style("color", "#7664BC")
       .attr("font-weight", function (d, i) {
 
         return 600
 
       })
-      
+
       .attr("font-family", "Poppins")
       .attr("font-size", function (d, i) {
 
@@ -8514,26 +10404,26 @@ class funnelChart {
       })
       .attr("transform", "translate(" + 0 + "," + -6 + ")")
       .raise();
-      
 
-      //Y scale Text
-      const yScaleText = scaleLinear()
+
+    //Y scale Text
+    const yScaleText = scaleLinear()
       .domain([0, height])
       .range([height, 0])
 
-      const y_axis_title = axisLeft(yScaleText)
+    const y_axis_title = axisLeft(yScaleText)
       .tickFormat("")
       .tickSizeOuter(0)
       .tickSizeInner(0);
-      const y_title = svg
+    const y_title = svg
       .append("g")
       .attr("transform", "translate(" + -20 + "," + (-height / 1.8) + ")");
     const y_tittle_txt = y_title
       .append("g")
       .call(y_axis_title);
-      y_tittle_txt.select('.domain').attr('stroke-width', 0);
+    y_tittle_txt.select('.domain').attr('stroke-width', 0);
 
-      y_tittle_txt.select("text")
+    y_tittle_txt.select("text")
       .style("text-anchor", "middle")
       .style("color", "#030229")
       .style("font-family", "poppins")
@@ -8547,20 +10437,20 @@ class funnelChart {
         return "Accumulative"
       });
 
-      const y_axis_title2 = axisLeft(yScaleText)
+    const y_axis_title2 = axisLeft(yScaleText)
       .tickFormat("")
       .tickSizeOuter(0)
       .tickSizeInner(0);
-      const y_title2 = svg
+    const y_title2 = svg
       .append("g")
-      .attr("transform", "translate(" + -15 + "," + ((height / 10 ) - 25) + ")");
+      .attr("transform", "translate(" + -15 + "," + ((height / 10) - 25) + ")");
     const y_tittle_txt2 = y_title2
       .append("g")
       .call(y_axis_title2);
-      y_tittle_txt2.select('.domain').attr('stroke-width', 0);
+    y_tittle_txt2.select('.domain').attr('stroke-width', 0);
 
 
-      y_tittle_txt2.select("text")
+    y_tittle_txt2.select("text")
       .style("text-anchor", "middle")
       .style("color", "#030229")
       .style("font-family", "poppins")
@@ -8574,16 +10464,16 @@ class funnelChart {
       .text(function () {
         return "Selection"
       })
-      
-      const y_title3 = svg
+
+    const y_title3 = svg
       .append("g")
-      .attr("transform", "translate(" + -28 + "," + ((height / 10 ) - 20) + ")");
-      const y_tittle_txt3 = y_title3
+      .attr("transform", "translate(" + -28 + "," + ((height / 10) - 20) + ")");
+    const y_tittle_txt3 = y_title3
       .append("g")
       .call(y_axis_title2);
-      y_tittle_txt3.select('.domain').attr('stroke-width', 0);
+    y_tittle_txt3.select('.domain').attr('stroke-width', 0);
 
-      y_tittle_txt3.select("text")
+    y_tittle_txt3.select("text")
       .style("text-anchor", "middle")
       .style("color", "#030229")
       .style("font-family", "poppins")
@@ -8597,7 +10487,7 @@ class funnelChart {
       .text(function () {
         return "Actual"
       })
-    
+
 
   }
 }
@@ -8614,11 +10504,20 @@ export {
   treeGraph,
   proctBarChart,
 
+
+  testBarChart,
+  topicBarChart,
+  gradientChart,
+  donoutChart,
+  multiBarChart,
+
   reclinechart,
   DensityChart,
   funnelChart,
   proctLineChart,
   QuesData,
+
+
 };
 // module.exports = {};
 // treeGraph1
