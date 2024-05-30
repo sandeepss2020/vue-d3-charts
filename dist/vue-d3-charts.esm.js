@@ -10492,6 +10492,902 @@ class funnelChart {
   }
 }
 
+// Recruitment New Start 
+
+class rolePieChart {
+  pieGraph(id, id2, data) {
+    if (document.getElementById(id2).innerHTML != "") {
+      document.getElementById(id2).innerHTML = ""
+    }
+    let pie_data = data.data
+    const svgHeight = 280,
+      radius = Math.min(script.svgWidth / 3, svgHeight) / 2;
+    console.log("the redd", radius)
+    const start_point = script.svgWidth / 6;
+
+    const svg = select(id)
+      .append("svg")
+      .attr("viewBox", `0 0 ${script.svgWidth / 3} ${svgHeight}`)
+      .attr("height", svgHeight)
+    // .style("background-color", "black");
+
+    const g = svg
+      .append("g")
+      .attr(
+        "transform",
+        "translate(" + start_point + "," + svgHeight / 2 + ")"
+      );
+
+
+    let colorScale = scaleOrdinal()
+      .domain(pie_data.map((d) => d.roleName))
+      .range(["#4070EA", "#F5D06E", "#038E00", "#AD1927", "#595959", "#269C8A",]);
+
+
+    const pies = d3Line.pie()
+      .sort(null)
+      .value(function (d) {
+        return d.percentage;
+      });
+
+    const path = d3Line
+      .arc()
+      .outerRadius(radius - 30)
+      .innerRadius(70);
+
+    const arc = g
+      .selectAll("arc")
+      .data(pies(pie_data))
+      .enter()
+      .append("g")
+      .style("filter", "url(#drop-shadow)");
+    arc
+      .append("path")
+      .attr("d", path)
+
+      .attr("fill", function (d) {
+        return colorScale(d.data.roleName);
+      });
+
+    const outerArc = d3Line.arc()
+      .innerRadius(radius * 1)
+      .outerRadius(radius * 0.9);
+
+    arc.append("polyline")
+      .attr("stroke", function (d) {
+        return colorScale(d.data.roleName);
+      })
+      // .attr("stroke", "black")
+      .attr("stroke-width", 0.5)
+      .attr("fill", "none")
+      .attr("points", function (d) {
+        const posA = path.centroid(d); // line insertion in the slice
+        const posB = outerArc.centroid(d); // line break: we use the other arc generator that has been built only for that purpose
+        const posC = outerArc.centroid(d); // Label position = almost the same as posB
+        const midangle = d.startAngle + (d.endAngle - d.startAngle) / 2
+        posC[0] = radius * 1 * (midangle < Math.PI ? 1 : -1); // Multiplying by 1 or -1 to put it on the right or on the left
+        return [posA, posB, posC]
+      });
+
+    const text = arc.append("text")
+      .attr("transform", function (d) {
+        const pos = outerArc.centroid(d);
+        const midangle = d.startAngle + (d.endAngle - d.startAngle) / 2;
+        pos[0] = radius * 1.1 * (midangle < Math.PI ? 1 : -1);
+        pos[1] = pos[1] + 5
+        return "translate(" + pos + ")";
+      })
+      .style("text-anchor", function (d) {
+        const midangle = d.startAngle + (d.endAngle - d.startAngle) / 2;
+        return (midangle < Math.PI ? "start" : "end");
+      })
+      .attr("fill", function (d) {
+        return colorScale(d.data.roleName);
+      }) // Set text color
+      .attr("font-size", "12px")
+      .attr("font-weight", "500")
+
+      .text(function (d) {
+        return d.data.percentage;
+      })
+      ;
+
+    // Adjust positions to avoid collisions
+    const textNodes = text.nodes();
+    const padding = 0; // Padding between labels
+
+    textNodes.forEach((node, i) => {
+      let currentBBox = node.getBBox();
+      let currentPos = d3.select(node).attr("transform");
+      let [x, y] = currentPos.replace("translate(", "").replace(")", "").split(",").map(Number);
+
+      for (let j = i + 1; j < textNodes.length; j++) {
+        let nextNode = textNodes[j];
+        let nextBBox = nextNode.getBBox();
+        let nextPos = d3.select(nextNode).attr("transform");
+        let [nx, ny] = nextPos.replace("translate(", "").replace(")", "").split(",").map(Number);
+
+        if (Math.abs(y - ny) < currentBBox.height + padding) {
+          // Adjust y position to avoid overlap
+          ny = ny - 0.5;
+          d3.select(nextNode).attr("transform", `translate(${nx},${ny})`);
+          y = ny;
+        }
+      }
+    });
+
+
+
+  }
+}
+
+
+class statChart {
+  // Original data
+  async createDensity(datass) {
+    //   const lineChartData = [
+    //   {
+    //           values: [
+    //       {
+    //         date: "Jan",
+    //         close: 230
+    //       },
+    //       {
+    //         date: "Feb",
+    //         close: 269
+    //       },
+    //       {
+    //         date: "March",
+    //         close: 234
+    //       },
+    //       {
+    //         date: "Apr",
+    //         close: 282
+    //       },
+    //       {
+    //         date: "May",
+    //         close: 231
+    //       },
+    //       {
+    //         date: "June",
+    //         close: 240
+    //       },
+    //       {
+    //         date: "jul",
+    //         close: 213
+    //       },
+    //       {
+    //         date: "AUg",
+    //         close: 320
+    //       },
+    //       {
+    //         date: "Sep",
+    //         close: 253
+    //       },
+    //       {
+    //         date: "Oct",
+    //         close: 264
+    //       },
+    //       {
+    //         date: "Nov",
+    //         close: 272
+    //       },
+    //       {
+    //         date: "DEC",
+    //         close: 290
+    //       },
+    //       {
+    //         date: "heyy",
+    //         close: 225
+    //       },
+    //       {
+    //         date: "okk",
+    //         close: 349
+    //       }
+    //     ]
+    //   }
+    // ];
+
+    let svgWidth;
+    let svgHeight = 160;
+
+    const Data2 = datass.data.reverse();
+    console.log("data111", Data2)
+    // let lineChartData2=[]
+    // lineChartData2[0]= { ...Data2};
+    const lineChartData2 = [
+      {
+        values: Data2
+      }
+    ];
+
+    const margin = {
+      top: 20,
+      bottom: 0,
+      left: 40,
+      right: 20,
+    };
+    const extraMargin = 10;
+
+    if (window.innerWidth >= 1700) {
+      svgWidth = window.innerWidth - 900
+      // svgHeight = 250
+    }
+    else if (window.innerWidth >= 1500) {
+      svgWidth = window.innerWidth - 800
+    }
+    else if (window.innerWidth >= 1300) {
+      svgWidth = window.innerWidth - 700;
+    }
+    else if (window.innerWidth >= 1100) {
+      svgWidth = window.innerWidth - 400;
+    }
+
+
+
+
+    const width = svgWidth - margin.left - margin.right;
+    const height = svgHeight - margin.top - margin.bottom;
+
+    const svg = d3
+      .select("#density_graph")
+      .classed("svg-container", true)
+      .append("svg")
+      .attr("viewBox", `0 0 ${svgWidth} ${svgHeight}`)
+      .attr("preserveAspectRatio", "xMinYMin meet")
+      // .attr('viewBox', '0 0 ' + svgWidth + ' ' + svgHeight)
+      .classed("svg-content-responsive", true);
+    // .style("background-color", "black");
+
+    var ctrl, key;
+
+    // Attach the resize event listener
+    document.body.addEventListener("keydown", function (ev) {
+      ev = ev || window.event;
+      key = ev.which || ev.code;
+      ctrl = ev.ctrlKey ? ev.ctrlKey : ((key === 17) ? true : false)
+      window.addEventListener("resize", resize);
+
+      // }
+    }, false);
+
+    function resize() {
+      if (ctrl && key === 109 && window.innerWidth > 1900) {
+
+        let containerWidth = parseInt(d3.select("#density_graph").style("width"));
+        let containerHeight = parseInt(d3.select("#density_graph").style("height"));
+
+        svg.attr("viewBox", "0 0 " + svgWidth * containerWidth / (svgWidth * 2 - 100) + " " + svgHeight * containerHeight / svgHeight);
+      }
+      else if (window.innerWidth > 1700) {
+
+        svg.attr("viewBox", `0 0 ${svgWidth + 80} ${svgHeight}`);
+        if (window.innerHeight > 950) {
+          svg.attr("viewBox", `0 0 ${svgWidth + 200} ${svgHeight + 50}`);
+        }
+
+      }
+      else {
+
+        svg.attr("viewBox", `0 0 ${svgWidth + 20} ${svgHeight + 50}`)
+
+      }
+    }
+
+    const g = svg
+      .append("g")
+      .attr("transform", "translate(" + margin.left + "," + margin.bottom + ")");
+
+    const gText = svg
+      .append("g")
+      .attr("transform", "translate(" + (margin.left / 9) + "," + (margin.top * 3 - extraMargin) + ")");
+
+    const parsedData = lineChartData2.map(company => ({
+      ticker: company.ticker,
+      values: company.values.map(val => ({
+        close: val.count,
+        // date: parseTime(val.date)
+        date: val.x_axis
+
+      }))
+    }));
+
+    let xScaleDomain2 = parsedData[0].values.map((d) => d.date);
+
+    const xScale = scaleBand()
+      .domain(xScaleDomain2)
+      .range([margin.left, svgWidth - margin.right]);
+    const xScale2 = scaleBand()
+      .domain(xScaleDomain2)
+      .range([margin.left - extraMargin / 2, svgWidth - (margin.right + extraMargin)]);
+
+
+
+    const max2 = Math.max(...parsedData[0].values.map((o) => o.close));
+    let largest = max2;
+    if (largest % 5 !== 0) {
+      largest = largest + (5 - (largest % 5));
+      if (largest % 10 !== 0) {
+        largest = largest + (largest % 10)
+      }
+    }
+    const yScale = d3.scaleLinear()
+      .domain([0, largest])
+      .range([height, margin.top]);
+
+
+          //For Vertical Lines
+
+    const tick1 = svg.append('g')
+    .attr("transform", "translate(0," + height + ")")
+    .attr("class", "x axis")
+    .call(d3.axisBottom(xScale)
+      .ticks(14)
+      .tickSizeOuter(0)
+      .tickSizeInner(0));
+  svg.select('.domain').attr('stroke-width', 0);
+
+  tick1.selectAll('text')
+    .style("color", "#333333")
+    .style('font-size', '8px')
+    .style("font-weight", "500")
+    .style("font-family", "Lato");
+
+  //  tick1
+  // .selectAll('line')
+  //   .attr('stroke', `5, 5`)
+  //   .attr('stroke', '#ccc')
+  //   .attr('y2', `-${height}px`)
+
+
+  const xScale11 = scaleLinear()
+    .domain([1, 30])
+    .range([0, width])
+    .nice();
+
+  const xGridLine = axisBottom(xScale11)
+    .scale(xScale11)
+    .tickSize(-height + margin.top)
+    .ticks(30)
+    .tickFormat("");
+
+  const xAxisTranslate = svgHeight - margin.bottom - margin.top;
+
+  svg
+    .append("g")
+    .classed("gridLine", true)
+    .attr("transform", "translate(" + margin.left + "," + xAxisTranslate + ")")
+    .style("color", "#F0F0F0")
+    .attr("opacity", "0.7")
+    .call(xGridLine)
+
+  gText.append("text")
+    .attr("class", "y label")
+    .attr("text-anchor", "end")
+    .attr("y", 6)
+    .attr("dy", ".75em")
+    .attr("transform", "rotate(-90)")
+    .text("Count  of  Users")
+    .style("color", "#72738E")
+    .style('font-size', '8px')
+    .style("font-weight", "500")
+    .style("font-family", "Montserrat");
+
+  //For HOrizontal Lines
+
+  const tick2 = g.append('g')
+    .attr("class", "y axis")
+    .call(d3.axisLeft(yScale)
+      .ticks(largest <= 10 ? 5 : largest <= 15 ? 3 : largest <= 20 ? 4 : 5)
+      .tickSizeOuter(0)
+      .tickSizeInner(0));
+
+  g.selectAll('.domain').attr('stroke-width', 0);
+
+  tick2.selectAll('text')
+    .style("color", "#72738E")
+    .style('font-size', '8px')
+    .style("font-weight", "500")
+    .style("font-family", "Lato");
+
+  //     tick2
+  //     .selectAll('line')
+  //       .attr('stroke', `5, 5`)
+  //       .attr('stroke', '#ccc')
+  //       .attr('x2', `${svgWidth-50}px`)
+
+  //  svg.select('.domain')
+  //     .attr('stroke', '#ddd')
+
+  const yScale_grid = d3
+    .scaleLinear()
+    .domain(largest <= 10 ?
+      [0, 5] : largest <= 15 ? [0, 3] : largest <= 20 ? [0, 4] : [0, 5]
+    )
+    .range([height, margin.top])
+    .nice();
+
+  // const yScale1 = d3
+  // .scaleLinear()
+  // .domain([0, max2])
+  // .range([(height - 8), 8]);
+
+  const yGridLine = axisLeft(yScale_grid)
+    .scale(yScale)
+    .tickSize(-width, 0, 0)
+    .ticks(largest <= 10 ? 5 : largest <= 15 ? 3 : largest <= 20 ? 4 : 5)
+    .tickFormat("");
+
+  g
+    .append("g")
+    .classed("gridLine", true)
+    .style("color", "#F0F0F0")
+    .attr("opacity", "0.7")
+    .call(yGridLine);
+
+    //LINE 1 STARTS
+
+    const gLine = svg
+    .append("g")
+    .attr("transform", "translate(" + margin.left + "," + margin.bottom + ")");
+
+    const line1 = d3.line()
+      .x(d => xScale2(d.date))
+      .y(d => yScale(d.close))
+      .curve(d3.curveMonotoneX);
+
+      gLine.selectAll('.line')
+      .data(parsedData)
+      .enter()
+      .append('path')
+      .attr('d', d => {
+        const lineValues = line1(d.values).slice(1);
+        const splitedValues = lineValues.split(',');
+
+        return `M0,${height},${lineValues},l0,${height - splitedValues[splitedValues.length - 1]}`
+      })
+      .style('fill', '#269C8A')
+      .style('opacity', 0.3)
+
+
+
+      gLine.selectAll('.line')
+      .data(parsedData)
+      .enter()
+      .append('path')
+      .attr('d', d => line1(d.values))
+      .attr('stroke-width', '1')
+      .style('fill', 'none')
+      .style('filter', 'url(#glow)')
+      .attr('stroke', '#269C8A');
+
+    //LINE 1 ENDS
+
+    gLine.selectAll('.circle')
+      .data(parsedData[0].values) // Assuming you want circles for the first set of data
+      .enter()
+      .append('circle')
+      .attr('class', 'circle')
+      .attr('cx', d => xScale2(d.date)) // Position based on x scale
+      .attr('cy', d => yScale(d.close)) // Position based on y scale
+      .attr('r', 3) // Radius of the circle
+      .style('fill', '#269C8A'); // Color of the circle, you can change this as needed
+
+  }
+
+}
+
+class thirdPartyBar {
+  async horizontalBarGraph(datas) {
+    const data = datas;
+    // const data = [
+    //   { key: "microsoftTeams", name: "Microsoft Teams", count: 20 },
+    //   { key: "googleMeet", name: "Google Meet", count: 17 },
+    //   { key: "Amazon", name: "Amazon inc ", count: 19 },
+    //   { key: "amcf", name: "akjbhjo ", count: 50 },
+
+    // ];
+
+    const margin = { top: 70, right: 100, bottom: 90, left: 150 };
+    const width = 700 - margin.left - margin.right; //100 Increased
+    const height = 290 - margin.top - margin.bottom; //50 Increased
+
+    const svg = d3.select("#horizontal_barGraph")
+      .append("svg")
+      .attr("width", width + margin.left + margin.right)
+      .attr("height", height + margin.top + margin.bottom)
+    // .style("background-color", "red")
+
+
+    const gAxis = svg
+      .append("g")
+      .attr("transform", `translate(${margin.left},${margin.top})`)
+
+
+    const x = d3.scaleLinear()
+      .domain([0, d3.max(data, d => d.count)])
+      .range([0, (width + margin.right / 2)]);
+
+    const y = d3.scaleBand()
+      .domain(data.map(d => d.name))
+      .range([0, height])
+      .padding(0.1);
+
+
+        //For Horizontal Lines 
+    const yScale_grid = d3
+    .scaleLinear()
+    .domain([0, 5])
+    .range([height, 0])
+    .nice();
+
+  const yScale = d3.scaleLinear()
+    .domain([0, d3.max(data, d => d.count)])
+    .range([height + (margin.top / 2), -(margin.top / 2)]);
+
+  const yGridLine = axisLeft(yScale_grid)
+    .scale(yScale)
+    .tickSize(-width - (margin.right / 2), 0, 0)
+    .ticks(5)
+    .tickFormat("");
+
+  gAxis
+    .append("g")
+    .classed("gridLine", true)
+    .style("color", "#F0F0F0")
+    .attr("opacity", "0.7")
+    .call(yGridLine);
+
+    const gText = svg
+    .append("g")
+    .attr("transform", "translate(" + width + "," + (height + margin.top + (margin.top/1.2)) + ")");
+
+    gText.append("text")
+    .attr("class", "y label")
+    .attr("text-anchor", "end")
+    .attr("y", 6)
+    .attr("dy", ".75em")
+    // .attr("transform", "rotate(-90)")
+    .text("No. of Usage")
+    .style("color", "#888888")
+    .attr("opacity", "0.8")
+    .style('font-size', '10px')
+    .style("font-weight", "500")
+    .style("font-family", "Montserrat");
+
+  //For Vertical Lines 
+
+  // let largest = d3.max(data, d => d.count);
+  let largest = Math.max(...data.map((o) => o.count));
+
+
+  if (largest % 5 !== 0) {
+    largest = largest + (5 - (largest % 5));
+    if (largest % 10 !== 0) {
+      largest = largest + (largest % 10)
+    }
+  }
+
+  let xScaleDomain2 = data.map((d) => d.count);
+  console.log(xScaleDomain2, "the Domainnn")
+
+  const xScale = d3.scaleLinear()
+    .domain([0, largest])
+    .range([0, width + (margin.right / 2)])
+  const xAxisTranslate = height + margin.top + (margin.top / 2);
+
+  const tick1 = svg.append('g')
+    .attr("transform", "translate(" + margin.left + "," + xAxisTranslate + ")")
+    .attr("class", "x axis")
+    .call(d3.axisBottom(xScale)
+      .ticks(largest <= 10 ? 5 : largest <= 15 ? 3 : largest <= 20 ? 4 : 5)
+      .tickSizeOuter(0)
+      .tickSizeInner(0));
+  svg.selectAll('.domain').attr('stroke-width', 0);
+
+  tick1.selectAll('text')
+    .style("color", "#72738E")
+    .style('font-size', '8px')
+    .style("font-weight", "500")
+    .style("font-family", "Lato");
+
+  const xScale11 = scaleLinear()
+    .domain(largest <= 10 ?
+      [0, 5] : largest <= 15 ? [0, 3] : largest <= 20 ? [0, 4] : [0, 5]
+    )
+    .range([0, width + (margin.right / 2)])
+    .nice();
+
+  const xGridLine = axisBottom(xScale11)
+    .scale(xScale11)
+    .tickSize(-height - (margin.top / 1.17))
+    .ticks(largest <= 10 ? 5 : largest <= 15 ? 3 : largest <= 20 ? 4 : 5)
+    .tickFormat("");
+
+
+
+  svg
+    .append("g")
+    .classed("gridLine", true)
+    .attr("transform", "translate(" + margin.left + "," + xAxisTranslate + ")")
+    .style("color", "#F0F0F0")
+    .attr("opacity", "0.7")
+    .call(xGridLine);
+
+    const gSvg = svg
+      .append("g")
+      .attr("transform", `translate(${margin.left},${margin.top})`)
+    
+    gSvg.append("g")
+      .call(d3.axisLeft(y).tickSize(0).tickPadding(15));
+
+    gSvg.select('.domain').attr('stroke-width', 0);
+
+
+    let colorScale = scaleOrdinal()
+    .domain(data.map((d) => d.name))
+    .range(["#F5D06E", "#595959", "#4070EA", "#269C8A"]);
+
+    const bars = gSvg.selectAll(".bar")
+      .data(data)
+      .enter()
+      .append("rect")
+      .attr("class", "bar")
+      .attr("x", 0)
+      .attr("y", d => y(d.name))
+      .attr("width", d => x(d.count))
+      .attr("height", function (d) {
+        return y.bandwidth() - 5
+      })
+      .attr("fill", function (d) {
+        return colorScale(d.name);
+      });
+// Colors based on key
+
+      bars.raise();
+
+      const labels = gSvg.selectAll(".bar-label")
+      .data(data)
+      .enter()
+      .append("text")
+      .attr("class", "bar-label")
+      .attr("x", d => x(d.count) + 10)
+      .attr("y", d => y(d.name) + y.bandwidth() / 2 + 4)
+      .text(d => d.count)
+      .attr("fill", d => d.key === "microsoftTeams" ? "#FFC107" : "#4D4D4D");
+      labels.raise();
+  
+  }
+}
+
+
+class heaTmap {
+  async heatMapGraph(data) {
+    console.log(data[0].weekday, "actual data")
+    console.log(data.length, "the len")
+  //   const data = [
+  //     { date: "2023-05-30", day: "Tue", count: 0 },
+  //     { date: "2023-05-31", day: "Wed", count: 0 },
+  //     { date: "2023-06-01", day: "Thu", count: 5 },
+  //     { date: "2023-06-02", day: "Fri", count: 1 },
+  //     // Add more data as needed
+  // ];
+
+  // Parse the date and calculate week and day indices
+  const parseDate = d3.timeParse("%Y-%m-%d");
+  data.forEach(d => {
+      d.date = parseDate(d.date);
+      d.weekday = d.date.getDay();
+      d.week = d3.timeWeek.count(d3.timeYear(d.date), d.date);
+  });
+
+          // Determine the date range from the data
+          const minDate = d3.min(data, d => d.date);
+          const maxDate = d3.max(data, d => d.date);
+          const months = d3.timeMonth.range(d3.timeMonth.floor(minDate), d3.timeMonth.ceil(maxDate));
+          const gapNumber = data[0].weekday
+
+  // Set up the dimensions and margins of the graph
+  const margin = { top: 30, right: 20, bottom: 20, left: 40 };
+  const width = 960 - margin.left - margin.right;
+  const height = 150 - margin.top - margin.bottom;
+
+  // Create the SVG container
+  const svg = d3.select("#heatmap")
+  .append("svg")
+  .attr("width", "100%")
+  .attr("viewBox", `0 0 ${width + margin.left + margin.right} ${height + margin.top + margin.bottom}`)
+  .on("mouseout", function() { // Hide tooltip when mouse leaves the SVG
+    Tooltip.style("opacity", 0)
+      .style("visibility", "hidden");
+  });
+      // .style("background-color", "red")
+
+      const barG = svg.append("g")
+      .attr("transform", `translate(${margin.left},${margin.top})`);
+
+      const axisG = svg.append("g")
+      .attr("transform", "translate(" + margin.left + "," + (margin.top - 15) + ")");
+
+
+  // Create a color scale
+  // const colorScale = d3.scaleSequential(d3.interpolateGreens)
+  //     .domain([0, 5]);
+
+      const colorScale = scaleOrdinal()
+      .domain([0, 5])
+      .range(["#F5F5F5", "#A6CBC5", "#68B4A9", "#44A798", "#289D8B"]);
+
+  // Set up the x and y scales
+  // const x = d3.scaleBand()
+  //     .range([0, width])
+  //     .domain(d3.timeMonth.range(new Date(2023, 4, 1), new Date(2024, 5, 1)).map(d => d3.timeFormat("%b")(d)));
+
+  
+             const x = d3.scaleBand()
+            .range([0, width])
+            .domain(months.map(d => d3.timeFormat("%b")(d)));
+
+  const y = d3.scaleBand()
+      .range([0, height])
+      .domain(["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]);
+
+  // const cellWidth = width / d3.timeMonth.range(new Date(2023, 4, 1), new Date(2024, 5, 1)).length;
+  const cellWidth = width / months.length;
+  const cellHeight = height / 7;
+  const cellSize = Math.floor(width / data.length); // Adjust cell size for the number of data points
+
+
+  // // Add day labels
+  // svg.selectAll(".day-label")
+  //     .data(y.domain())
+  //     .enter()
+  //     .append("text")
+  //     .attr("class", "day-label")
+  //     .attr("x", -5)
+  //     .attr("y", d => y(d) + cellHeight / 2)
+  //     .attr("dy", ".35em")
+  //     .attr("text-anchor", "end")
+  //     .text(d => d);
+
+  // //Add month labels
+  // svg.selectAll(".month-label")
+  //     .data(x.domain())
+  //     .enter()
+  //     .append("text")
+  //     .attr("class", "month-label")
+  //     .attr("x", (d, i) => i * cellWidth + cellWidth / 2)
+  //     .attr("y", -5)
+  //     .attr("text-anchor", "middle")
+  //     .text(d => d);
+
+  // Create the x-axis for month labels
+
+  const xScale = d3.scaleTime()
+  .domain([minDate, maxDate])
+  .range([0, width]);
+
+  const xAxis = d3.axisBottom(xScale)
+  .ticks(d3.timeMonth.every(1))
+  .tickFormat(d3.timeFormat("%b"))
+  .tickSizeOuter(0)
+  .tickSizeInner(0);
+
+// Append the x-axis to a new group element and position it
+const tick1 = axisG.append('g')
+.attr("transform", "translate(" + ((cellWidth/2) - 0.7) + "," + -margin.top/3 + ")")
+.attr("class", "x axis")
+.call(xAxis);
+
+// Remove the axis line
+axisG.select('.domain').attr('stroke-width', 0);
+
+// Style the axis labels
+tick1.selectAll('text')
+.style("color", "#333333")
+.style('font-size', '12px')
+.style("font-weight", "500")
+.style("font-family", "Lato");
+
+
+const tick2 = axisG.append('g')
+.attr("transform", "translate(" + -margin.left/3 + "," + margin.top/2.5 + ")")
+.attr("class", "y axis")
+.call(d3.axisLeft(y)
+  .ticks(7)
+  .tickSizeOuter(0)
+  .tickSizeInner(0));
+svg.selectAll('.domain').attr('stroke-width', 0);
+
+tick2.selectAll('text')
+.style("color", "#333333")
+.style('font-size', '9px')
+.style("font-weight", "500")
+.style("font-family", "Lato");
+
+
+
+    // Create tooltip
+    let Tooltip = d3.select("body")
+      .append("div")
+      .style("opacity", 0)
+      .attr("class", "tooltip")
+      .style("width", "auto")
+      .style("height", "30px")
+      .style("padding", "8.01px 12.01px")
+      .style("border-radius", "8px 0 0 0")
+      .style("background-color", "#D9D9D9")
+      .style("position", "absolute")
+      .style("text-align", "center")
+      .style("font-family", "Montserrat")
+      .style("font-size", "10px")
+      .style("font-weight", "400")
+      .style("line-height", "12.19px")
+      .style("color", "#696969")
+      .style("pointer-events", "none");
+
+
+      let tipMouseover = function(event, d) {
+        Tooltip.style("opacity", 1)
+          .style("visibility", "visible")
+          .style("left", (event.pageX - 100) + "px")
+          .style("top", (event.pageY - 35) + "px");
+          if (d.count > 0) {
+          Tooltip.html(`
+            <strong>${d.count} Interview Taken on ${d3.timeFormat("%b %d, %Y")(d.date)}</strong><br>
+          `)
+          }
+          else{
+            Tooltip.html(`
+            <strong>No Interview Taken on ${d3.timeFormat(" %b %d, %Y")(d.date)}</strong><br>
+          `)
+          }
+          
+      };
+
+      
+      let tipMouseout = function() {
+        Tooltip.style("opacity", 0)
+          .style("visibility", "hidden");
+      };
+
+let largest = Math.max(...data.map((o) => o.weekday));
+
+const xScale2 = d3.scaleLinear()
+        .domain([0, largest])
+        .range([0, width ]);
+
+  // Draw the heatmap cells
+  barG.selectAll(".cell")
+      .data(data)
+      .enter()
+      .append("rect")
+      .attr("class", "cell")
+      // .attr("x", (d, i) => i * cellSize )
+      // .attr("x", d => xScale(d.date) )
+      .attr("x", function (d,i) {
+        return (xScale(d.date) - ((i+gapNumber) % 7) - d.weekday*1.5)
+      })
+            // .attr("x", d => xScale(d.date) - (d3.timeDay.count(minDate, d.date) % 7) * cellSize) // Adjust x-position
+
+      // .attr("x", (d, i) => x(d.date) + (i % 7) * cellWidth) 
+      // .attr("x", (d, i) => xScale2(d.weekday)) 
+      
+      // .attr("y", d => d.date.getDay() * cellSize*3)
+      // .attr("x", (d,i) => x(d3.timeFormat("%b")(d.date)) + (d.week % 4) * cellWidth / 4)
+      .attr("y", d => y(d3.timeFormat("%a")(d.date)))
+
+      .attr("width", cellWidth / 6)
+      .attr("height", cellHeight- 5)
+      .attr("fill", d => colorScale(d.count))
+      .attr("rx", 2) // Rounded corners
+      .attr("ry", 2)
+      .on("mouseover", tipMouseout)
+      .on("mousemove",tipMouseover)
+      .on("mouseout", tipMouseout);
+  }
+}
+
 
 
 // eslint-disable-next-line no-redeclare
@@ -10517,6 +11413,12 @@ export {
   proctLineChart,
   QuesData,
 
+
+   //For Recruitment New 
+   rolePieChart,
+   statChart,
+   thirdPartyBar,
+   heaTmap,
 
 };
 // module.exports = {};
